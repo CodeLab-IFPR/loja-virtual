@@ -49,47 +49,29 @@
                     <h3 class="text-lg font-semibold text-gray-900 mb-4">Imagens</h3>
                     
                     @php
-                        $hasMainImage = $product->image;
-                        $additionalImages = $product->images ?: [];
-                        $allImages = collect();
-                        
-                        if ($hasMainImage) {
-                            $allImages->push([
-                                'path' => $product->image,
-                                'type' => 'main',
-                                'label' => 'Principal'
-                            ]);
-                        }
-                        
-                        if (!empty($additionalImages)) {
-                            foreach ($additionalImages as $index => $imagePath) {
-                                $allImages->push([
-                                    'path' => $imagePath,
-                                    'type' => 'additional',
-                                    'label' => 'Adicional ' . ($index + 1)
-                                ]);
-                            }
-                        }
+                        $allImages = $product->all_images;
                     @endphp
 
-                    @if($allImages->count() > 0)
+                    @if(count($allImages) > 0)
                         <!-- Imagem Principal -->
                         <div class="mb-6">
                             <img id="mainDisplayImage" 
-                                 src="{{ asset('storage/' . $allImages->first()['path']) }}" 
+                                 src="{{ $allImages[0]['url'] }}" 
                                  alt="{{ $product->name }}" 
-                                 class="w-full h-96 object-cover rounded-lg border">
+                                 class="w-full h-96 object-cover rounded-lg border"
+                                 loading="lazy">
                         </div>
 
                         <!-- Galeria de Miniaturas -->
-                        @if($allImages->count() > 1)
+                        @if(count($allImages) > 1)
                             <div class="grid grid-cols-4 md:grid-cols-6 gap-2">
                                 @foreach($allImages as $index => $image)
                                     <div class="relative">
-                                        <img src="{{ asset('storage/' . $image['path']) }}" 
+                                        <img src="{{ $image['url'] }}" 
                                              alt="{{ $image['label'] }}" 
-                                             onclick="changeMainImage('{{ asset('storage/' . $image['path']) }}')"
-                                             class="h-20 w-20 object-cover rounded-lg border-2 border-gray-200 hover:border-blue-500 cursor-pointer transition-colors">
+                                             onclick="changeMainImage('{{ $image['url'] }}')"
+                                             class="h-20 w-20 object-cover rounded-lg border-2 border-gray-200 hover:border-blue-500 cursor-pointer transition-colors"
+                                             loading="lazy">
                                         @if($image['type'] === 'main')
                                             <span class="absolute top-1 left-1 bg-blue-500 text-white text-xs px-1 rounded">Principal</span>
                                         @endif

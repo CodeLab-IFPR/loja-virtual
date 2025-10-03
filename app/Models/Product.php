@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Helpers\ImageHelper;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
@@ -63,30 +64,22 @@ class Product extends Model
 
     public function getFirstImageAttribute()
     {
-        // Se tem imagem principal, usa ela
-        if ($this->image) {
-            return asset('storage/' . $this->image);
-        }
-        
-        // Caso contrário, pega a primeira das imagens adicionais
-        $images = $this->images;
-        
-        // Se for string (JSON), decode
-        if (is_string($images)) {
-            $images = json_decode($images, true) ?: [];
-        }
-        
-        // Se não for array, retorna null
-        if (!is_array($images)) {
-            return null;
-        }
-        
-        // Se tem imagens, retorna a primeira
-        if (count($images) > 0) {
-            return asset('storage/' . $images[0]);
-        }
-        
-        return null;
+        return ImageHelper::getFirstProductImage($this);
+    }
+
+    public function getFirstImageUrlAttribute()
+    {
+        return ImageHelper::getFirstProductImage($this);
+    }
+
+    public function getAllImagesAttribute()
+    {
+        return ImageHelper::getAllProductImages($this);
+    }
+
+    public function hasValidImages()
+    {
+        return count($this->getAllImagesAttribute()) > 0;
     }
 
     protected static function boot()

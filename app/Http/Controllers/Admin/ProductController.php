@@ -5,9 +5,10 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\Category;
+use App\Helpers\ImageHelper;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
@@ -113,9 +114,14 @@ class ProductController extends Controller
         // Upload da imagem principal
         if ($request->hasFile('image')) {
             $image = $request->file('image');
-            $imageName = time() . '_' . Str::slug($request->name) . '.' . $image->getClientOriginalExtension();
-            $imagePath = $image->storeAs('products', $imageName, 'public');
-            $data['image'] = $imagePath;
+            
+            // Otimiza a imagem antes de salvar
+            $optimizedImage = ImageHelper::resizeAndOptimize($image, 800, 600, 85);
+            if ($optimizedImage) {
+                $imageName = time() . '_' . Str::slug($request->name) . '.' . $optimizedImage->getClientOriginalExtension();
+                $imagePath = $optimizedImage->storeAs('products', $imageName, 'public');
+                $data['image'] = $imagePath;
+            }
         }
 
         $product = Product::create($data);
@@ -124,9 +130,13 @@ class ProductController extends Controller
         if ($request->hasFile('images')) {
             $additionalImages = [];
             foreach ($request->file('images') as $index => $image) {
-                $imageName = time() . '_' . $index . '_' . Str::slug($request->name) . '.' . $image->getClientOriginalExtension();
-                $imagePath = $image->storeAs('products', $imageName, 'public');
-                $additionalImages[] = $imagePath;
+                // Otimiza cada imagem adicional
+                $optimizedImage = ImageHelper::resizeAndOptimize($image, 800, 600, 85);
+                if ($optimizedImage) {
+                    $imageName = time() . '_' . $index . '_' . Str::slug($request->name) . '.' . $optimizedImage->getClientOriginalExtension();
+                    $imagePath = $optimizedImage->storeAs('products', $imageName, 'public');
+                    $additionalImages[] = $imagePath;
+                }
             }
             $product->update(['images' => $additionalImages]);
         }
