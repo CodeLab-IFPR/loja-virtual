@@ -15,12 +15,33 @@ class CatalogController extends Controller
             ->with('category')
             ->limit(6)
             ->get();
-            
+
         $categories = Category::where('active', true)
             ->orderBy('sort_order')
             ->get();
 
-        return view('catalog.index', compact('featuredProducts', 'categories'));
+        // Configurable slides for the homepage carousel
+        $slides = [
+            [
+                'image' => asset('images/slides/slide1.svg'),
+                'title' => 'Grandes Ofertas em Vasos',
+                'subtitle' => 'Confira peças selecionadas com desconto',
+                'link' => route('catalog'),
+            ],
+            [
+                'image' => asset('images/slides/slide2.svg'),
+                'title' => 'Coleção Primavera',
+                'subtitle' => 'Novas texturas e cores para seus vasos',
+                'link' => route('catalog'),
+            ],
+            [
+                'title' => 'Entrega Rápida',
+                'subtitle' => 'Compre hoje e receba em até 3 dias úteis',
+                'link' => route('catalog'),
+            ],
+        ];
+
+        return view('catalog.index', compact('featuredProducts', 'categories', 'slides'));
     }
 
     public function catalog(Request $request)
