@@ -85,13 +85,13 @@
                                 @endif
                             </div>
 
-                            <div class="flex w-full mt-4 gap-[5px]">
-                                <button type="submit" class="flex-1 text-center py-3 px-3 text-lg bg-[#C7C5C5] text-gray-900 font-bold rounded-xl hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                            <div class="flex w-full mt-4 gap-4">
+                                <button type="submit" class="flex-1 text-center py-2 px-2 text-base bg-[#C7C5C5] text-gray-900 font-bold rounded-2xl hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 shadow-md shadow-black/60">
                                     {{ __('Entrar') }}
                                 </button>
 
                                 @if (Route::has('register'))
-                                    <a href="{{ route('register') }}" class="flex-1 text-center py-3 px-3 text-lg bg-[#C7C5C5] text-gray-900 font-bold rounded-xl hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                                    <a href="{{ route('register') }}" class="flex-1 text-center py-2 px-2 text-base bg-[#C7C5C5] text-gray-900 font-bold rounded-2xl hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 shadow-md shadow-black/60">
                                         {{ __('Cadastrar') }}
                                     </a>
                                 @endif
@@ -101,8 +101,8 @@
                 </div>
             </div>
 
-            <div class="text-center text-sm text-gray-600 mb-4">
-                Shalom Vasos Ltda.
+            <div class="text-center text-sm text-gray-600">
+                 SHALOM VASOS LTDA.
             </div>
         </div>
     </body>
