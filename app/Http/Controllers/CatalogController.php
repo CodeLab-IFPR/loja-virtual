@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 
 class CatalogController extends Controller
 {
@@ -20,26 +21,36 @@ class CatalogController extends Controller
             ->orderBy('sort_order')
             ->get();
 
-        // Configurable slides for the homepage carousel
-        $slides = [
-            [
-                'image' => asset('images/slides/slide1.svg'),
-                'title' => 'Grandes Ofertas em Vasos',
-                'subtitle' => 'Confira peças selecionadas com desconto',
+        $slides = [];
+        $folderName = 'images/slides';
+        $slidePath = public_path($folderName);
+
+        if (File::isDirectory($slidePath)) {
+
+            $files = File::files($slidePath);
+
+            foreach ($files as $file) {
+                $filename = $file->getFilename();
+                $title = pathinfo($filename, PATHINFO_FILENAME);
+                $title = ucfirst(str_replace(['-', '_'], ' ', $title));
+
+                $slides[] = [
+                    'image' => asset($folderName . '/' . $filename),
+                    'title' => $title,
+                    'subtitle' => 'Confira nossas novas coleções',
+                    'link' => route('catalog'),
+                ];
+            }
+        }
+
+        if (empty($slides)) {
+            $slides[] = [
+                'image' => null,
+                'title' => 'Bem-vindo ao Nosso Catálogo',
+                'subtitle' => 'Explore nossos produtos artesanais.',
                 'link' => route('catalog'),
-            ],
-            [
-                'image' => asset('images/slides/slide2.svg'),
-                'title' => 'Coleção Primavera',
-                'subtitle' => 'Novas texturas e cores para seus vasos',
-                'link' => route('catalog'),
-            ],
-            [
-                'title' => 'Entrega Rápida',
-                'subtitle' => 'Compre hoje e receba em até 3 dias úteis',
-                'link' => route('catalog'),
-            ],
-        ];
+            ];
+        }
 
         return view('catalog.index', compact('featuredProducts', 'categories', 'slides'));
     }
