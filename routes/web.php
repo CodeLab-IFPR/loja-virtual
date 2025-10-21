@@ -46,6 +46,10 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::resource('categories', AdminCategoryController::class);
     Route::patch('categories/{category}/toggle-status', [AdminCategoryController::class, 'toggleStatus'])->name('categories.toggle-status');
     
+    // Tamanhos
+    Route::resource('sizes', AdminSizeController::class);
+    Route::patch('sizes/{size}/toggle-status', [AdminSizeController::class, 'toggleStatus'])->name('sizes.toggle-status');
+
     // Usuários
     Route::resource('users', AdminUserController::class);
     Route::patch('users/{user}/approve', [AdminUserController::class, 'approve'])->name('users.approve');
