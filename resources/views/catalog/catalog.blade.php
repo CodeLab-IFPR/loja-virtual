@@ -52,7 +52,7 @@
                         <div class="space-y-2">
                             <a href="{{ route('catalog') }}" 
                             class="block text-sm {{ !request('price') ? 'text-green-600 font-medium' : 'text-gray-600' }} hover:text-green-600">
-                                Preços
+                                Todos os preços
                             </a>
                                 <a href="{{ route('catalog', ['price' => 'Até R$ 100']) }}" 
                                 class="block text-sm {{ request('price') == 'Até R$ 100' ? 'text-green-600 font-medium' : 'text-gray-600' }} hover:text-green-600">
@@ -69,8 +69,41 @@
                         </div></br>
                         @endif
                     @endauth
-                </div>
+                <!-- </div> -->
+            <!-- </div> -->
+
+            
+            <!-- Colors -->
+            <h4 class="font-medium text-gray-900 mb-3">Cores</h4>
+            <div class="space-y-2">
+                <a href="{{ route('catalog') }}" 
+                    class="block text-sm {{ !request('color') ? 'text-green-600 font-medium' : 'text-gray-600' }} hover:text-green-600">
+                    Todas as cores
+                </a>
+                @foreach($cores as $cor)
+                    <a href="{{ route('catalog', ['color' => $cor]) }}" 
+                        class="block text-sm {{ request('color') == $cor ? 'text-green-600 font-medium' : 'text-gray-600' }} hover:text-green-600">
+                        {{ $cor }}
+                    </a>
+                @endforeach
+            </div></br>
+
+            <!-- Dimensions -->
+            <h4 class="font-medium text-gray-900 mb-3">Dimensões</h4>
+            <div class="space-y-2">
+                <a href="{{ route('catalog') }}" 
+                    class="block text-sm {{ !request('dimensions') ? 'text-green-600 font-medium' : 'text-gray-600' }} hover:text-green-600">
+                    Todas as dimensões
+                </a>
+                @foreach($dimensoes as $dimensao)
+                    <a href="{{ route('catalog', ['dimensions' => $dimensao]) }}" 
+                        class="block text-sm {{ request('dimensions') == $dimensao ? 'text-green-600 font-medium' : 'text-gray-600' }} hover:text-green-600">
+                        {{ $dimensao }}
+                    </a>
+                @endforeach
+            </div></br>
             </div>
+        </div>
 
             <!-- Products Grid -->
             <div class="lg:w-3/4">

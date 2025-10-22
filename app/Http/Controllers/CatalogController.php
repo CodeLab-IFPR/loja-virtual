@@ -51,10 +51,22 @@ class CatalogController extends Controller
             }
         }
 
+        // Filtrar por cor se fornecida
+        if ($request->color) {
+            $query->where('color', $request->color);
+        }
+
+        // Filtrar por dimensões se fornecida
+        if ($request->dimensions) {
+            $query->where('dimensions', $request->dimensions);
+        }
+
         $products = $query->paginate(12);
         $categories = Category::where('active', true)->orderBy('sort_order')->get();
+        $cores = Product::where('active', true)->pluck('color')->unique();
+        $dimensoes = Product::where('active', true)->pluck('dimensions')->unique();
 
-        return view('catalog.catalog', compact('products', 'categories'));
+        return view('catalog.catalog', compact('products', 'categories', 'cores', 'dimensoes'));
     }
 
     public function category(Category $category)
