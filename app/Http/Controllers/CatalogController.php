@@ -37,6 +37,20 @@ class CatalogController extends Controller
             $query->where('name', 'like', '%' . $request->search . '%');
         }
 
+        if ($request->price) {
+            switch ($request->price) {
+                case 'Até R$ 100':
+                    $query->where('price', '<=', 100.00);
+                    break;
+                case 'R$ 100 a R$ 200':
+                    $query->whereBetween('price', [100.01, 200.00]);
+                    break;
+                case 'R$ 200 a R$ 300':
+                    $query->whereBetween('price', [200.01, 300.00]);
+                    break;
+            }
+        }
+
         $products = $query->paginate(12);
         $categories = Category::where('active', true)->orderBy('sort_order')->get();
 

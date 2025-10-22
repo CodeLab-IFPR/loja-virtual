@@ -43,7 +43,32 @@
                                 {{ $category->name }} ({{ $category->activeProductsCount() }})
                             </a>
                         @endforeach
-                    </div>
+                    </div></br>
+
+                    @auth
+                        @if(auth()->user()->canSeePrices())
+                        <!-- Prices -->
+                        <h4 class="font-medium text-gray-900 mb-3">Preços</h4>
+                        <div class="space-y-2">
+                            <a href="{{ route('catalog') }}" 
+                            class="block text-sm {{ !request('price') ? 'text-green-600 font-medium' : 'text-gray-600' }} hover:text-green-600">
+                                Preços
+                            </a>
+                                <a href="{{ route('catalog', ['price' => 'Até R$ 100']) }}" 
+                                class="block text-sm {{ request('price') == 'Até R$ 100' ? 'text-green-600 font-medium' : 'text-gray-600' }} hover:text-green-600">
+                                    Até R$ 100
+                                </a>
+                                <a href="{{ route('catalog', ['price' => 'R$ 100 a R$ 200']) }}" 
+                                class="block text-sm {{ request('price') == 'R$ 100 a R$ 200' ? 'text-green-600 font-medium' : 'text-gray-600' }} hover:text-green-600">
+                                    R$ 100 a R$ 200
+                                </a>
+                                <a href="{{ route('catalog', ['price' => 'R$ 200 a R$ 300']) }}" 
+                                class="block text-sm {{ request('price') == 'R$ 200 a R$ 300' ? 'text-green-600 font-medium' : 'text-gray-600' }} hover:text-green-600">
+                                    R$ 200 a R$ 300
+                                </a>
+                        </div></br>
+                        @endif
+                    @endauth
                 </div>
             </div>
 
