@@ -145,6 +145,29 @@
                         </div>
                     @endif
 
+                    <div class="mb-6 flex space-x-16 items-center">
+                        @if($product->material)
+                            <div>
+                                <h3 class="font-semibold text-gray-900 mb-1 ">Material</h3>
+                                <p class="text-gray-600">{{ $product->material }}</p>
+                            </div>
+                        @endif
+                        
+                        @if($product->color)
+                            <div>
+                                <h3 class="font-semibold text-gray-900 mb-1">Cor</h3>
+                                <p class="text-gray-600">{{ $product->color }}</p>
+                            </div>
+                        @endif
+
+                        @if($product->dimensions)
+                            <div>
+                                <h3 class="font-semibold text-gray-900 mb-0.5 ">Dimensões</h3>
+                                <p class="text-gray-600">{{ $product->dimensions }}</p>
+                            </div>
+                        @endif
+                    </div>
+
                     <div class="mb-6">
                         <div class="flex items-center gap-4 text-sm">
                             @if($product->manage_stock)
