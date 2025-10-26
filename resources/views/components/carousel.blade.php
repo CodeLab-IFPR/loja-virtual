@@ -13,7 +13,6 @@
     @foreach($slides as $i => $slide)
         <div class="absolute inset-0 transition-opacity duration-700 ease-in-out {{ $i === 0 ? 'opacity-100' : 'opacity-0 pointer-events-none' }} carousel-slide" data-index="{{ $i }}" aria-hidden="{{ $i === 0 ? 'false' : 'true' }}">
 
-            {{-- 3. CHANGE THE HEIGHTS HERE to just h-full --}}
             <div class="w-full h-full bg-gray-200 relative">
                 @if(!empty($slide['image']))
                     <img src="{{ $slide['image'] }}" alt="{{ $slide['title'] ?? 'Slide' }}" class="w-full h-full object-cover">
@@ -29,11 +28,8 @@
 
                 <div class="absolute inset-y-0 left-0 flex items-center">
                     <div class="max-w-3xl p-6 md:p-12 lg:p-20 text-white">
-                        <h2 class="text-2xl md:text-4xl font-bold">{{ $slide['title'] ?? '' }}</h2>
-                        <p class="mt-2 text-sm md:text-lg text-white/90">{{ $slide['subtitle'] ?? '' }}</p>
-
-                        <div class="mt-6">
-                            <a href="{{ $slide['link'] ?? route('catalog') }}" class="inline-block bg-white text-green-700 px-6 py-3 rounded-full font-semibold hover:bg-gray-100 transition">Ver Catálogo</a>
+                        <div class="mt-28">
+                            <a href="{{ $slide['link'] ?? route('catalog') }}" class="inline-block bg-black text-white px-24 py-3 rounded-lg font-semibold hover:bg-gray-100 transition">Ver Catálogo</a>
                         </div>
                     </div>
                 </div>
@@ -107,16 +103,13 @@
             root.addEventListener('mouseenter', stop);
             root.addEventListener('mouseleave', start);
 
-            // Keyboard navigation
             root.addEventListener('keydown', (e) => {
                 if (e.key === 'ArrowLeft') { prev(); start(); }
                 if (e.key === 'ArrowRight') { next(); start(); }
             });
 
-            // Make the root focusable for keyboard nav
             root.setAttribute('tabindex', '0');
 
-            // Initialize
             if (slides.length > 0) {
                 show(0);
                 start();
