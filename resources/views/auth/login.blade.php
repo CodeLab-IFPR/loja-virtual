@@ -68,8 +68,8 @@
                                         </template>
                                     </button>
                                 </div>
-                                <x-input-error :messages="$errors->get('password')" class="mt-2 text-sm text-red-600 space-y-1" />
                             </div>
+                            <x-input-error :messages="$errors->get('password')" class="mt-2 text-sm text-red-600 space-y-1" />
 
                             <!-- Remember Me and Forgot Password -->
                             <div class="flex items-center justify-between mt-2 text-sm text-gray-600">
