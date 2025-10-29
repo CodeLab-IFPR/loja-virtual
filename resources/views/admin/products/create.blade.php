@@ -80,11 +80,11 @@
                     @forelse($sizes as $size)
                         <div class="flex items-center">
                             <input type="radio" 
-                                id="size_{{ $size->id }}" 
-                                name="size_id" 
-                                value="{{ $size->id }}"
-                                {{ old('size_id') == $size->id ? 'checked' : '' }}
-                                class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                                   id="size_{{ $size->id }}" 
+                                   name="size_id" 
+                                   value="{{ $size->id }}"
+                                   {{ old('size_id') == $size->id ? 'checked' : '' }}
+                                   class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
                             <label for="size_{{ $size->id }}" class="ml-2 text-sm text-gray-700">
                                 <strong>{{ $size->name }}</strong>
                                 @if($size->description)
@@ -147,8 +147,130 @@
                 </div>
             </div>
 
-            <!-- ... resto do formulário (descrição, especificações, imagens, etc.) ... -->
-            <!-- (mantido exatamente como estava) -->
+            <!-- Informações Adicionais -->
+            <div class="bg-gray-50 rounded-lg p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Informações Adicionais</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="weight" class="block text-sm font-medium text-gray-700">
+                            Peso (kg)
+                        </label>
+                        <input type="number" 
+                               id="weight" 
+                               name="weight" 
+                               value="{{ old('weight') }}" 
+                               step="0.01" 
+                               min="0"
+                               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                    </div>
+
+                    <div>
+                        <label for="dimensions" class="block text-sm font-medium text-gray-700">
+                            Dimensões (C x L x A)
+                        </label>
+                        <input type="text" 
+                               id="dimensions" 
+                               name="dimensions" 
+                               value="{{ old('dimensions') }}" 
+                               placeholder="Ex: 30x20x10 cm"
+                               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                    </div>
+
+                    <div>
+                        <label for="material" class="block text-sm font-medium text-gray-700">
+                            Material
+                        </label>
+                        <input type="text" 
+                               id="material" 
+                               name="material" 
+                               value="{{ old('material') }}" 
+                               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                    </div>
+
+                    <div>
+                        <label for="color" class="block text-sm font-medium text-gray-700">
+                            Cor
+                        </label>
+                        <input type="text" 
+                               id="color" 
+                               name="color" 
+                               value="{{ old('color') }}" 
+                               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Descrição -->
+            <div class="bg-gray-50 rounded-lg p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Descrição</h3>
+                <textarea 
+                    id="description" 
+                    name="description" 
+                    rows="4" 
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                    placeholder="Descreva o produto...">{{ old('description') }}</textarea>
+            </div>
+
+            <!-- Imagem Principal -->
+            <div class="bg-gray-50 rounded-lg p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Imagem Principal</h3>
+                <input type="file" 
+                       id="image" 
+                       name="image" 
+                       accept="image/*"
+                       class="mt-1 block w-full text-sm text-gray-500
+                              file:mr-4 file:py-2 file:px-4
+                              file:rounded-full file:border-0
+                              file:text-sm file:font-semibold
+                              file:bg-indigo-50 file:text-indigo-700
+                              hover:file:bg-indigo-100">
+                <p class="mt-1 text-xs text-gray-500">JPG, PNG ou GIF até 2MB</p>
+            </div>
+
+            <!-- Imagens Adicionais -->
+            <div class="bg-gray-50 rounded-lg p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Imagens Adicionais</h3>
+                <input type="file" 
+                       id="images" 
+                       name="images[]" 
+                       multiple 
+                       accept="image/*"
+                       class="mt-1 block w-full text-sm text-gray-500
+                              file:mr-4 file:py-2 file:px-4
+                              file:rounded-full file:border-0
+                              file:text-sm file:font-semibold
+                              file:bg-indigo-50 file:text-indigo-700
+                              hover:file:bg-indigo-100">
+                <p class="mt-1 text-xs text-gray-500">Adicione até 5 imagens (JPG, PNG, GIF)</p>
+            </div>
+
+            <!-- Status e Destaque -->
+            <div class="bg-gray-50 rounded-lg p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Status e Destaque</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="flex items-center">
+                        <input type="checkbox" 
+                               id="active" 
+                               name="active" 
+                               {{ old('active', true) ? 'checked' : '' }}
+                               class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        <label for="active" class="ml-2 text-sm font-medium text-gray-700">
+                            Produto Ativo
+                        </label>
+                    </div>
+
+                    <div class="flex items-center">
+                        <input type="checkbox" 
+                               id="featured" 
+                               name="featured" 
+                               {{ old('featured') ? 'checked' : '' }}
+                               class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        <label for="featured" class="ml-2 text-sm font-medium text-gray-700">
+                            Destaque na Loja
+                        </label>
+                    </div>
+                </div>
+            </div>
 
             <!-- Botões de Ação -->
             <div class="flex justify-end space-x-3 pt-6 border-t border-gray-200">
@@ -166,6 +288,37 @@
 </div>
 
 <script>
-    // ... scripts de preview de imagens (mantidos) ...
+    // Controle do campo de estoque
+    document.getElementById('manage_stock').addEventListener('change', function() {
+        const stockSection = document.getElementById('stock_section');
+        const stockInput = stockSection.querySelector('input');
+        
+        if (this.checked) {
+            stockSection.classList.remove('hidden');
+            stockInput.required = true;
+        } else {
+            stockSection.classList.add('hidden');
+            stockInput.required = false;
+        }
+    });
+
+    // Preview da imagem principal
+    document.getElementById('image').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                let preview = document.getElementById('image-preview');
+                if (!preview) {
+                    preview = document.createElement('img');
+                    preview.id = 'image-preview';
+                    preview.className = 'mt-4 h-32 w-32 object-cover rounded-lg border';
+                    document.querySelector('[for="image"]').parentNode.appendChild(preview);
+                }
+                preview.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    });
 </script>
 @endsection

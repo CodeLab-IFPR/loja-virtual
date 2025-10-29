@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\Category;
-use App\Models\Size; // ADICIONADO
+use App\Models\Size;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -17,7 +17,7 @@ class ProductController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Product::with('category', 'size'); // Inclui o tamanho
+        $query = Product::with('category', 'size');
 
         // Busca por nome, descrição ou SKU
         if ($request->has('search') && $request->search !== '') {
@@ -97,7 +97,7 @@ class ProductController extends Controller
             'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'active' => 'boolean',
             'featured' => 'boolean',
-            'size_id' => 'nullable|exists:sizes,id', // APENAS UM TAMANHO
+            'size_id' => 'nullable|exists:sizes,id',
         ]);
 
         $data = $request->all();
@@ -135,7 +135,7 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
-        $product->load('size'); // Carrega o tamanho
+        $product->load('size');
         return view('admin.products.show', compact('product'));
     }
 
@@ -171,7 +171,7 @@ class ProductController extends Controller
             'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'active' => 'boolean',
             'featured' => 'boolean',
-            'size_id' => 'nullable|exists:sizes,id', // APENAS UM TAMANHO
+            'size_id' => 'nullable|exists:sizes,id',
         ]);
 
         $data = $request->all();
@@ -220,12 +220,10 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        // Deletar imagem principal se existir
         if ($product->image && Storage::disk('public')->exists($product->image)) {
             Storage::disk('public')->delete($product->image);
         }
 
-        // Deletar imagens adicionais se existirem
         if ($product->images && is_array($product->images)) {
             foreach ($product->images as $image) {
                 if (Storage::disk('public')->exists($image)) {
