@@ -51,6 +51,7 @@ class User extends Authenticatable
             'approved_at' => 'datetime',
             'password' => 'hashed',
             'can_see_prices' => 'boolean',
+            'address' => 'array',
         ];
     }
 
