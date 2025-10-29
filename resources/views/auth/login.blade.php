@@ -30,7 +30,7 @@
             <div class="w-[80%] max-w-7.1xl mx-[50px] my-[40px] px-8 py-12 bg-[#D9D9D9] shadow-2xl overflow-hidden rounded-none min-h-[70vh]">
                 <div class="space-y-8 -mt-12">
                     <div class="text-center">
-                        <img src="{{ asset('storage/Logo_shalom.png') }}" alt="Logo Shalom" class="mx-auto mb-1 w-72 h-auto" />
+                        <img src="{{ asset('images/icons/Logo_shalom.png') }}" alt="Logo Shalom" class="mx-auto mb-1 w-72 h-auto" />
                         <h1 class="text-6xl font-normal text-gray-800 uppercase" style="font-family: 'Average Sans', sans-serif;">Seja Bem Vindo</h1>
                         <p class="mt-1" style="font-family: 'Alexandria', sans-serif; font-weight:400; font-style:normal; text-align:center; text-transform:uppercase;">
                             Forneça seus dados para login
