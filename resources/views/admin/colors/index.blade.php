@@ -114,9 +114,6 @@
                             Status
                         </th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Produtos
-                        </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Ações
                         </th>
                     </tr>
@@ -148,9 +145,6 @@
                                     </span>
                                 @endif
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                0 produtos
-                            </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                 <div class="flex space-x-2">
                                     <a href="{{ route('admin.colors.show', $color) }}" 
@@ -159,7 +153,7 @@
                                     <a href="{{ route('admin.colors.edit', $color) }}" 
                                        class="text-indigo-600 hover:text-indigo-900">Editar</a>
 
-                                    <button onclick="toggleStatus({{ $color->id }})" 
+                                    <button onclick="toggleStatus('{{ $color->slug }}')" 
                                             class="text-yellow-600 hover:text-yellow-900">
                                         {{ $color->active ? 'Desativar' : 'Ativar' }}
                                     </button>
@@ -202,8 +196,9 @@
 </div>
 
 <script>
-    function toggleStatus(colorId) {
-        fetch(`/admin/colors/${colorId}/toggle-status`, {
+    function toggleStatus(colorSlug) {
+        console.log('Toggling status for color:', colorSlug);
+        fetch(`colors/${colorSlug}/toggle-status`, {
             method: 'PATCH',
             headers: {
                 'X-CSRF-TOKEN': '{{ csrf_token() }}',
@@ -213,6 +208,7 @@
         })
         .then(response => response.json())
         .then(data => {
+            console.log(data);
             if (data.success) {
                 location.reload();
             } else {
