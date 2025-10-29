@@ -109,4 +109,28 @@ class User extends Authenticatable
     {
         return $this->hasMany(CartItem::class);
     }
+
+    /**
+     * Favorite products for this user
+     */
+    public function favorites()
+    {
+        return $this->hasMany(Favorite::class);
+    }
+
+    /**
+     * Get favorite products (many-to-many relationship)
+     */
+    public function favoriteProducts()
+    {
+        return $this->belongsToMany(Product::class, 'favorites')->withTimestamps();
+    }
+
+    /**
+     * Check if user has favorited a product
+     */
+    public function hasFavorited($productId)
+    {
+        return $this->favoriteProducts()->where('product_id', $productId)->exists();
+    }
 }

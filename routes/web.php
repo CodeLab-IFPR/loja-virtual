@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
@@ -23,6 +24,13 @@ Route::middleware('auth')->group(function () {
     Route::post('/carrinho/adicionar', [CartController::class, 'add'])->name('cart.add');
     Route::patch('/carrinho/{item}', [CartController::class, 'update'])->name('cart.update');
     Route::delete('/carrinho/{item}', [CartController::class, 'remove'])->name('cart.remove');
+});
+
+// Rotas de favoritos
+Route::middleware('auth')->group(function () {
+    Route::get('/favoritos', [FavoriteController::class, 'index'])->name('favorites.index');
+    Route::post('/favoritos/{product}/toggle', [FavoriteController::class, 'toggle'])->name('favorites.toggle');
+    Route::delete('/favoritos/{product}', [FavoriteController::class, 'destroy'])->name('favorites.destroy');
 });
 
 // Dashboard do cliente

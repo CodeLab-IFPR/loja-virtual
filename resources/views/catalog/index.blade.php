@@ -24,7 +24,12 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             @forelse($featuredProducts as $product)
-                <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition">
+                <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition relative">
+                    <!-- Botão de favorito no canto superior direito -->
+                    <div class="absolute top-2 right-2 z-10">
+                        <x-favorite-button :product="$product" />
+                    </div>
+                    
                     <div class="h-48 bg-gray-200 flex items-center justify-center">
                         @if($product->first_image)
                             <img src="{{ $product->first_image }}" alt="{{ $product->name }}" class="w-full h-full object-cover">

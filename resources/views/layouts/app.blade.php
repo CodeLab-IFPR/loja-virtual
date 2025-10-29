@@ -16,6 +16,8 @@
         
         <!-- Alpine.js -->
         <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+        
+        @stack('styles')
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
@@ -39,5 +41,7 @@
                 @endif
             </main>
         </div>
+        
+        @stack('scripts')
     </body>
 </html>
