@@ -25,9 +25,19 @@ class FavoriteController extends Controller
     /**
      * Adicionar/Remover produto dos favoritos (toggle)
      */
-    public function toggle(Product $product)
+    public function toggle($id)
     {
         $user = Auth::user();
+
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Usuário não autenticado',
+            ], 401);
+        }
+
+        // Busca o produto pelo ID
+        $product = Product::findOrFail($id);
 
         $favorite = Favorite::where('user_id', $user->id)
             ->where('product_id', $product->id)
@@ -48,8 +58,15 @@ class FavoriteController extends Controller
             $message = 'Produto adicionado aos favoritos!';
         }
 
+        // Log para debug
+        \Log::info('Favorito toggle', [
+            'user_id' => $user->id,
+            'product_id' => $product->id,
+            'is_favorited' => $isFavorited,
+        ]);
+
         // Se for requisição AJAX, retorna JSON
-        if (request()->ajax()) {
+        if (request()->ajax() || request()->wantsJson()) {
             return response()->json([
                 'success' => true,
                 'isFavorited' => $isFavorited,

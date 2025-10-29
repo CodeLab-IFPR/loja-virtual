@@ -29,7 +29,7 @@ Route::middleware('auth')->group(function () {
 // Rotas de favoritos
 Route::middleware('auth')->group(function () {
     Route::get('/favoritos', [FavoriteController::class, 'index'])->name('favorites.index');
-    Route::post('/favoritos/{product}/toggle', [FavoriteController::class, 'toggle'])->name('favorites.toggle');
+    Route::post('/favoritos/toggle/{id}', [FavoriteController::class, 'toggle'])->name('favorites.toggle');
     Route::delete('/favoritos/{product}', [FavoriteController::class, 'destroy'])->name('favorites.destroy');
 });
 
