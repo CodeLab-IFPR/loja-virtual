@@ -12,7 +12,7 @@
         data-product-id="{{ $product->id }}"
         data-is-favorited="{{ $isFavorited ? 'true' : 'false' }}"
         title="{{ $isFavorited ? 'Remover dos favoritos' : 'Adicionar aos favoritos' }}"
-        style="color: {{ $isFavorited ? '#EF4444' : '#6B7280' }};"
+        style="color: {{ $isFavorited ? '#000000' : '#000000' }};"
     >
         <svg class="heart-icon" fill="{{ $isFavorited ? 'currentColor' : 'none' }}" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
@@ -23,7 +23,7 @@
         href="{{ route('login') }}"
         class="favorite-btn {{ $class }}"
         title="Faça login para favoritar"
-        style="color: #6B7280;"
+        style="color: #000000;"
     >
         <svg class="heart-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
@@ -40,8 +40,6 @@
         justify-content: center;
         padding: 0.5rem;
         border-radius: 9999px;
-        background-color: white;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         transition: all 0.3s ease;
         border: none;
         cursor: pointer;
@@ -49,7 +47,6 @@
     }
     
     .favorite-btn:hover {
-        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
         transform: scale(1.05);
     }
     
@@ -77,9 +74,9 @@
         stroke: currentColor;
     }
     
-    /* Estado favoritado - vermelho preenchido */
+    /* Estado favoritado - preto preenchido */
     .favorite-btn[data-is-favorited="true"] {
-        color: #EF4444;
+        color: #000000;
     }
     
     .favorite-btn[data-is-favorited="true"] .heart-icon {
@@ -87,9 +84,9 @@
         stroke: currentColor;
     }
     
-    /* Hover - sempre vermelho */
+    /* Hover - sempre preto */
     .favorite-btn:hover {
-        color: #EF4444;
+        color: #000000;
     }
 </style>
 @endpush
@@ -131,14 +128,14 @@ function toggleFavorite(productId, button) {
             
             // Atualiza o visual do ícone
             if (newIsFavorited) {
-                // FAVORITADO: Coração preenchido VERMELHO
+                // FAVORITADO: Coração preenchido preto
                 svg.setAttribute('fill', 'currentColor');
-                button.style.color = '#EF4444';
+                button.style.color = '#000000ff';
                 button.title = 'Remover dos favoritos';
             } else {
-                // NÃO FAVORITADO: Coração vazio CINZA
+                // NÃO FAVORITADO: Coração vazio preto
                 svg.setAttribute('fill', 'none');
-                button.style.color = '#6B7280';
+                button.style.color = '#000000ff';
                 button.title = 'Adicionar aos favoritos';
             }
             
