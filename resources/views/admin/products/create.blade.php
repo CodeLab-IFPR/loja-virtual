@@ -23,8 +23,8 @@
 
         <form action="{{ route('admin.products.store') }}" method="POST" enctype="multipart/form-data" class="space-y-8">
             @csrf
-            
-            <!-- Informações Básicas -->
+
+            <!-- Informações Básicas + Descrição -->
             <div class="bg-gray-50 rounded-lg p-6">
                 <h3 class="text-lg font-semibold text-gray-900 mb-4">Informações Básicas</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -50,7 +50,6 @@
                                value="{{ old('sku') }}" 
                                required
                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                        <p class="mt-1 text-sm text-gray-500">Código único do produto.</p>
                     </div>
 
                     <div>
@@ -61,19 +60,31 @@
                                 name="category_id" 
                                 required
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                            <option value="">Selecione uma categoria</option>
+                            <option value="">Selecione</option>
                             @foreach($categories as $category)
-                                <option value="{{ $category->id }}" 
-                                        {{ old('category_id') == $category->id ? 'selected' : '' }}>
+                                <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
                                     {{ $category->name }}
                                 </option>
                             @endforeach
                         </select>
                     </div>
                 </div>
+
+                <!-- Descrição -->
+                <div class="mt-6">
+                    <label for="description" class="block text-sm font-medium text-gray-700">
+                        Descrição
+                    </label>
+                    <textarea 
+                        id="description" 
+                        name="description" 
+                        rows="4" 
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                        placeholder="Descreva o produto...">{{ old('description') }}</textarea>
+                </div>
             </div>
 
-            <!-- TAMANHO (APENAS UM) -->
+            <!-- Tamanho -->
             <div class="bg-gray-50 rounded-lg p-6">
                 <h3 class="text-lg font-semibold text-gray-900 mb-4">Tamanho</h3>
                 <div class="space-y-3">
@@ -86,9 +97,9 @@
                                    {{ old('size_id') == $size->id ? 'checked' : '' }}
                                    class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
                             <label for="size_{{ $size->id }}" class="ml-2 text-sm text-gray-700">
-                                <strong>{{ $size->name }}</strong>
+                                {{ $size->name }}
                                 @if($size->description)
-                                    <span class="text-gray-500 block text-xs">- {{ $size->description }}</span>
+                                    <span class="text-gray-500 text-xs"> - {{ $size->description }}</span>
                                 @endif
                             </label>
                         </div>
@@ -96,9 +107,6 @@
                         <p class="text-sm text-gray-500">Nenhum tamanho cadastrado.</p>
                     @endforelse
                 </div>
-                @error('size_id')
-                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
-                @enderror
             </div>
 
             <!-- Preço e Estoque -->
@@ -117,13 +125,15 @@
                                min="0" 
                                required
                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                        <p class="mt-1 text-sm text-gray-500">Preço em R$.</p>
                     </div>
 
+                    <!-- Gerenciar Estoque -->
                     <div class="flex items-center">
+                        <input type="hidden" name="manage_stock" value="0">
                         <input type="checkbox" 
                                id="manage_stock" 
                                name="manage_stock" 
+                               value="1" 
                                {{ old('manage_stock', true) ? 'checked' : '' }}
                                class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                         <label for="manage_stock" class="ml-2 text-sm font-medium text-gray-700">
@@ -131,7 +141,8 @@
                         </label>
                     </div>
 
-                    <div id="stock_section" class="{{ old('manage_stock', true) ? '' : 'hidden' }}">
+                    <!-- Estoque (condicional) -->
+                    <div id="stock_section" class="{{ old('manage_stock', true) ? '' : 'hidden' }} md:col-span-2">
                         <label for="stock" class="block text-sm font-medium text-gray-700">
                             Estoque Inicial *
                         </label>
@@ -142,137 +153,89 @@
                                min="0" 
                                required
                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                        <p class="mt-1 text-sm text-gray-500">Quantidade disponível.</p>
                     </div>
                 </div>
             </div>
 
-            <!-- Informações Adicionais -->
+            <!-- Especificações Técnicas -->
             <div class="bg-gray-50 rounded-lg p-6">
-                <h3 class="text-lg font-semibold text-gray-900 mb-4">Informações Adicionais</h3>
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Especificações Técnicas</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <label for="weight" class="block text-sm font-medium text-gray-700">
-                            Peso (kg)
-                        </label>
-                        <input type="number" 
-                               id="weight" 
-                               name="weight" 
-                               value="{{ old('weight') }}" 
-                               step="0.01" 
-                               min="0"
+                        <label for="weight" class="block text-sm font-medium text-gray-700">Peso (kg)</label>
+                        <input type="number" id="weight" name="weight" value="{{ old('weight') }}" step="0.01" min="0"
                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                     </div>
-
                     <div>
-                        <label for="dimensions" class="block text-sm font-medium text-gray-700">
-                            Dimensões (C x L x A)
-                        </label>
-                        <input type="text" 
-                               id="dimensions" 
-                               name="dimensions" 
-                               value="{{ old('dimensions') }}" 
-                               placeholder="Ex: 30x20x10 cm"
+                        <label for="dimensions" class="block text-sm font-medium text-gray-700">Dimensões</label>
+                        <input type="text" id="dimensions" name="dimensions" value="{{ old('dimensions') }}"
                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                     </div>
-
                     <div>
-                        <label for="material" class="block text-sm font-medium text-gray-700">
-                            Material
-                        </label>
-                        <input type="text" 
-                               id="material" 
-                               name="material" 
-                               value="{{ old('material') }}" 
+                        <label for="material" class="block text-sm font-medium text-gray-700">Material</label>
+                        <input type="text" id="material" name="material" value="{{ old('material') }}"
                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                     </div>
-
                     <div>
-                        <label for="color" class="block text-sm font-medium text-gray-700">
-                            Cor
-                        </label>
-                        <input type="text" 
-                               id="color" 
-                               name="color" 
-                               value="{{ old('color') }}" 
+                        <label for="color" class="block text-sm font-medium text-gray-700">Cor</label>
+                        <input type="text" id="color" name="color" value="{{ old('color') }}"
                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                     </div>
                 </div>
-            </div>
-
-            <!-- Descrição -->
-            <div class="bg-gray-50 rounded-lg p-6">
-                <h3 class="text-lg font-semibold text-gray-900 mb-4">Descrição</h3>
-                <textarea 
-                    id="description" 
-                    name="description" 
-                    rows="4" 
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                    placeholder="Descreva o produto...">{{ old('description') }}</textarea>
             </div>
 
             <!-- Imagem Principal -->
             <div class="bg-gray-50 rounded-lg p-6">
                 <h3 class="text-lg font-semibold text-gray-900 mb-4">Imagem Principal</h3>
-                <input type="file" 
-                       id="image" 
-                       name="image" 
-                       accept="image/*"
+                <input type="file" id="image" name="image" accept="image/*"
                        class="mt-1 block w-full text-sm text-gray-500
                               file:mr-4 file:py-2 file:px-4
                               file:rounded-full file:border-0
                               file:text-sm file:font-semibold
                               file:bg-indigo-50 file:text-indigo-700
                               hover:file:bg-indigo-100">
-                <p class="mt-1 text-xs text-gray-500">JPG, PNG ou GIF até 2MB</p>
             </div>
 
             <!-- Imagens Adicionais -->
             <div class="bg-gray-50 rounded-lg p-6">
                 <h3 class="text-lg font-semibold text-gray-900 mb-4">Imagens Adicionais</h3>
-                <input type="file" 
-                       id="images" 
-                       name="images[]" 
-                       multiple 
-                       accept="image/*"
+                <input type="file" id="images" name="images[]" multiple accept="image/*"
                        class="mt-1 block w-full text-sm text-gray-500
                               file:mr-4 file:py-2 file:px-4
                               file:rounded-full file:border-0
                               file:text-sm file:font-semibold
                               file:bg-indigo-50 file:text-indigo-700
                               hover:file:bg-indigo-100">
-                <p class="mt-1 text-xs text-gray-500">Adicione até 5 imagens (JPG, PNG, GIF)</p>
             </div>
 
-            <!-- Status e Destaque -->
+            <!-- Status -->
             <div class="bg-gray-50 rounded-lg p-6">
-                <h3 class="text-lg font-semibold text-gray-900 mb-4">Status e Destaque</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Status</h3>
+                <div class="flex items-center space-x-6">
                     <div class="flex items-center">
+                        <input type="hidden" name="active" value="0">
                         <input type="checkbox" 
                                id="active" 
                                name="active" 
+                               value="1" 
                                {{ old('active', true) ? 'checked' : '' }}
                                class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                        <label for="active" class="ml-2 text-sm font-medium text-gray-700">
-                            Produto Ativo
-                        </label>
+                        <label for="active" class="ml-2 text-sm font-medium text-gray-700">Ativo</label>
                     </div>
-
                     <div class="flex items-center">
+                        <input type="hidden" name="featured" value="0">
                         <input type="checkbox" 
                                id="featured" 
                                name="featured" 
+                               value="1" 
                                {{ old('featured') ? 'checked' : '' }}
                                class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                        <label for="featured" class="ml-2 text-sm font-medium text-gray-700">
-                            Destaque na Loja
-                        </label>
+                        <label for="featured" class="ml-2 text-sm font-medium text-gray-700">Destaque</label>
                     </div>
                 </div>
             </div>
 
-            <!-- Botões de Ação -->
+            <!-- Botões -->
             <div class="flex justify-end space-x-3 pt-6 border-t border-gray-200">
                 <a href="{{ route('admin.products.index') }}" 
                    class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50">
@@ -288,36 +251,15 @@
 </div>
 
 <script>
-    // Controle do campo de estoque
     document.getElementById('manage_stock').addEventListener('change', function() {
         const stockSection = document.getElementById('stock_section');
-        const stockInput = stockSection.querySelector('input');
-        
+        const input = stockSection.querySelector('input');
         if (this.checked) {
             stockSection.classList.remove('hidden');
-            stockInput.required = true;
+            input.required = true;
         } else {
             stockSection.classList.add('hidden');
-            stockInput.required = false;
-        }
-    });
-
-    // Preview da imagem principal
-    document.getElementById('image').addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                let preview = document.getElementById('image-preview');
-                if (!preview) {
-                    preview = document.createElement('img');
-                    preview.id = 'image-preview';
-                    preview.className = 'mt-4 h-32 w-32 object-cover rounded-lg border';
-                    document.querySelector('[for="image"]').parentNode.appendChild(preview);
-                }
-                preview.src = e.target.result;
-            };
-            reader.readAsDataURL(file);
+            input.required = false;
         }
     });
 </script>
