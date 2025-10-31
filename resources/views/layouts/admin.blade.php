@@ -45,6 +45,9 @@
                             <x-nav-link :href="route('admin.categories.index')" :active="request()->routeIs('admin.categories.*')">
                                 {{ __('Categorias') }}
                             </x-nav-link>
+                            <x-nav-link :href="route('admin.materials.index')" :active="request()->routeIs('admin.colors.*')">
+                                {{ __('Materiais') }}
+                            </x-nav-link>
                             <x-nav-link :href="route('admin.products.index')" :active="request()->routeIs('admin.products.*')">
                                 {{ __('Produtos') }}
                             </x-nav-link>
