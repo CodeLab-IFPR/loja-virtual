@@ -6,6 +6,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
+use App\Http\Controllers\Admin\MaterialController as AdminMaterialController;
 use App\Http\Controllers\Admin\ColorController as AdminColorController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
@@ -57,6 +58,11 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::patch('users/{user}/reject', [AdminUserController::class, 'reject'])->name('users.reject');
     Route::post('users/bulk-action', [AdminUserController::class, 'bulkAction'])->name('users.bulk-action');
     
+
+    // Materiais
+    Route::resource('materials', AdminMaterialController::class);
+    Route::patch('materials/{material}/toggle-status', [AdminMaterialController::class, 'toggleStatus'])->name('materials.toggle-status');
+
     // Pedidos
     Route::resource('orders', AdminOrderController::class);
     Route::patch('orders/{order}/status', [AdminOrderController::class, 'updateStatus'])->name('orders.status');
