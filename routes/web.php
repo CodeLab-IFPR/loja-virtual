@@ -6,6 +6,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
+use App\Http\Controllers\Admin\ColorController as AdminColorController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use Illuminate\Support\Facades\Route;
@@ -45,7 +46,11 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // Categorias
     Route::resource('categories', AdminCategoryController::class);
     Route::patch('categories/{category}/toggle-status', [AdminCategoryController::class, 'toggleStatus'])->name('categories.toggle-status');
-    
+
+    // Cores
+    Route::resource('colors', AdminColorController::class);
+    Route::patch('colors/{color}/toggle-status', [AdminColorController::class, 'toggleStatus'])->name('colors.toggle-status');
+
     // Usuários
     Route::resource('users', AdminUserController::class);
     Route::patch('users/{user}/approve', [AdminUserController::class, 'approve'])->name('users.approve');
