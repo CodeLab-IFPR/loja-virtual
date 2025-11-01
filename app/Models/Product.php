@@ -29,6 +29,7 @@ class Product extends Model
         'active',
         'featured',
         'category_id',
+        'size_id',
     ];
 
     protected $casts = [
@@ -42,6 +43,11 @@ class Product extends Model
     public function category()
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function size()
+    {
+        return $this->belongsTo(Size::class);
     }
 
     public function orderItems()

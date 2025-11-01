@@ -5,6 +5,7 @@ use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
+use App\Http\Controllers\Admin\SizeController as AdminSizeController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\MaterialController as AdminMaterialController;
 use App\Http\Controllers\Admin\ColorController as AdminColorController;
@@ -47,6 +48,10 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // Categorias
     Route::resource('categories', AdminCategoryController::class);
     Route::patch('categories/{category}/toggle-status', [AdminCategoryController::class, 'toggleStatus'])->name('categories.toggle-status');
+        // Tamanhos
+    Route::resource('sizes', AdminSizeController::class);
+    Route::patch('sizes/{size}/toggle-status', [AdminSizeController::class, 'toggleStatus'])->name('sizes.toggle-status');
+
 
     // Cores
     Route::resource('colors', AdminColorController::class);
