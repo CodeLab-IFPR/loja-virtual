@@ -13,7 +13,7 @@
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
+
     <!-- Alpine.js -->
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
@@ -34,7 +34,9 @@
                             </a>
                         </div>
 
-                        <!-- Navigation Links -->
+
+
+                        <!-- FALAR SOBRE EXP DO PROJETO, FALAR MAIS SOBRE A VIVENCIA NA DISCIPLINA -->
                         <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                             <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')">
                                 {{ __('Dashboard') }}
@@ -50,6 +52,9 @@
                             </x-nav-link>
                             <x-nav-link :href="route('admin.orders.index')" :active="request()->routeIs('admin.orders.*')">
                                 {{ __('Pedidos') }}
+                            </x-nav-link>
+                            <x-nav-link :href="route('admin.slides.index')" :active="request()->routeIs('admin.slides.*')">
+                                {{ __('Slides') }}
                             </x-nav-link>
                         </div>
                     </div>
@@ -123,6 +128,9 @@
                     <x-responsive-nav-link :href="route('admin.orders.index')" :active="request()->routeIs('admin.orders.*')">
                         {{ __('Pedidos') }}
                     </x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('admin.slides.index')" :active="request()->routeIs('admin.slides.*')">
+                        {{ __('Slides') }}
+                    </x-responsive-nav-link>
                 </div>
 
                 <!-- Responsive Settings Options -->
@@ -170,3 +178,4 @@
     </div>
 </body>
 </html>
+
