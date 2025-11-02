@@ -185,13 +185,21 @@
                 </a>
 
                 <a href="{{ route('admin.materials.index') }}" 
+                   class="flex items-center p-4 bg-sky-50 hover:bg-sky-100 rounded-lg border border-sky-200 transition-colors">
+                    <svg class="w-6 h-6 text-sky-500 mr-3"  viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M12,2A2,2 0 0,1 14,4V5.5C14.58,5.82 15.05,6.3 15.36,6.88L18.5,11C19.45,12.36 20,14 20,15.68V19A2,2 0 0,1 18,21H6A2,2 0 0,1 4,19V15.68C4,14 4.55,12.36 5.5,11L8.64,6.88C8.95,6.3 9.42,5.82 10,5.5V4A2,2 0 0,1 12,2M12,4V7C11.45,7 11,7.45 11,8V9.5L9.44,12.06L8,14.5V19H16V14.5L14.56,12.06L13,9.5V8C13,7.45 12.55,7 12,7V4Z"/>
+                    </svg>
+                    <span class="font-semibold text-sky-700">Gerenciar Tamanhos</span>
+                </a>
+
+                <a href="{{ route('admin.materials.index') }}" 
                    class="flex items-center p-4 bg-red-50 hover:bg-red-100 rounded-lg border border-red-200 transition-colors">
                     <svg class="w-6 h-6 text-red-500 mr-3"  viewBox="0 0 20 20" fill="currentColor">
-                    <path d="M12,2A2,2 0 0,1 14,4V5.5C14.58,5.82 15.05,6.3 15.36,6.88L18.5,11C19.45,12.36 20,14 20,15.68V19A2,2 0 0,1 18,21H6A2,2 0 0,1 4,19V15.68C4,14 4.55,12.36 5.5,11L8.64,6.88C8.95,6.3 9.42,5.82 10,5.5V4A2,2 0 0,1 12,2M12,4V7C11.45,7 11,7.45 11,8V9.5L9.44,12.06L8,14.5V19H16V14.5L14.56,12.06L13,9.5V8C13,7.45 12.55,7 12,7V4Z"/>
+                    <path d="M6 3a4 4 0 0 1 8 0c0 1.1-.9 2-2 2H8a2 2 0 0 1-2-2zm2 2v2c0 2.5-1.5 4.5-3 6.5A2 2 0 0 0 6 17h8a2 2 0 0 0 1-3.5c-1.5-2-3-4-3-6.5V5H8z"/>
+                    <rect x="7" y="15" width="6" height="2" rx="1"/>                    
                     </svg>
                     <span class="font-semibold text-red-700">Gerenciar Materiais</span>
                 </a>
-
 
                 <a href="{{ route('admin.colors.index') }}" 
                    class="flex items-center p-4 bg-pink-50 hover:bg-pink-100 rounded-lg border border-pink-200 transition-colors">
