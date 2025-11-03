@@ -216,7 +216,7 @@
         })
         .then(response => response.json())
         .then(data => {
-            console.log(data);
+            location.reload();
             if (data.success) {
                 location.reload();
             } else {

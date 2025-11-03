@@ -160,7 +160,7 @@
                                        class="text-indigo-600 hover:text-indigo-900">Editar</a>
 
                                     <button onclick="toggleStatus('{{ $material->slug }}')" 
-                                            class="text-yellow-600 hover:text-yellow-900">
+                                        class="text-yellow-600 hover:text-yellow-900">
                                         {{ $material->active ? 'Desativar' : 'Ativar' }}
                                     </button>
 
@@ -206,7 +206,7 @@
 <script>
     function toggleStatus(materialSlug) {
         console.log('Toggling status for material:', materialSlug);
-        fetch(`materials/${materialSlug}/toggle-status`, {
+        fetch(`/admin/materials/${materialSlug}/toggle-status`, {
             method: 'PATCH',
             headers: {
                 'X-CSRF-TOKEN': '{{ csrf_token() }}',
@@ -216,7 +216,7 @@
         })
         .then(response => response.json())
         .then(data => {
-            console.log(data);
+            location.reload();
             if (data.success) {
                 location.reload();
             } else {

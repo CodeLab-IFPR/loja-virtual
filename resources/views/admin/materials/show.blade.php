@@ -158,7 +158,7 @@
                             Editar Material
                         </a>
                         
-                        <button onclick="toggleStatus('{{ $material->id }}')" 
+                        <button onclick="toggleStatus('{{ $material->slug }}')" 
                                 class="w-full {{ $material->active ? 'bg-yellow-600 hover:bg-yellow-700' : 'bg-green-600 hover:bg-green-700' }} text-white px-4 py-2 rounded-md transition">
                             {{ $material->active ? 'Desativar' : 'Ativar' }} Material
                         </button>
@@ -211,8 +211,8 @@
 </div>
 
 <script>
-    function toggleStatus(materialId) {
-        fetch(`/admin/materials/${materialId}/toggle-status`, {
+    function toggleStatus(materialSlug) {
+        fetch(`/admin/materials/${materialSlug}/toggle-status`, {
             method: 'PATCH',
             headers: {
                 'X-CSRF-TOKEN': '{{ csrf_token() }}',
@@ -222,6 +222,7 @@
         })
         .then(response => response.json())
         .then(data => {
+            location.reload();
             if (data.success) {
                 location.reload();
             } else {

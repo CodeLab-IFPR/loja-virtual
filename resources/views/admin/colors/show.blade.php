@@ -158,7 +158,7 @@
                             Editar Cor
                         </a>
                         
-                        <button onclick="toggleStatus('{{ $color->id }}')" 
+                        <button onclick="toggleStatus('{{ $color->slug }}')" 
                                 class="w-full {{ $color->active ? 'bg-yellow-600 hover:bg-yellow-700' : 'bg-green-600 hover:bg-green-700' }} text-white px-4 py-2 rounded-md transition">
                             {{ $color->active ? 'Desativar' : 'Ativar' }} Cor
                         </button>
@@ -211,8 +211,8 @@
 </div>
 
 <script>
-    function toggleStatus(colorId) {
-        fetch(`/admin/colors/${colorId}/toggle-status`, {
+    function toggleStatus(colorSlug) {
+        fetch(`/admin/colors/${colorSlug}/toggle-status`, {
             method: 'PATCH',
             headers: {
                 'X-CSRF-TOKEN': '{{ csrf_token() }}',
@@ -222,6 +222,7 @@
         })
         .then(response => response.json())
         .then(data => {
+            location.reload();
             if (data.success) {
                 location.reload();
             } else {
