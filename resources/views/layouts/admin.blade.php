@@ -38,14 +38,20 @@
 
                         <!-- FALAR SOBRE EXP DO PROJETO, FALAR MAIS SOBRE A VIVENCIA NA DISCIPLINA -->
                         <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                            <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')">
-                                {{ __('Dashboard') }}
-                            </x-nav-link>
                             <x-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.*')">
                                 {{ __('Clientes') }}
                             </x-nav-link>
                             <x-nav-link :href="route('admin.categories.index')" :active="request()->routeIs('admin.categories.*')">
                                 {{ __('Categorias') }}
+                            </x-nav-link>
+                            <x-nav-link :href="route('admin.sizes.index')" :active="request()->routeIs('admin.sizes.*')">
+                                {{ __('Tamanhos') }}
+                            </x-nav-link>
+                            <x-nav-link :href="route('admin.materials.index')" :active="request()->routeIs('admin.materials.*')">
+                                {{ __('Materiais') }}
+                            </x-nav-link>
+                            <x-nav-link :href="route('admin.colors.index')" :active="request()->routeIs('admin.colors.*')">
+                                {{ __('Cores') }}
                             </x-nav-link>
                             <x-nav-link :href="route('admin.products.index')" :active="request()->routeIs('admin.products.*')">
                                 {{ __('Produtos') }}
@@ -121,6 +127,9 @@
                     </x-responsive-nav-link>
                     <x-responsive-nav-link :href="route('admin.categories.index')" :active="request()->routeIs('admin.categories.*')">
                         {{ __('Categorias') }}
+                    </x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('admin.sizes.index')" :active="request()->routeIs('admin.sizes.*')">
+                        {{ __('Tamanhos') }}
                     </x-responsive-nav-link>
                     <x-responsive-nav-link :href="route('admin.products.index')" :active="request()->routeIs('admin.products.*')">
                         {{ __('Produtos') }}
