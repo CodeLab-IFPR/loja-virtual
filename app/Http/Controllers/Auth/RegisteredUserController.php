@@ -27,24 +27,50 @@ class RegisteredUserController extends Controller
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(Request $request): RedirectResponse
-    {
-        $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
-        ]);
+ public function store(Request $request): RedirectResponse
+{
+    $request->merge(['email' => strtolower($request->email)]);
+    
+    $request->validate([
+        'name' => ['required', 'string', 'min:4', 'max:15'],
+        'email' => ['required', 'string', 'lowercase', 'email:rfc,dns', 'max:255', 'unique:'.User::class],
+        'password' => [
+            'required',
+            'confirmed',
+            Rules\Password::min(8)
+                ->max(20)
+                ->numbers()
+                ->symbols(),
+            'regex:/[A-Z]/', // Garante ao menos 1 letra maiúscula (sem exigir minúscula)
+        ],
+    ], [
+        'name.required' => 'O usuário é obrigatório.',
+        'name.string' => 'O usuário deve ser uma string.',
+        'name.min' => 'O usuário deve ter pelo menos 4 caracteres.',
+        'name.max' => 'O usuário deve ter no máximo 15 caracteres.',
+        
+        'email.required' => 'O email é obrigatório.',
+        'email.email' => 'O email deve ser um endereço válido.',
+        'email.max' => 'O email deve ter no máximo 255 caracteres.',
+        'email.unique' => 'Este email já está em uso.',
+        
+        'password.required' => 'A senha é obrigatória.',
+        'password.confirmed' => 'As senhas não coincidem.',
+        'password.min' => 'A senha deve ter pelo menos 8 caracteres.',
+        'password.max' => 'A senha deve ter no máximo 20 caracteres.',
+        'password.numbers' => 'A senha deve conter pelo menos um número.',
+        'password.symbols' => 'A senha deve conter pelo menos um caractere especial (ex: !@#$%).',
+        'password.regex' => 'A senha deve conter pelo menos uma letra maiúscula.',
+    ]);
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
+    $user = User::create([
+        'name' => $request->name,
+        'email' => $request->email,
+        'password' => Hash::make($request->password),
+    ]);
 
-        event(new Registered($user));
+    event(new Registered($user));
 
-        Auth::login($user);
-
-        return redirect(route('dashboard', absolute: false));
-    }
+    return redirect()->route('login')->with('status', 'Cadastro realizado com sucesso. Faça login para continuar.');
+}
 }

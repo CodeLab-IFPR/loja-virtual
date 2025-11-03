@@ -109,4 +109,8 @@ class User extends Authenticatable
     {
         return $this->hasMany(CartItem::class);
     }
+    public function setEmailAttribute($value)
+    {
+        $this->attributes['email'] = strtolower($value);
+    }
 }
