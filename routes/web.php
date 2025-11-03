@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
+use App\Http\Controllers\Admin\SlideController as AdminSlideController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -36,25 +37,30 @@ Route::get('/dashboard', function () {
 // Rotas administrativas
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
-    
+
     // Produtos
     Route::resource('products', AdminProductController::class);
     Route::patch('products/{product}/toggle-status', [AdminProductController::class, 'toggleStatus'])->name('products.toggle-status');
     Route::patch('products/{product}/update-stock', [AdminProductController::class, 'updateStock'])->name('products.update-stock');
-    
+
     // Categorias
     Route::resource('categories', AdminCategoryController::class);
     Route::patch('categories/{category}/toggle-status', [AdminCategoryController::class, 'toggleStatus'])->name('categories.toggle-status');
-    
+
     // Usuários
     Route::resource('users', AdminUserController::class);
     Route::patch('users/{user}/approve', [AdminUserController::class, 'approve'])->name('users.approve');
     Route::patch('users/{user}/reject', [AdminUserController::class, 'reject'])->name('users.reject');
     Route::post('users/bulk-action', [AdminUserController::class, 'bulkAction'])->name('users.bulk-action');
-    
+
     // Pedidos
     Route::resource('orders', AdminOrderController::class);
     Route::patch('orders/{order}/status', [AdminOrderController::class, 'updateStatus'])->name('orders.status');
+
+    // Slides
+    Route::get('slides', [AdminSlideController::class, 'index'])->name('slides.index');
+    Route::post('slides', [AdminSlideController::class, 'store'])->name('slides.store');
+    Route::delete('slides/{filename}', [AdminSlideController::class, 'destroy'])->name('slides.destroy');
 });
 
 // Rotas de perfil
