@@ -149,14 +149,14 @@
                         @if($product->material)
                             <div>
                                 <h3 class="font-semibold text-gray-900 mb-1 ">Material</h3>
-                                <p class="text-gray-600">{{ $product->material }}</p>
+                                <p class="text-gray-600">{{ $product->material->name }}</p>
                             </div>
                         @endif
                         
                         @if($product->color)
                             <div>
                                 <h3 class="font-semibold text-gray-900 mb-1">Cor</h3>
-                                <p class="text-gray-600">{{ $product->color }}</p>
+                                <p class="text-gray-600">{{ $product->color->name }}</p>
                             </div>
                         @endif
 
@@ -166,6 +166,14 @@
                                 <p class="text-gray-600">{{ $product->dimensions }}</p>
                             </div>
                         @endif
+
+                        @if($product->size)
+                            <div>
+                                <h3 class="font-semibold text-gray-900 mb-1">Tamanho</h3>
+                                <p class="text-gray-600">{{ $product->size->name }}</p>
+                            </div>
+                        @endif
+
                     </div>
 
                     <div class="mb-6">

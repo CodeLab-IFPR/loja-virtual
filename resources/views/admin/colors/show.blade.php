@@ -163,12 +163,6 @@
                             {{ $color->active ? 'Desativar' : 'Ativar' }} Cor
                         </button>
                         
-                        <a href="{{ route('catalog.color', $color->slug) }}" 
-                           target="_blank"
-                           class="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-center block transition">
-                            Ver no Site
-                        </a>
-
                         @if($color->products->count() === 0)
                             <form action="{{ route('admin.colors.destroy', $color) }}" 
                                     method="POST" 

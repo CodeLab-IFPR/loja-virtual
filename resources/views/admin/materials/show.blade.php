@@ -163,12 +163,6 @@
                             {{ $material->active ? 'Desativar' : 'Ativar' }} Material
                         </button>
                         
-                        <a href="{{ route('catalog.material', $material->slug) }}" 
-                           target="_blank"
-                           class="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-center block transition">
-                            Ver no Site
-                        </a>
-
                         @if($material->products->count() === 0)
                             <form action="{{ route('admin.materials.destroy', $material) }}" 
                                     method="POST" 

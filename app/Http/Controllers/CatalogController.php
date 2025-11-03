@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\Color;
+use App\Models\Material;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
@@ -20,16 +22,21 @@ class CatalogController extends Controller
             ->orderBy('sort_order')
             ->get();
 
-        return view('catalog.index', compact('featuredProducts', 'categories'));
+        $colors = Color::where('active', true)
+            ->get();
+
+        $materials = Material::where('active', true)
+            ->get();
+
+        return view('catalog.index', compact('featuredProducts', 'categories', 'colors', 'materials'));
     }
 
     public function catalog(Request $request)
     {
         $query = Product::where('active', true)->with('category');
 
-        // Filtrar por categoria se fornecida
-        if ($request->category_id) {
-            $query->where('category_id', $request->category_id);
+        if ($request->has('categories') && !empty($request->categories)) {
+            $query->whereIn('category_id', $request->categories);
         }
 
         // Busca por nome
@@ -37,36 +44,43 @@ class CatalogController extends Controller
             $query->where('name', 'like', '%' . $request->search . '%');
         }
 
-        if ($request->price) {
-            switch ($request->price) {
-                case 'Até R$ 100':
-                    $query->where('price', '<=', 100.00);
-                    break;
-                case 'R$ 100 a R$ 200':
-                    $query->whereBetween('price', [100.01, 200.00]);
-                    break;
-                case 'R$ 200 a R$ 300':
-                    $query->whereBetween('price', [200.01, 300.00]);
-                    break;
-            }
+        if ($request->has('price_ranges') && !empty($request->price_ranges)) {
+            $query->where(function($q) use ($request) {
+                foreach ($request->price_ranges as $range) {
+                    switch ($range) {
+                        case '0-100':
+                            $q->orWhere('price', '<=', 100.00);
+                            break;
+                        case '100-200':
+                            $q->orWhereBetween('price', [100.01, 200.00]);
+                            break;
+                        case '200-300':
+                            $q->orWhereBetween('price', [200.01, 300.00]);
+                            break;
+                    }
+                }
+            });
         }
 
-        // Filtrar por cor se fornecida
-        if ($request->color) {
-            $query->where('color', $request->color);
+        if ($request->has('colors') && !empty($request->colors)) {
+            $query->whereIn('color_id', $request->colors);
         }
 
-        // Filtrar por dimensões se fornecida
-        if ($request->dimensions) {
-            $query->where('dimensions', $request->dimensions);
+        if ($request->has('materials') && !empty($request->materials)) {
+            $query->whereIn('material_id', $request->materials);
+        }
+
+        if ($request->has('dimensions') && !empty($request->dimensions)) {
+            $query->whereIn('dimensions', $request->dimensions);
         }
 
         $products = $query->paginate(12);
         $categories = Category::where('active', true)->orderBy('sort_order')->get();
-        $cores = Product::where('active', true)->pluck('color')->unique();
+        $colors = Color::where('active', true)->get();
+        $materials = Material::where('active', true)->get();
         $dimensoes = Product::where('active', true)->pluck('dimensions')->unique();
 
-        return view('catalog.catalog', compact('products', 'categories', 'cores', 'dimensoes'));
+        return view('catalog.catalog', compact('products', 'categories', 'colors', 'materials', 'dimensoes'));
     }
 
     public function category(Category $category)
