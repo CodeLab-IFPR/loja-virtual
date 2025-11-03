@@ -18,7 +18,7 @@
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 <body class="font-sans antialiased bg-gray-100">
-    <div class="min-h-screen">
+    <div class="min-h-screen flex flex-col">
         <!-- Navigation -->
         <nav class="bg-white border-b border-gray-100 shadow">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -170,11 +170,14 @@
         @endif
 
         <!-- Page Content -->
-        <main class="py-12">
+        <main class="py-12 flex-grow">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 @yield('content')
             </div>
         </main>
+
+        <!-- Footer -->
+        @include('layouts.footer')
     </div>
 </body>
 </html>
