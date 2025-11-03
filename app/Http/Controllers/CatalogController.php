@@ -7,6 +7,7 @@ use App\Models\Color;
 use App\Models\Material;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 
 class CatalogController extends Controller
 {
@@ -17,18 +18,54 @@ class CatalogController extends Controller
             ->with('category')
             ->limit(6)
             ->get();
-            
+
         $categories = Category::where('active', true)
             ->orderBy('sort_order')
             ->get();
 
-        $colors = Color::where('active', true)
-            ->get();
+        // Carregar slides dinâmicos
+        $slides = [];
+        $folderName = 'images/slides';
+        $slidePath = public_path($folderName);
 
-        $materials = Material::where('active', true)
-            ->get();
+        if (File::isDirectory($slidePath)) {
+            $files = File::files($slidePath);
 
-        return view('catalog.index', compact('featuredProducts', 'categories', 'colors', 'materials'));
+            foreach ($files as $file) {
+                $filename = $file->getFilename();
+                $title = pathinfo($filename, PATHINFO_FILENAME);
+                $title = ucfirst(str_replace(['-', '_'], ' ', $title));
+
+                $slides[] = [
+                    'image' => asset($folderName . '/' . $filename),
+                    'title' => $title,
+                    'subtitle' => 'Confira nossas novas coleções',
+                    'link' => route('catalog'),
+                ];
+            }
+        }
+
+        // Fallback se não houver slides
+        if (empty($slides)) {
+            $slides[] = [
+                'image' => null,
+                'title' => 'Bem-vindo ao Nosso Catálogo',
+                'subtitle' => 'Explore nossos produtos artesanais.',
+                'link' => route('catalog'),
+            ];
+        }
+
+        // Adiciona cores e materiais
+        $colors = Color::where('active', true)->get();
+        $materials = Material::where('active', true)->get();
+
+        return view('catalog.index', compact(
+            'featuredProducts',
+            'categories',
+            'slides',
+            'colors',
+            'materials'
+        ));
     }
 
     public function catalog(Request $request)
@@ -39,13 +76,12 @@ class CatalogController extends Controller
             $query->whereIn('category_id', $request->categories);
         }
 
-        // Busca por nome
         if ($request->search) {
             $query->where('name', 'like', '%' . $request->search . '%');
         }
 
         if ($request->has('price_ranges') && !empty($request->price_ranges)) {
-            $query->where(function($q) use ($request) {
+            $query->where(function ($q) use ($request) {
                 foreach ($request->price_ranges as $range) {
                     switch ($range) {
                         case '0-100':

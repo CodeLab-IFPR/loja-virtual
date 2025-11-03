@@ -17,14 +17,22 @@ class ProfileUpdateRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'email' => [
-                'required',
-                'string',
-                'lowercase',
-                'email',
-                'max:255',
-                Rule::unique(User::class)->ignore($this->user()->id),
-            ],
+            'phone' => ['required', 'string', 'max:20'],
+            'document' => ['required', 'string', 'max:20'],
+            'cep' => ['required', 'string', 'size:8'],
+            'street' => ['required', 'string', 'max:255'],
+            'number' => ['required', 'string', 'max:20'],
+            'complement' => ['nullable', 'string', 'max:255'],
+            'city' => ['required', 'string', 'max:100'],
+            'state' => ['required', 'string', 'size:2'],
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'cep.size' => 'O CEP deve ter 8 dígitos.',
+            'state.size' => 'O estado deve ter 2 letras (ex: SP).',
         ];
     }
 }
