@@ -13,12 +13,12 @@
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
+
     <!-- Alpine.js -->
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 <body class="font-sans antialiased bg-gray-100">
-    <div class="min-h-screen">
+    <div class="min-h-screen flex flex-col">
         <!-- Navigation -->
         <nav class="bg-white border-b border-gray-100 shadow">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -34,7 +34,9 @@
                             </a>
                         </div>
 
-                        <!-- Navigation Links -->
+
+
+                        <!-- FALAR SOBRE EXP DO PROJETO, FALAR MAIS SOBRE A VIVENCIA NA DISCIPLINA -->
                         <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                             <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')">
                                 {{ __('Dashboard') }}
@@ -50,6 +52,9 @@
                             </x-nav-link>
                             <x-nav-link :href="route('admin.orders.index')" :active="request()->routeIs('admin.orders.*')">
                                 {{ __('Pedidos') }}
+                            </x-nav-link>
+                            <x-nav-link :href="route('admin.slides.index')" :active="request()->routeIs('admin.slides.*')">
+                                {{ __('Slides') }}
                             </x-nav-link>
                         </div>
                     </div>
@@ -123,6 +128,9 @@
                     <x-responsive-nav-link :href="route('admin.orders.index')" :active="request()->routeIs('admin.orders.*')">
                         {{ __('Pedidos') }}
                     </x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('admin.slides.index')" :active="request()->routeIs('admin.slides.*')">
+                        {{ __('Slides') }}
+                    </x-responsive-nav-link>
                 </div>
 
                 <!-- Responsive Settings Options -->
@@ -162,11 +170,15 @@
         @endif
 
         <!-- Page Content -->
-        <main class="py-12">
+        <main class="py-12 flex-grow">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 @yield('content')
             </div>
         </main>
+
+        <!-- Footer -->
+        @include('layouts.footer')
     </div>
 </body>
 </html>
+

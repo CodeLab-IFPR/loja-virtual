@@ -115,4 +115,10 @@ return [
         'name' => env('MAIL_FROM_NAME', 'Example'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | E-mail de Atendimento
+    |--------------------------------------------------------------------------
+    */
+    'atendimento_email' => env('MAIL_ATENDIMENTO_EMAIL', 'atendimento@example.com'),
 ];

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 
 class CatalogController extends Controller
 {
@@ -15,12 +16,43 @@ class CatalogController extends Controller
             ->with('category')
             ->limit(6)
             ->get();
-            
+
         $categories = Category::where('active', true)
             ->orderBy('sort_order')
             ->get();
 
-        return view('catalog.index', compact('featuredProducts', 'categories'));
+        $slides = [];
+        $folderName = 'images/slides';
+        $slidePath = public_path($folderName);
+
+        if (File::isDirectory($slidePath)) {
+
+            $files = File::files($slidePath);
+
+            foreach ($files as $file) {
+                $filename = $file->getFilename();
+                $title = pathinfo($filename, PATHINFO_FILENAME);
+                $title = ucfirst(str_replace(['-', '_'], ' ', $title));
+
+                $slides[] = [
+                    'image' => asset($folderName . '/' . $filename),
+                    'title' => $title,
+                    'subtitle' => 'Confira nossas novas coleções',
+                    'link' => route('catalog'),
+                ];
+            }
+        }
+
+        if (empty($slides)) {
+            $slides[] = [
+                'image' => null,
+                'title' => 'Bem-vindo ao Nosso Catálogo',
+                'subtitle' => 'Explore nossos produtos artesanais.',
+                'link' => route('catalog'),
+            ];
+        }
+
+        return view('catalog.index', compact('featuredProducts', 'categories', 'slides'));
     }
 
     public function catalog(Request $request)
