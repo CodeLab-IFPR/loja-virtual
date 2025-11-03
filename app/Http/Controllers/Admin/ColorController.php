@@ -78,7 +78,7 @@ class ColorController extends Controller
      */
     public function show(Color $color)
     {
-        $color->load('products'); // Pode dar erro, já que não tem nada atrelado
+        $color->load('products');
 
         return view('admin.colors.show', compact('color'));
     }

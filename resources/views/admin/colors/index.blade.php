@@ -114,6 +114,9 @@
                             Status
                         </th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Produtos
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Ações
                         </th>
                     </tr>
@@ -145,6 +148,9 @@
                                     </span>
                                 @endif
                             </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {{ $color->products_count ?? $color->products()->count() }} produtos
+                            </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                 <div class="flex space-x-2">
                                     <a href="{{ route('admin.colors.show', $color) }}" 
@@ -158,16 +164,18 @@
                                         {{ $color->active ? 'Desativar' : 'Ativar' }}
                                     </button>
 
-                                    <form action="{{ route('admin.colors.destroy', $color) }}" 
-                                            method="POST" 
-                                            class="inline"
-                                            onsubmit="return confirm('Tem certeza que deseja excluir esta cor?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="text-red-600 hover:text-red-900">
-                                            Excluir
-                                        </button>
-                                    </form>
+                                    @if($color->products()->count() === 0)
+                                        <form action="{{ route('admin.colors.destroy', $color) }}" 
+                                                method="POST" 
+                                                class="inline"
+                                                onsubmit="return confirm('Tem certeza que deseja excluir esta cor?')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="text-red-600 hover:text-red-900">
+                                                Excluir
+                                            </button>
+                                        </form>
+                                    @endif
                                 </div>
                             </td>
                         </tr>

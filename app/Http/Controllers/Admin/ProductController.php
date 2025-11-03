@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\Size;
+use App\Models\Material;
+use App\Models\Color;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -17,7 +19,8 @@ class ProductController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Product::with('category', 'size');
+        $query = Product::with('category', 'size'); // dar uma olhada
+        // $query = Product::with('category', 'size', 'material', 'color'); // dar uma olhada
 
         // Busca por nome, descrição ou SKU
         if ($request->has('search') && $request->search !== '') {
@@ -71,9 +74,11 @@ class ProductController extends Controller
     {
         $categories = Category::where('active', true)->orderBy('name')->get();
         $sizes = Size::where('active', true)->orderBy('sort_order')->get();
+        $materials = Material::where('active', true)->orderBy('name')->get();
+        $colors = Color::where('active', true)->orderBy('name')->get();
         $selectedCategory = $request->get('category');
 
-        return view('admin.products.create', compact('categories', 'sizes', 'selectedCategory'));
+        return view('admin.products.create', compact('categories', 'sizes', 'materials', 'colors', 'selectedCategory'));
     }
 
     /**
@@ -91,13 +96,13 @@ class ProductController extends Controller
             'manage_stock' => 'boolean',
             'weight' => 'nullable|numeric|min:0',
             'dimensions' => 'nullable|string|max:255',
-            'material' => 'nullable|string|max:255',
-            'color' => 'nullable|string|max:255',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'active' => 'boolean',
             'featured' => 'boolean',
             'size_id' => 'nullable|exists:sizes,id',
+            'color_id' => 'nullable|exists:colors,id',
+            'material_id' => 'nullable|exists:materials,id',
         ]);
 
         $data = $request->all();
@@ -136,6 +141,8 @@ class ProductController extends Controller
     public function show(Product $product)
     {
         $product->load('size');
+        // $product->load('color');
+        // $product->load('material');
         return view('admin.products.show', compact('product'));
     }
 
@@ -146,8 +153,10 @@ class ProductController extends Controller
     {
         $categories = Category::where('active', true)->orderBy('name')->get();
         $sizes = Size::where('active', true)->orderBy('sort_order')->get();
+        $materials = Material::where('active', true)->orderBy('name')->get();
+        $colors = Color::where('active', true)->orderBy('name')->get();
 
-        return view('admin.products.edit', compact('product', 'categories', 'sizes'));
+        return view('admin.products.edit', compact('product', 'categories', 'sizes', 'materials', 'colors'));
     }
 
     /**
@@ -165,13 +174,13 @@ class ProductController extends Controller
             'manage_stock' => 'boolean',
             'weight' => 'nullable|numeric|min:0',
             'dimensions' => 'nullable|string|max:255',
-            'material' => 'nullable|string|max:255',
-            'color' => 'nullable|string|max:255',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'active' => 'boolean',
             'featured' => 'boolean',
             'size_id' => 'nullable|exists:sizes,id',
+            'color_id' => 'nullable|exists:colors,id',
+            'material_id' => 'nullable|exists:materials,id',
         ]);
 
         $data = $request->all();
@@ -236,6 +245,23 @@ class ProductController extends Controller
 
         return redirect()->route('admin.products.index')
             ->with('success', 'Produto excluído com sucesso!');
+    }
+
+    /**
+     * Remove the specified product from storage.
+     */
+    public function destroyImage(Product $product)
+    {
+        if ($product->image && Storage::disk('public')->exists($product->image)) {
+            Storage::disk('public')->delete($product->image);
+        }
+        
+        $data['image'] = null;
+
+        $product->update($data);
+
+        return redirect()->route('admin.products.index')
+            ->with('success', 'Imagem principal excluída com sucesso!');
     }
 
     /**

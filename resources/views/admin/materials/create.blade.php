@@ -46,7 +46,7 @@
                                   name="description" 
                                   rows="4"
                                   class="pl-1 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">{{ old('description') }}</textarea>
-                        <p class="mt-1 text-sm text-gray-500">Descrição opcional da material.</p>
+                        <p class="mt-1 text-sm text-gray-500">Descrição opcional do material.</p>
                     </div>
 
                     <div>

@@ -114,6 +114,9 @@
                             Status
                         </th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Produtos
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Ações
                         </th>
                     </tr>
@@ -145,6 +148,9 @@
                                     </span>
                                 @endif
                             </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {{ $material->products_count ?? $material->products()->count() }} produtos
+                            </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                 <div class="flex space-x-2">
                                     <a href="{{ route('admin.materials.show', $material) }}" 
@@ -158,16 +164,18 @@
                                         {{ $material->active ? 'Desativar' : 'Ativar' }}
                                     </button>
 
-                                    <form action="{{ route('admin.materials.destroy', $material) }}" 
-                                            method="POST" 
-                                            class="inline"
-                                            onsubmit="return confirm('Tem certeza que deseja excluir este material?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="text-red-600 hover:text-red-900">
-                                            Excluir
-                                        </button>
-                                    </form>
+                                    @if($material->products()->count() === 0)
+                                        <form action="{{ route('admin.materials.destroy', $material) }}" 
+                                                method="POST" 
+                                                class="inline"
+                                                onsubmit="return confirm('Tem certeza que deseja excluir este material?')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="text-red-600 hover:text-red-900">
+                                                Excluir
+                                            </button>
+                                        </form>
+                                    @endif
                                 </div>
                             </td>
                         </tr>
@@ -196,9 +204,9 @@
 </div>
 
 <script>
-    function toggleStatus(colorSlug) {
-        console.log('Toggling status for material:', colorSlug);
-        fetch(`materials/${colorSlug}/toggle-status`, {
+    function toggleStatus(materialSlug) {
+        console.log('Toggling status for material:', materialSlug);
+        fetch(`materials/${materialSlug}/toggle-status`, {
             method: 'PATCH',
             headers: {
                 'X-CSRF-TOKEN': '{{ csrf_token() }}',

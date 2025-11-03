@@ -68,7 +68,7 @@
                         </div>
                         
                         <div>
-                            <label class="block text-sm font-medium text-gray-700">Criada em</label>
+                            <label class="block text-sm font-medium text-gray-700">Criado em</label>
                             <p class="mt-1 text-sm text-gray-900">{{ $material->created_at->format('d/m/Y H:i') }}</p>
                         </div>
                         
@@ -168,17 +168,19 @@
                            class="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-center block transition">
                             Ver no Site
                         </a>
-                        
-                        <form action="{{ route('admin.materials.destroy', $material) }}" 
-                                method="POST" 
-                                onsubmit="return confirm('Tem certeza que deseja excluir esta material?')">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" 
-                                    class="w-full bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md transition">
-                                Excluir Material
-                            </button>
-                        </form>
+
+                        @if($material->products->count() === 0)
+                            <form action="{{ route('admin.materials.destroy', $material) }}" 
+                                    method="POST" 
+                                    onsubmit="return confirm('Tem certeza que deseja excluir este material?')">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" 
+                                        class="w-full bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md transition">
+                                    Excluir Material
+                                </button>
+                            </form>
+                        @endif
                     </div>
                 </div>
 
@@ -209,8 +211,8 @@
 </div>
 
 <script>
-    function toggleStatus(colorId) {
-        fetch(`/admin/materials/${colorId}/toggle-status`, {
+    function toggleStatus(materialId) {
+        fetch(`/admin/materials/${materialId}/toggle-status`, {
             method: 'PATCH',
             headers: {
                 'X-CSRF-TOKEN': '{{ csrf_token() }}',

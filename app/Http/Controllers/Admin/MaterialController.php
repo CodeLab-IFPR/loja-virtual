@@ -70,7 +70,7 @@ class MaterialController extends Controller
         Material::create($data);
 
         return redirect()->route('admin.materials.index')
-            ->with('success', 'Material criada com sucesso!');
+            ->with('success', 'Material criado com sucesso!');
     }
 
     /**
@@ -78,7 +78,7 @@ class MaterialController extends Controller
      */
     public function show(Material $material)
     {
-        $material->load('products'); // Pode dar erro, já que não tem nada atrelado
+        $material->load('products');
 
         return view('admin.materials.show', compact('material'));
     }
@@ -112,7 +112,7 @@ class MaterialController extends Controller
         $material->update($data);
 
         return redirect()->route('admin.materials.index')
-            ->with('success', 'Material atualizada com sucesso!');
+            ->with('success', 'Material atualizado com sucesso!');
     }
 
     /**
@@ -120,16 +120,16 @@ class MaterialController extends Controller
      */
     public function destroy(Material $material)
     {
-        // Verificar se a material tem produtos
+        // Verificar se o material tem produtos
         if ($material->products()->count() > 0) {
             return redirect()->route('admin.materials.index')
-                ->with('error', 'Não é possível excluir uma material que possui produtos.');
+                ->with('error', 'Não é possível excluir um material que possui produtos.');
         }
 
         $material->delete();
 
         return redirect()->route('admin.materials.index')
-            ->with('success', 'Material excluída com sucesso!');
+            ->with('success', 'Material excluído com sucesso!');
     }
 
     /**
@@ -137,18 +137,30 @@ class MaterialController extends Controller
      */
     public function toggleStatus(Material $material)
     {
-        $material->update(['active' => !$material->active]);
+        try {
+            $material->update(['active' => !$material->active]);
 
-        $status = $material->active ? 'ativada' : 'desativada';
-        
-        if (request()->ajax()) {
-            return response()->json([
-                'success' => true,
-                'message' => "Material {$status} com sucesso!",
-                'active' => $material->active
-            ]);
+            $status = $material->active ? 'ativada' : 'desativada';
+            
+            if (request()->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => "Material {$status} com sucesso!",
+                    'active' => $material->active
+                ]);
+            }
+
+            return redirect()->back()->with('success', "Material {$status} com sucesso!");
+        } catch (\Exception $e) {
+            if (request()->ajax()) {
+                return response()->json([
+                'success' => false,
+                    'message' => "Erro ao alterar status do material.",
+                    'error' => $e->getMessage()
+                ]);
+            }
+
+            return redirect()->back()->with('error', "Erro ao alterar status do material.");
         }
-
-        return redirect()->back()->with('success', "Material {$status} com sucesso!");
     }
 }
