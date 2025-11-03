@@ -141,8 +141,8 @@ class ProductController extends Controller
     public function show(Product $product)
     {
         $product->load('size');
-        // $product->load('color');
-        // $product->load('material');
+        $product->load('color');
+        $product->load('material');
         return view('admin.products.show', compact('product'));
     }
 
@@ -164,6 +164,7 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
+        // dd($request->all());
         $request->validate([
             'name' => 'required|string|max:255|unique:products,name,' . $product->id,
             'sku' => 'required|string|max:100|unique:products,sku,' . $product->id,
@@ -184,6 +185,8 @@ class ProductController extends Controller
         ]);
 
         $data = $request->all();
+        // dd("allalalalaallala");
+        // dd($data);
         $data['slug'] = Str::slug($request->name);
         $data['active'] = $request->has('active');
         $data['featured'] = $request->has('featured');
@@ -218,7 +221,10 @@ class ProductController extends Controller
 
         $data['images'] = array_values($existingImages);
 
+        // dd("datafinalfinalfinal");
+        
         $product->update($data);
+        // dd($product->toArray());
 
         return redirect()->route('admin.products.index')
             ->with('success', 'Produto atualizado com sucesso!');

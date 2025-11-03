@@ -18,6 +18,8 @@ use Illuminate\Support\Facades\Auth;
 Route::get('/', [CatalogController::class, 'index'])->name('home');
 Route::get('/catalogo', [CatalogController::class, 'catalog'])->name('catalog');
 Route::get('/categoria/{category}', [CatalogController::class, 'category'])->name('catalog.category');
+Route::get('/cor/{color}', [CatalogController::class, 'color'])->name('catalog.color');
+Route::get('/material/{material}', [CatalogController::class, 'material'])->name('catalog.material');
 Route::get('/produto/{product}', [CatalogController::class, 'show'])->name('catalog.product');
 
 // Rotas do carrinho
@@ -44,6 +46,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::resource('products', AdminProductController::class);
     Route::patch('products/{product}/toggle-status', [AdminProductController::class, 'toggleStatus'])->name('products.toggle-status');
     Route::patch('products/{product}/update-stock', [AdminProductController::class, 'updateStock'])->name('products.update-stock');
+    Route::patch('products/{product}/destroy-image', [AdminProductController::class, 'destroyImage'])->name('products.destroy-image');
     
     // Categorias
     Route::resource('categories', AdminCategoryController::class);

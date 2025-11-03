@@ -22,14 +22,14 @@ class Product extends Model
         'manage_stock',
         'weight',
         'dimensions',
-        'material',
-        'color',
         'image',
         'images',
         'active',
         'featured',
         'category_id',
         'size_id',
+        'material_id',
+        'color_id',
     ];
 
     protected $casts = [
@@ -48,6 +48,16 @@ class Product extends Model
     public function size()
     {
         return $this->belongsTo(Size::class);
+    }
+    
+    public function material()
+    {
+        return $this->belongsTo(Material::class);
+    }
+
+    public function color()
+    {
+        return $this->belongsTo(Color::class);
     }
 
     public function orderItems()

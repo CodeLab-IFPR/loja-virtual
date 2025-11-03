@@ -124,14 +124,26 @@
                         @if($product->material)
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Material</label>
-                                <p class="mt-1 text-sm text-gray-900">{{ $product->material }}</p>
+                                <!-- <p class="mt-1 text-sm text-gray-900">{{ $product->material }}</p> -->
+                                <p class="mt-1 text-sm text-gray-900">{{ $product->material->name }}</p>
+                            </div>
+                            @else
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Material</label>
+                                <p class="mt-1 text-sm text-gray-900">N/A</p>
                             </div>
                         @endif
 
                         @if($product->color)
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Cor</label>
-                                <p class="mt-1 text-sm text-gray-900">{{ $product->color }}</p>
+                                <!-- <p class="mt-1 text-sm text-gray-900">{{ $product->color }}</p> -->
+                                <p class="mt-1 text-sm text-gray-900">{{ $product->color->name }}</p>
+                            </div>
+                        @else
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Cor</label>
+                                <p class="mt-1 text-sm text-gray-900">N/A</p>
                             </div>
                         @endif
                     </div>

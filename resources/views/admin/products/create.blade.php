@@ -171,16 +171,48 @@
                         <input type="text" id="dimensions" name="dimensions" value="{{ old('dimensions') }}"
                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                     </div>
-                    <div>
+                    <!-- <div>
                         <label for="material" class="block text-sm font-medium text-gray-700">Material</label>
                         <input type="text" id="material" name="material" value="{{ old('material') }}"
                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                    </div> -->
+                    <div>
+                        <label for="material_id" class="block text-sm font-medium text-gray-700">
+                            Material
+                        </label>
+                        <select id="material_id" 
+                                name="material_id" 
+                                required
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                            <option value="">Selecione</option>
+                            @foreach($materials as $material)
+                                <option value="{{ $material->id }}" {{ old('material_id') == $material->id ? 'selected' : '' }}>
+                                    {{ $material->name }}
+                                </option>
+                            @endforeach
+                        </select>
                     </div>
                     <div>
+                        <label for="color_id" class="block text-sm font-medium text-gray-700">
+                            Cor
+                        </label>
+                        <select id="color_id" 
+                                name="color_id" 
+                                required
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                            <option value="">Selecione</option>
+                            @foreach($colors as $color)
+                                <option value="{{ $color->id }}" {{ old('color_id') == $color->id ? 'selected' : '' }}>
+                                    {{ $color->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>                    
+                    <!-- <div>
                         <label for="color" class="block text-sm font-medium text-gray-700">Cor</label>
                         <input type="text" id="color" name="color" value="{{ old('color') }}"
                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                    </div>
+                    </div> -->
                 </div>
             </div>
 
