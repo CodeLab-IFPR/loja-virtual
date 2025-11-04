@@ -2,18 +2,8 @@
 
 @section('content')
 <div class="min-h-screen bg-gray-50">
-    <!-- Hero Section -->
-    <div class="bg-gradient-to-r from-green-600 to-green-800 text-white py-16">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center">
-                <h1 class="text-4xl md:text-6xl font-bold mb-4">Fábrica de Vasos</h1>
-                <p class="text-xl md:text-2xl mb-8">Vasos artesanais de qualidade para seus jardins e plantas</p>
-                <a href="{{ route('catalog') }}" class="inline-block bg-white text-green-800 px-8 py-3 rounded-full font-semibold hover:bg-gray-100 transition">
-                    Ver Catálogo Completo
-                </a>
-            </div>
-        </div>
-    </div>
+    <!-- Hero Section replaced by carousel component -->
+    <x-carousel :slides="$slides" />
 
     <!-- Featured Products -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -40,7 +30,7 @@
                     <div class="p-6">
                         <h3 class="text-xl font-semibold text-gray-900 mb-2">{{ $product->name }}</h3>
                         <p class="text-gray-600 mb-4">{{ Str::limit($product->description, 100) }}</p>
-                        
+
                         @auth
                             @if(auth()->user()->canSeePrices())
                                 <p class="text-2xl font-bold text-green-600 mb-4">R$ {{ number_format($product->price, 2, ',', '.') }}</p>

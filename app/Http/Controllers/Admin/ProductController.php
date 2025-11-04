@@ -5,10 +5,12 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\Category;
-use App\Helpers\ImageHelper;
+use App\Models\Size;
+use App\Models\Material;
+use App\Models\Color;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class ProductController extends Controller
 {
@@ -17,7 +19,8 @@ class ProductController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Product::with('category');
+        $query = Product::with('category', 'size'); // dar uma olhada
+        // $query = Product::with('category', 'size', 'material', 'color'); // dar uma olhada
 
         // Busca por nome, descrição ou SKU
         if ($request->has('search') && $request->search !== '') {
@@ -70,9 +73,12 @@ class ProductController extends Controller
     public function create(Request $request)
     {
         $categories = Category::where('active', true)->orderBy('name')->get();
+        $sizes = Size::where('active', true)->orderBy('sort_order')->get();
+        $materials = Material::where('active', true)->orderBy('name')->get();
+        $colors = Color::where('active', true)->orderBy('name')->get();
         $selectedCategory = $request->get('category');
 
-        return view('admin.products.create', compact('categories', 'selectedCategory'));
+        return view('admin.products.create', compact('categories', 'sizes', 'materials', 'colors', 'selectedCategory'));
     }
 
     /**
@@ -86,60 +92,44 @@ class ProductController extends Controller
             'description' => 'nullable|string',
             'price' => 'required|numeric|min:0',
             'category_id' => 'required|exists:categories,id',
-            'stock' => 'required|integer|min:0',
+            'stock' => 'nullable|integer|min:0',
+            'manage_stock' => 'boolean',
             'weight' => 'nullable|numeric|min:0',
             'dimensions' => 'nullable|string|max:255',
-            'material' => 'nullable|string|max:255',
-            'color' => 'nullable|string|max:100',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
-            'active' => 'boolean'
+            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'active' => 'boolean',
+            'featured' => 'boolean',
+            'size_id' => 'nullable|exists:sizes,id',
+            'color_id' => 'nullable|exists:colors,id',
+            'material_id' => 'nullable|exists:materials,id',
         ]);
 
-        $data = [
-            'name' => $request->name,
-            'slug' => Str::slug($request->name),
-            'sku' => $request->sku,
-            'description' => $request->description,
-            'price' => $request->price,
-            'category_id' => $request->category_id,
-            'stock' => $request->stock,
-            'weight' => $request->weight,
-            'dimensions' => $request->dimensions,
-            'material' => $request->material,
-            'color' => $request->color,
-            'active' => $request->has('active'),
-        ];
+        $data = $request->all();
+        $data['slug'] = Str::slug($request->name);
+        $data['active'] = $request->has('active');
+        $data['featured'] = $request->has('featured');
+        $data['manage_stock'] = $request->has('manage_stock');
 
         // Upload da imagem principal
         if ($request->hasFile('image')) {
-            $image = $request->file('image');
-            
-            // Otimiza a imagem antes de salvar
-            $optimizedImage = ImageHelper::resizeAndOptimize($image, 800, 600, 85);
-            if ($optimizedImage) {
-                $imageName = time() . '_' . Str::slug($request->name) . '.' . $optimizedImage->getClientOriginalExtension();
-                $imagePath = $optimizedImage->storeAs('products', $imageName, 'public');
-                $data['image'] = $imagePath;
-            }
+            $data['image'] = $request->file('image')->store('products', 'public');
         }
 
-        $product = Product::create($data);
-
-        // Upload de imagens adicionais
+        // Upload das imagens adicionais
         if ($request->hasFile('images')) {
             $additionalImages = [];
             foreach ($request->file('images') as $index => $image) {
-                // Otimiza cada imagem adicional
-                $optimizedImage = ImageHelper::resizeAndOptimize($image, 800, 600, 85);
-                if ($optimizedImage) {
-                    $imageName = time() . '_' . $index . '_' . Str::slug($request->name) . '.' . $optimizedImage->getClientOriginalExtension();
-                    $imagePath = $optimizedImage->storeAs('products', $imageName, 'public');
-                    $additionalImages[] = $imagePath;
-                }
+                $imageName = time() . '_' . $index . '_' . Str::slug($request->name) . '.' . $image->getClientOriginalExtension();
+                $imagePath = $image->storeAs('products', $imageName, 'public');
+                $additionalImages[] = $imagePath;
             }
-            $product->update(['images' => $additionalImages]);
+            $data['images'] = $additionalImages;
+        } else {
+            $data['images'] = [];
         }
+
+        Product::create($data);
 
         return redirect()->route('admin.products.index')
             ->with('success', 'Produto criado com sucesso!');
@@ -150,8 +140,9 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
-        $product->load('category');
-        
+        $product->load('size');
+        $product->load('color');
+        $product->load('material');
         return view('admin.products.show', compact('product'));
     }
 
@@ -161,8 +152,11 @@ class ProductController extends Controller
     public function edit(Product $product)
     {
         $categories = Category::where('active', true)->orderBy('name')->get();
-        
-        return view('admin.products.edit', compact('product', 'categories'));
+        $sizes = Size::where('active', true)->orderBy('sort_order')->get();
+        $materials = Material::where('active', true)->orderBy('name')->get();
+        $colors = Color::where('active', true)->orderBy('name')->get();
+
+        return view('admin.products.edit', compact('product', 'categories', 'sizes', 'materials', 'colors'));
     }
 
     /**
@@ -170,71 +164,67 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
+        // dd($request->all());
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255|unique:products,name,' . $product->id,
             'sku' => 'required|string|max:100|unique:products,sku,' . $product->id,
             'description' => 'nullable|string',
             'price' => 'required|numeric|min:0',
             'category_id' => 'required|exists:categories,id',
-            'stock' => 'required|integer|min:0',
+            'stock' => 'nullable|integer|min:0',
+            'manage_stock' => 'boolean',
             'weight' => 'nullable|numeric|min:0',
             'dimensions' => 'nullable|string|max:255',
-            'material' => 'nullable|string|max:255',
-            'color' => 'nullable|string|max:100',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
-            'active' => 'boolean'
+            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'active' => 'boolean',
+            'featured' => 'boolean',
+            'size_id' => 'nullable|exists:sizes,id',
+            'color_id' => 'nullable|exists:colors,id',
+            'material_id' => 'nullable|exists:materials,id',
         ]);
 
-        $data = [
-            'name' => $request->name,
-            'slug' => Str::slug($request->name),
-            'sku' => $request->sku,
-            'description' => $request->description,
-            'price' => $request->price,
-            'category_id' => $request->category_id,
-            'stock' => $request->stock,
-            'weight' => $request->weight,
-            'dimensions' => $request->dimensions,
-            'material' => $request->material,
-            'color' => $request->color,
-            'active' => $request->has('active'),
-        ];
+        $data = $request->all();
+        // dd("allalalalaallala");
+        // dd($data);
+        $data['slug'] = Str::slug($request->name);
+        $data['active'] = $request->has('active');
+        $data['featured'] = $request->has('featured');
+        $data['manage_stock'] = $request->has('manage_stock');
 
-        // Upload da nova imagem principal
+        // Upload da imagem principal
         if ($request->hasFile('image')) {
-            // Deletar imagem anterior se existir
             if ($product->image && Storage::disk('public')->exists($product->image)) {
                 Storage::disk('public')->delete($product->image);
             }
-
-            $image = $request->file('image');
-            $imageName = time() . '_' . Str::slug($request->name) . '.' . $image->getClientOriginalExtension();
-            $imagePath = $image->storeAs('products', $imageName, 'public');
-            $data['image'] = $imagePath;
+            $data['image'] = $request->file('image')->store('products', 'public');
         }
 
-        // Upload de novas imagens adicionais
+        // Upload das novas imagens adicionais
+        $existingImages = $product->images ?? [];
         if ($request->hasFile('images')) {
-            // Deletar imagens anteriores se existirem
-            if ($product->images && is_array($product->images)) {
-                foreach ($product->images as $oldImage) {
-                    if (Storage::disk('public')->exists($oldImage)) {
-                        Storage::disk('public')->delete($oldImage);
-                    }
-                }
-            }
-
-            $additionalImages = [];
             foreach ($request->file('images') as $index => $image) {
                 $imageName = time() . '_' . $index . '_' . Str::slug($request->name) . '.' . $image->getClientOriginalExtension();
                 $imagePath = $image->storeAs('products', $imageName, 'public');
-                $additionalImages[] = $imagePath;
+                $existingImages[] = $imagePath;
             }
-            $data['images'] = $additionalImages;
         }
 
+        // Remover imagens selecionadas
+        $removeImages = $request->input('remove_additional_images', []);
+        foreach ($removeImages as $removeImage) {
+            if (Storage::disk('public')->exists($removeImage)) {
+                Storage::disk('public')->delete($removeImage);
+            }
+            $existingImages = array_filter($existingImages, fn($img) => $img !== $removeImage);
+        }
+
+        $data['images'] = array_values($existingImages);
+
+        // dd("datafinalfinalfinal");
+        
         $product->update($data);
+        // dd($product->toArray());
 
         return redirect()->route('admin.products.index')
             ->with('success', 'Produto atualizado com sucesso!');
@@ -245,12 +235,10 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        // Deletar imagem principal se existir
         if ($product->image && Storage::disk('public')->exists($product->image)) {
             Storage::disk('public')->delete($product->image);
         }
 
-        // Deletar imagens adicionais se existirem
         if ($product->images && is_array($product->images)) {
             foreach ($product->images as $image) {
                 if (Storage::disk('public')->exists($image)) {
@@ -263,6 +251,23 @@ class ProductController extends Controller
 
         return redirect()->route('admin.products.index')
             ->with('success', 'Produto excluído com sucesso!');
+    }
+
+    /**
+     * Remove the specified product from storage.
+     */
+    public function destroyImage(Product $product)
+    {
+        if ($product->image && Storage::disk('public')->exists($product->image)) {
+            Storage::disk('public')->delete($product->image);
+        }
+        
+        $data['image'] = null;
+
+        $product->update($data);
+
+        return redirect()->route('admin.products.index')
+            ->with('success', 'Imagem principal excluída com sucesso!');
     }
 
     /**
