@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\SizeController as AdminSizeController;
@@ -15,7 +16,9 @@ use App\Http\Controllers\Admin\SlideController as AdminSlideController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
+// =============================
 // Rotas públicas
+// =============================
 Route::get('/', [CatalogController::class, 'index'])->name('home');
 Route::get('/catalogo', [CatalogController::class, 'catalog'])->name('catalog');
 Route::get('/categoria/{category}', [CatalogController::class, 'category'])->name('catalog.category');
@@ -23,7 +26,9 @@ Route::get('/cor/{color}', [CatalogController::class, 'color'])->name('catalog.c
 Route::get('/material/{material}', [CatalogController::class, 'material'])->name('catalog.material');
 Route::get('/produto/{product}', [CatalogController::class, 'show'])->name('catalog.product');
 
+// =============================
 // Rotas do carrinho (somente autenticado)
+// =============================
 Route::middleware('auth')->group(function () {
     Route::get('/carrinho', [CartController::class, 'index'])->name('cart.index');
     Route::post('/carrinho/adicionar', [CartController::class, 'add'])->name('cart.add');
@@ -31,7 +36,18 @@ Route::middleware('auth')->group(function () {
     Route::delete('/carrinho/{item}', [CartController::class, 'remove'])->name('cart.remove');
 });
 
-// Dashboard do cliente / admin
+// =============================
+// Rotas de favoritos (somente autenticado)
+// =============================
+Route::middleware('auth')->group(function () {
+    Route::get('/favoritos', [FavoriteController::class, 'index'])->name('favorites.index');
+    Route::post('/favoritos/toggle/{id}', [FavoriteController::class, 'toggle'])->name('favorites.toggle');
+    Route::delete('/favoritos/{product}', [FavoriteController::class, 'destroy'])->name('favorites.destroy');
+});
+
+// =============================
+// Dashboard (cliente / admin)
+// =============================
 Route::get('/dashboard', function () {
     if (Auth::user()->isAdmin()) {
         return redirect()->route('admin.dashboard');
@@ -39,7 +55,9 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+// =============================
 // Rotas administrativas
+// =============================
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
@@ -81,7 +99,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::delete('slides/{filename}', [AdminSlideController::class, 'destroy'])->name('slides.destroy');
 });
 
+// =============================
 // Perfil do usuário
+// =============================
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
