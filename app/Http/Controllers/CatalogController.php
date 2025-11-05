@@ -30,28 +30,57 @@ class CatalogController extends Controller
 
         if (File::isDirectory($slidePath)) {
             $files = File::files($slidePath);
+            $slideIndex = 0;
 
             foreach ($files as $file) {
                 $filename = $file->getFilename();
                 $title = pathinfo($filename, PATHINFO_FILENAME);
                 $title = ucfirst(str_replace(['-', '_'], ' ', $title));
 
+                // Alterna a posição do texto entre esquerda e direita
+                $textPosition = ($slideIndex % 2 != 0) ? 'left' : 'right';
+
                 $slides[] = [
                     'image' => asset($folderName . '/' . $filename),
                     'title' => $title,
                     'subtitle' => 'Confira nossas novas coleções',
+                    'description' => 'Produtos artesanais de alta qualidade, feitos com dedicação e amor ao artesanato.',
+                    'button_text' => 'Ver Catálogo',
                     'link' => route('catalog'),
+                    'secondary_button_text' => 'Saiba Mais',
+                    'secondary_link' => route('catalog'),
+                    'text_position' => $textPosition, // 'left', 'right' ou 'center'
                 ];
+                
+                $slideIndex++;
             }
         }
 
-        // Fallback se não houver slides
+        // Fallback se não houver slides - exemplo com diferentes posições
         if (empty($slides)) {
-            $slides[] = [
-                'image' => null,
-                'title' => 'Bem-vindo ao Nosso Catálogo',
-                'subtitle' => 'Explore nossos produtos artesanais.',
-                'link' => route('catalog'),
+            $slides = [
+                [
+                    'image' => null,
+                    'title' => 'DIVERSOS MODELOS',
+                    'subtitle' => 'QUALIDADE E TRADIÇÃO',
+                    'description' => 'Descubra nossa coleção exclusiva de vasos artesanais, feitos com dedicação e técnicas tradicionais.',
+                    'button_text' => 'Ver Catálogo',
+                    'link' => route('catalog'),
+                    'secondary_button_text' => 'Saiba Mais',
+                    'secondary_link' => route('catalog'),
+                    'text_position' => 'left', // Texto à esquerda
+                ],
+                [
+                    'image' => null,
+                    'title' => 'ARTESANATO EXCLUSIVO',
+                    'subtitle' => 'FEITO À MÃO',
+                    'description' => 'Cada peça é única e carrega a tradição do artesanato brasileiro.',
+                    'button_text' => 'Ver Catálogo',
+                    'link' => route('catalog'),
+                    'secondary_button_text' => 'Contato',
+                    'secondary_link' => route('catalog'),
+                    'text_position' => 'right', // Texto à direita
+                ],
             ];
         }
 
