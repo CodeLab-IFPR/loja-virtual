@@ -1,149 +1,189 @@
-<nav x-data="{ open: false }" class="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700">
-    <!-- Primary Navigation Menu -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between h-16">
-            <div class="flex">
-                <!-- Logo -->
-                <div class="shrink-0 flex items-center">
-                    <a href="{{ route('home') }}">
-                        <x-application-logo class="block h-9 w-auto fill-current text-gray-800 dark:text-gray-200" />
-                    </a>
-                </div>
+<nav x-data="{ open: false }" class="bg-[#062035] text-white font-sans">
+    <!-- Container Principal -->
+    <div class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Seção Superior do Cabeçalho -->
+        <div class="flex items-center justify-between h-24">
+            <!-- Logotipo -->
+            <div class="flex items-center flex-shrink-0">
+                <a href="{{ route('home') }}" title="Página Inicial">
+                    <img class="h-12 w-auto" src="{{ asset('images/icons/shalom_header-maior-removebg-preview.png') }}"
+                        alt="Logotipo Shalom Vasos Decor">
+                </a>
 
-                <!-- Navigation Links -->
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('home')" :active="request()->routeIs('home')">
+                <!-- Links de Navegação -->
+                <div class="hidden space-x-8 sm:ms-10 sm:flex ms-8">
+                    <a href="{{ route('home') }}"
+                        class="text-sm font-semibold hover:text-gray-300 {{ request()->routeIs('home') ? 'underline' : '' }}">
                         {{ __('Início') }}
-                    </x-nav-link>
-                    <x-nav-link :href="route('catalog')" :active="request()->routeIs('catalog*')">
+                    </a>
+                    <a href="{{ route('catalog') }}"
+                        class="text-sm font-semibold hover:text-gray-300 {{ request()->routeIs('catalog*') ? 'underline' : '' }}">
                         {{ __('Catálogo') }}
-                    </x-nav-link>
+                    </a>
                     @auth
-                        @if(Auth::user()->isAdmin())
-                            <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.*')">
-                                {{ __('Administração') }}
-                            </x-nav-link>
-                        @else
-                            <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                                {{ __('Minha Conta') }}
-                            </x-nav-link>
-                        @endif
+                    @if(Auth::user()->isAdmin())
+                    <a href="{{ route('admin.dashboard') }}"
+                        class="text-sm font-semibold hover:text-gray-300 {{ request()->routeIs('admin.*') ? 'underline' : '' }}">
+                        {{ __('Administração') }}
+                    </a>
+                    @else
+                    <a href="{{ route('profile.edit') }}"
+                        class="text-sm font-semibold hover:text-gray-300 {{ request()->routeIs('profile.edit') ? 'underline' : '' }}">
+                        {{ __('Minha Conta') }}
+                    </a>
+                    <a href="{{ route('favorites.index') }}"
+                        class="text-sm font-semibold hover:text-gray-300 {{ request()->routeIs('favorites.*') ? 'underline' : '' }}">
+                        {{ __('Favoritos') }}
+                    </a>
+                    @endif
                     @endauth
                 </div>
             </div>
 
-            <!-- Settings Dropdown -->
-            <div class="hidden sm:flex sm:items-center sm:ms-6">
-                @auth
-                    <x-dropdown align="right" width="48">
-                        <x-slot name="trigger">
-                            <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none transition ease-in-out duration-150">
-                                <div>{{ Auth::user()->name }}</div>
+            <!-- Contato WhatsApp -->
+            <div class="hidden md:flex items-center space-x-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" viewBox="0 0 24 24"
+                    fill="currentColor">
+                    <path
+                        d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654z" />
+                </svg>
+                <a href="https://wa.me/5544999999999" target="_blank" class="font-semibold"
+                    title="Contato via WhatsApp">(44) 9 9999-9999</a>
+            </div>
 
-                                <div class="ms-1">
-                                    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                                    </svg>
-                                </div>
-                            </button>
-                        </x-slot>
-
-                        <x-slot name="content">
-                            <x-dropdown-link :href="route('profile.edit')">
-                                {{ __('Perfil') }}
-                            </x-dropdown-link>
-
-                            <!-- Authentication -->
-                            <form method="POST" action="{{ route('logout') }}">
-                                @csrf
-
-                                <x-dropdown-link :href="route('logout')"
-                                        onclick="event.preventDefault();
-                                                    this.closest('form').submit();">
-                                    {{ __('Sair') }}
-                                </x-dropdown-link>
-                            </form>
-                        </x-slot>
-                    </x-dropdown>
-                @else
-                    <div class="space-x-4">
-                        <a href="{{ route('login') }}" class="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100">Login</a>
-                        <a href="{{ route('register') }}" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md">Cadastrar</a>
+            <!-- Barra de Pesquisa -->
+            <div class="hidden lg:flex flex-1 mx-6 max-w-lg">
+                <div class="relative w-full">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <svg class="h-5 w-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
                     </div>
+                    <input
+                        class="w-full bg-gray-200 text-gray-900 rounded-lg py-2.5 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        type="search" placeholder="Pesquisar…">
+                </div>
+            </div>
+
+            <!-- Endereço -->
+            <div class="hidden xl:flex items-center text-center text-sm">
+                <span>Av. José Felipe, 811<br>Nova Esperança</span>
+            </div>
+
+            <!-- Minha Conta -->
+            <div class="hidden sm:flex items-center ml-6">
+                @auth
+                <a href="{{ route('dashboard') }}" class="flex items-center space-x-3 hover:text-gray-300"
+                    title="Acessar minha conta">
+                    <div class="p-2 bg-gray-600 rounded-full">
+                        <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
+                    </div>
+                    <div class="text-sm">
+                        <span class="font-semibold">{{ Str::words(Auth::user()->name, 1, '') }}</span>
+                        <span class="block text-xs text-gray-400">MINHA CONTA</span>
+                    </div>
+                </a>
+                @else
+                <a href="{{ route('login') }}" class="flex items-center space-x-3 hover:text-gray-300"
+                    title="Entrar na minha conta">
+                    <div class="p-2 bg-gray-600 rounded-full">
+                        <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
+                    </div>
+                    <div class="text-sm">
+                        <span>Minha Conta</span>
+                        <span class="block text-xs text-gray-400 font-semibold">ENTRAR</span>
+                    </div>
+                </a>
                 @endauth
             </div>
 
-            <!-- Hamburger -->
-            <div class="-me-2 flex items-center sm:hidden">
-                <button @click="open = ! open" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-900 focus:text-gray-500 dark:focus:text-gray-400 transition duration-150 ease-in-out">
+            <!-- Botão Hamburger -->
+            <div class="-mr-2 flex items-center sm:hidden">
+                <button @click="open = ! open"
+                    class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:bg-gray-700 focus:text-white transition">
                     <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                        <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                        <path :class="{'hidden': ! open, 'inline-flex': open }" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex"
+                            stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h16M4 18h16" />
+                        <path :class="{'hidden': ! open, 'inline-flex': open }" class="hidden" stroke-linecap="round"
+                            stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                 </button>
             </div>
         </div>
+
+        <!-- Navegação Secundária -->
+        <div class="hidden sm:flex justify-center items-center h-16 space-x-10">
+            <a href="#"
+                class="bg-white text-gray-900 px-5 py-2.5 rounded-md text-sm font-bold shadow-md hover:bg-gray-200 transition">TODOS
+                OS PRODUTOS</a>
+            <a href="#" class="hover:text-gray-300 text-sm font-semibold transition">REDONDOS</a>
+            <a href="#" class="hover:text-gray-300 text-sm font-semibold transition">QUADRADOS</a>
+            <a href="#" class="hover:text-gray-300 text-sm font-semibold transition">FLORICULTURA</a>
+        </div>
     </div>
 
-    <!-- Responsive Navigation Menu -->
-    <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
-        <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('home')" :active="request()->routeIs('home')">
-                {{ __('Início') }}
-            </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('catalog')" :active="request()->routeIs('catalog*')">
-                {{ __('Catálogo') }}
-            </x-responsive-nav-link>
+    <!-- Menu Responsivo -->
+    <div :class="{'block': open, 'hidden': ! open}" class="sm:hidden">
+        <div class="px-2 pt-2 pb-3 space-y-2">
+            <div class="relative w-full">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg class="h-5 w-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                </div>
+                <input class="w-full bg-gray-200 text-gray-900 rounded-lg py-2.5 pl-10 pr-4 focus:outline-none"
+                    type="search" placeholder="Pesquisar…">
+            </div>
+
             @auth
-                @if(Auth::user()->isAdmin())
-                    <x-responsive-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.*')">
-                        {{ __('Administração') }}
-                    </x-responsive-nav-link>
-                @else
-                    <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('Minha Conta') }}
-                    </x-responsive-nav-link>
-                @endif
+            <x-responsive-nav-link :href="route('profile.edit')">{{ __('Perfil') }}</x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('favorites.index')">{{ __('Meus Favoritos') }}</x-responsive-nav-link>
             @endauth
+
+            <a href="{{ route('home') }}"
+                class="block px-3 py-2 rounded-md text-base font-medium bg-white text-gray-900">INÍCIO</a>
+            <a href="{{ route('catalog') }}"
+                class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">CATÁLOGO</a>
+
+            @auth
+            @if(Auth::user()->isAdmin())
+            <a href="{{ route('admin.dashboard') }}"
+                class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">ADMINISTRAÇÃO</a>
+            @endif
+            @endauth
+
+            <a href="#" class="block px-3 py-2 rounded-md text-base font-medium bg-white text-gray-900">TODOS OS
+                PRODUTOS</a>
+            <a href="#"
+                class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">REDONDOS</a>
+            <a href="#"
+                class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">QUADRADOS</a>
+            <a href="#"
+                class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">FLORICULTURA</a>
+
+            <div class="border-t border-gray-700 pt-4 mt-4 space-y-2 text-sm text-gray-400">
+                <div class="flex items-center space-x-2 px-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-500" viewBox="0 0 24 24"
+                        fill="currentColor">
+                        <path d="M.057 24l1.687-6.163..." />
+                    </svg>
+                    <span>(44) 9 9999-9999</span>
+                </div>
+                <div class="px-3">Av. José Felipe, 811, Nova Esperança</div>
+            </div>
         </div>
-
-        @auth
-            <!-- Responsive Settings Options -->
-            <div class="pt-4 pb-1 border-t border-gray-200 dark:border-gray-600">
-                <div class="px-4">
-                    <div class="font-medium text-base text-gray-800 dark:text-gray-200">{{ Auth::user()->name }}</div>
-                    <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
-                </div>
-
-                <div class="mt-3 space-y-1">
-                    <x-responsive-nav-link :href="route('profile.edit')">
-                        {{ __('Perfil') }}
-                    </x-responsive-nav-link>
-
-                    <!-- Authentication -->
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
-
-                        <x-responsive-nav-link :href="route('logout')"
-                                onclick="event.preventDefault();
-                                            this.closest('form').submit();">
-                            {{ __('Sair') }}
-                        </x-responsive-nav-link>
-                    </form>
-                </div>
-            </div>
-        @else
-            <!-- Guest links -->
-            <div class="pt-4 pb-1 border-t border-gray-200 dark:border-gray-600">
-                <div class="mt-3 space-y-1">
-                    <x-responsive-nav-link :href="route('login')">
-                        {{ __('Login') }}
-                    </x-responsive-nav-link>
-                    <x-responsive-nav-link :href="route('register')">
-                        {{ __('Cadastrar') }}
-                    </x-responsive-nav-link>
-                </div>
-            </div>
-        @endauth
     </div>
 </nav>

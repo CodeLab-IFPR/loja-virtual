@@ -17,7 +17,6 @@ class CategoryController extends Controller
     {
         $query = Category::query();
 
-        // Busca por nome ou descrição
         if ($request->has('search') && $request->search !== '') {
             $search = $request->search;
             $query->where(function($q) use ($search) {
@@ -26,7 +25,6 @@ class CategoryController extends Controller
             });
         }
 
-        // Filtro por status
         if ($request->has('active') && $request->active !== '') {
             $query->where('active', $request->active === '1');
         }
@@ -89,7 +87,7 @@ class CategoryController extends Controller
     public function show(Category $category)
     {
         $category->load('products');
-        
+
         return view('admin.categories.show', compact('category'));
     }
 
@@ -169,7 +167,7 @@ class CategoryController extends Controller
         $category->update(['active' => !$category->active]);
 
         $status = $category->active ? 'ativada' : 'desativada';
-        
+
         if (request()->ajax()) {
             return response()->json([
                 'success' => true,

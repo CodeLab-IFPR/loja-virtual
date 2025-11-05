@@ -183,6 +183,32 @@
                     </svg>
                     <span class="font-semibold text-yellow-700">Gerenciar Pedidos</span>
                 </a>
+
+                <a href="{{ route('admin.materials.index') }}" 
+                   class="flex items-center p-4 bg-sky-50 hover:bg-sky-100 rounded-lg border border-sky-200 transition-colors">
+                    <svg class="w-6 h-6 text-sky-500 mr-3"  viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M12,2A2,2 0 0,1 14,4V5.5C14.58,5.82 15.05,6.3 15.36,6.88L18.5,11C19.45,12.36 20,14 20,15.68V19A2,2 0 0,1 18,21H6A2,2 0 0,1 4,19V15.68C4,14 4.55,12.36 5.5,11L8.64,6.88C8.95,6.3 9.42,5.82 10,5.5V4A2,2 0 0,1 12,2M12,4V7C11.45,7 11,7.45 11,8V9.5L9.44,12.06L8,14.5V19H16V14.5L14.56,12.06L13,9.5V8C13,7.45 12.55,7 12,7V4Z"/>
+                    </svg>
+                    <span class="font-semibold text-sky-700">Gerenciar Tamanhos</span>
+                </a>
+
+                <a href="{{ route('admin.materials.index') }}" 
+                   class="flex items-center p-4 bg-red-50 hover:bg-red-100 rounded-lg border border-red-200 transition-colors">
+                    <svg class="w-6 h-6 text-red-500 mr-3"  viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M6 3a4 4 0 0 1 8 0c0 1.1-.9 2-2 2H8a2 2 0 0 1-2-2zm2 2v2c0 2.5-1.5 4.5-3 6.5A2 2 0 0 0 6 17h8a2 2 0 0 0 1-3.5c-1.5-2-3-4-3-6.5V5H8z"/>
+                    <rect x="7" y="15" width="6" height="2" rx="1"/>                    
+                    </svg>
+                    <span class="font-semibold text-red-700">Gerenciar Materiais</span>
+                </a>
+
+                <a href="{{ route('admin.colors.index') }}" 
+                   class="flex items-center p-4 bg-pink-50 hover:bg-pink-100 rounded-lg border border-pink-200 transition-colors">
+                    <svg class="w-6 h-6 text-pink-500 mr-3"  viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M8 5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3m4 3a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3M5.5 7a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m.5 6a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3"/>
+                        <path d="M16 8c0 3.15-1.866 2.585-3.567 2.07C11.42 9.763 10.465 9.473 10 10c-.603.683-.475 1.819-.351 2.92C9.826 14.495 9.996 16 8 16a8 8 0 1 1 8-8m-8 7c.611 0 .654-.171.655-.176.078-.146.124-.464.07-1.119-.014-.168-.037-.37-.061-.591-.052-.464-.112-1.005-.118-1.462-.01-.707.083-1.61.704-2.314.369-.417.845-.578 1.272-.618.404-.038.812.026 1.16.104.343.077.702.186 1.025.284l.028.008c.346.105.658.199.953.266.653.148.904.083.991.024C14.717 9.38 15 9.161 15 8a7 7 0 1 0-7 7"/>
+                    </svg>
+                    <span class="font-semibold text-pink-700">Gerenciar Cores</span>
+                </a>
             </div>
         </div>
     </div>
