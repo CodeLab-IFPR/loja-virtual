@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -17,6 +18,7 @@
     <!-- Alpine.js -->
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
+
 <body class="font-sans antialiased bg-gray-100">
     <div class="min-h-screen flex flex-col">
         <!-- Navigation -->
@@ -38,30 +40,38 @@
 
                         <!-- FALAR SOBRE EXP DO PROJETO, FALAR MAIS SOBRE A VIVENCIA NA DISCIPLINA -->
                         <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                            <x-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.*')">
+                            <x-nav-link :href="route('admin.users.index')"
+                                :active="request()->routeIs('admin.users.*')">
                                 {{ __('Clientes') }}
                             </x-nav-link>
-                            <x-nav-link :href="route('admin.categories.index')" :active="request()->routeIs('admin.categories.*')">
+                            <x-nav-link :href="route('admin.categories.index')"
+                                :active="request()->routeIs('admin.categories.*')">
                                 {{ __('Categorias') }}
                             </x-nav-link>
-                            <x-nav-link :href="route('admin.sizes.index')" :active="request()->routeIs('admin.sizes.*')">
+                            <x-nav-link :href="route('admin.sizes.index')"
+                                :active="request()->routeIs('admin.sizes.*')">
                                 {{ __('Tamanhos') }}
                             </x-nav-link>
-                            <x-nav-link :href="route('admin.materials.index')" :active="request()->routeIs('admin.materials.*')">
+                            <x-nav-link :href="route('admin.materials.index')"
+                                :active="request()->routeIs('admin.materials.*')">
                                 {{ __('Materiais') }}
                             </x-nav-link>
-                            <x-nav-link :href="route('admin.colors.index')" :active="request()->routeIs('admin.colors.*')">
+                            <x-nav-link :href="route('admin.colors.index')"
+                                :active="request()->routeIs('admin.colors.*')">
                                 {{ __('Cores') }}
                             </x-nav-link>
-                            <x-nav-link :href="route('admin.products.index')" :active="request()->routeIs('admin.products.*')">
+                            <x-nav-link :href="route('admin.products.index')"
+                                :active="request()->routeIs('admin.products.*')">
                                 {{ __('Produtos') }}
                             </x-nav-link>
-                            <x-nav-link :href="route('admin.orders.index')" :active="request()->routeIs('admin.orders.*')">
+                            <x-nav-link :href="route('admin.orders.index')"
+                                :active="request()->routeIs('admin.orders.*')">
                                 {{ __('Pedidos') }}
                             </x-nav-link>
-                            <x-nav-link :href="route('admin.slides.index')" :active="request()->routeIs('admin.slides.*')">
+                            <!-- <x-nav-link :href="route('admin.slides.index')"
+                                :active="request()->routeIs('admin.slides.*')">
                                 {{ __('Slides') }}
-                            </x-nav-link>
+                            </x-nav-link> -->
                         </div>
                     </div>
 
@@ -74,12 +84,16 @@
 
                         <x-dropdown align="right" width="48">
                             <x-slot name="trigger">
-                                <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
+                                <button
+                                    class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
                                     <div>{{ Auth::user()->name }}</div>
 
                                     <div class="ml-1">
-                                        <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                        <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg"
+                                            viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd"
+                                                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                                clip-rule="evenodd" />
                                         </svg>
                                     </div>
                                 </button>
@@ -87,17 +101,16 @@
 
                             <x-slot name="content">
                                 <x-dropdown-link :href="route('profile.edit')">
-                                    {{ __('Profile') }}
+                                    {{ __('Perfil') }}
                                 </x-dropdown-link>
 
                                 <!-- Authentication -->
                                 <form method="POST" action="{{ route('logout') }}">
                                     @csrf
 
-                                    <x-dropdown-link :href="route('logout')"
-                                            onclick="event.preventDefault();
+                                    <x-dropdown-link :href="route('logout')" onclick="event.preventDefault();
                                                         this.closest('form').submit();">
-                                        {{ __('Log Out') }}
+                                        {{ __('Sair') }}
                                     </x-dropdown-link>
                                 </form>
                             </x-slot>
@@ -106,10 +119,15 @@
 
                     <!-- Hamburger -->
                     <div class="-mr-2 flex items-center sm:hidden">
-                        <button @click="open = ! open" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out">
+                        <button @click="open = ! open"
+                            class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out">
                             <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                                <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                                <path :class="{'hidden': ! open, 'inline-flex': open }" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex"
+                                    stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 6h16M4 12h16M4 18h16" />
+                                <path :class="{'hidden': ! open, 'inline-flex': open }" class="hidden"
+                                    stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12" />
                             </svg>
                         </button>
                     </div>
@@ -119,27 +137,31 @@
             <!-- Responsive Navigation Menu -->
             <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
                 <div class="pt-2 pb-3 space-y-1">
-                    <x-responsive-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')">
+                    <x-responsive-nav-link :href="route('admin.dashboard')"
+                        :active="request()->routeIs('admin.dashboard')">
                         {{ __('Dashboard') }}
                     </x-responsive-nav-link>
-                    <x-responsive-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.*')">
+                    <x-responsive-nav-link :href="route('admin.users.index')"
+                        :active="request()->routeIs('admin.users.*')">
                         {{ __('Clientes') }}
                     </x-responsive-nav-link>
-                    <x-responsive-nav-link :href="route('admin.categories.index')" :active="request()->routeIs('admin.categories.*')">
+                    <x-responsive-nav-link :href="route('admin.categories.index')"
+                        :active="request()->routeIs('admin.categories.*')">
                         {{ __('Categorias') }}
                     </x-responsive-nav-link>
-                    <x-responsive-nav-link :href="route('admin.sizes.index')" :active="request()->routeIs('admin.sizes.*')">
+                    <x-responsive-nav-link :href="route('admin.sizes.index')"
+                        :active="request()->routeIs('admin.sizes.*')">
                         {{ __('Tamanhos') }}
                     </x-responsive-nav-link>
-                    <x-responsive-nav-link :href="route('admin.products.index')" :active="request()->routeIs('admin.products.*')">
+                    <x-responsive-nav-link :href="route('admin.products.index')"
+                        :active="request()->routeIs('admin.products.*')">
                         {{ __('Produtos') }}
                     </x-responsive-nav-link>
-                    <x-responsive-nav-link :href="route('admin.orders.index')" :active="request()->routeIs('admin.orders.*')">
+                    <x-responsive-nav-link :href="route('admin.orders.index')"
+                        :active="request()->routeIs('admin.orders.*')">
                         {{ __('Pedidos') }}
                     </x-responsive-nav-link>
-                    <x-responsive-nav-link :href="route('admin.slides.index')" :active="request()->routeIs('admin.slides.*')">
-                        {{ __('Slides') }}
-                    </x-responsive-nav-link>
+
                 </div>
 
                 <!-- Responsive Settings Options -->
@@ -158,8 +180,7 @@
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
 
-                            <x-responsive-nav-link :href="route('logout')"
-                                    onclick="event.preventDefault();
+                            <x-responsive-nav-link :href="route('logout')" onclick="event.preventDefault();
                                                 this.closest('form').submit();">
                                 {{ __('Log Out') }}
                             </x-responsive-nav-link>
@@ -171,11 +192,11 @@
 
         <!-- Page Heading -->
         @if (isset($header))
-            <header class="bg-white shadow">
-                <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                    {{ $header }}
-                </div>
-            </header>
+        <header class="bg-white shadow">
+            <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                {{ $header }}
+            </div>
+        </header>
         @endif
 
         <!-- Page Content -->
@@ -189,5 +210,5 @@
         @include('layouts.footer')
     </div>
 </body>
-</html>
 
+</html>
