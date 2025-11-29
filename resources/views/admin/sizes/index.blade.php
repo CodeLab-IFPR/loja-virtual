@@ -5,8 +5,8 @@
     <div class="p-6">
         <div class="flex justify-between items-center mb-6">
             <h1 class="text-2xl font-bold text-gray-900">Gerenciar Tamanhos</h1>
-            <a href="{{ route('admin.sizes.create') }}" 
-               class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md">
+            <a href="{{ route('admin.sizes.create') }}"
+                class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md">
                 Novo Tamanho
             </a>
         </div>
@@ -21,7 +21,8 @@
                     </div>
                     <div class="text-blue-400">
                         <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z"/>
+                            <path
+                                d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z" />
                         </svg>
                     </div>
                 </div>
@@ -35,7 +36,9 @@
                     </div>
                     <div class="text-green-400">
                         <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                            <path fill-rule="evenodd"
+                                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                clip-rule="evenodd" />
                         </svg>
                     </div>
                 </div>
@@ -49,7 +52,9 @@
                     </div>
                     <div class="text-red-400">
                         <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M13.477 14.89A6 6 0 015.11 6.524l8.367 8.368zm1.414-1.414L6.524 5.11a6 6 0 018.367 8.367zM18 10a8 8 0 11-16 0 8 8 0 0116 0z" clip-rule="evenodd"/>
+                            <path fill-rule="evenodd"
+                                d="M13.477 14.89A6 6 0 015.11 6.524l8.367 8.368zm1.414-1.414L6.524 5.11a6 6 0 018.367 8.367zM18 10a8 8 0 11-16 0 8 8 0 0116 0z"
+                                clip-rule="evenodd" />
                         </svg>
                     </div>
                 </div>
@@ -61,26 +66,21 @@
             <form method="GET" action="{{ route('admin.sizes.index') }}" class="flex flex-wrap gap-4">
                 <div class="flex-1 min-w-64">
                     <label for="search" class="block text-sm font-medium text-gray-700 mb-1">Buscar</label>
-                    <input type="text" 
-                           id="search" 
-                           name="search" 
-                           value="{{ request('search') }}" 
-                           placeholder="Nome ou descrição..."
-                           class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                    <input type="text" id="search" name="search" value="{{ request('search') }}"
+                        placeholder="Nome ou descrição..."
+                        class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2">
                 </div>
                 <div class="min-w-48">
                     <label for="active" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
-                    <select id="active" 
-                            name="active" 
-                            class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                    <select id="active" name="active"
+                        class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2">
                         <option value="">Todos</option>
                         <option value="1" {{ request('active') === '1' ? 'selected' : '' }}>Ativos</option>
                         <option value="0" {{ request('active') === '0' ? 'selected' : '' }}>Inativos</option>
                     </select>
                 </div>
                 <div class="flex items-end">
-                    <button type="submit" 
-                            class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md">
+                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md">
                         Filtrar
                     </button>
                 </div>
@@ -88,15 +88,15 @@
         </div>
 
         @if(session('success'))
-            <div class="mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded">
-                {{ session('success') }}
-            </div>
+        <div class="mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded">
+            {{ session('success') }}
+        </div>
         @endif
 
         @if(session('error'))
-            <div class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
-                {{ session('error') }}
-            </div>
+        <div class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+            {{ session('error') }}
+        </div>
         @endif
 
         <!-- Tabela de Tamanhos -->
@@ -126,73 +126,72 @@
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
                     @forelse($sizes as $size)
-                        <tr class="hover:bg-gray-50">
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="flex items-center">
-                                    <div class="ml-4">
-                                        <div class="text-sm font-medium text-gray-900">{{ $size->name }}</div>
-                                        <div class="text-sm text-gray-500">{{ $size->slug }}</div>
-                                    </div>
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="flex items-center">
+                                <div class="ml-4">
+                                    <div class="text-sm font-medium text-gray-900">{{ $size->name }}</div>
+                                    <div class="text-sm text-gray-500">{{ $size->slug }}</div>
                                 </div>
-                            </td>
-                            <td class="px-6 py-4">
-                                <div class="text-sm text-gray-900 max-w-xs truncate">
-                                    {{ $size->description ?: 'Sem descrição' }}
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                @if($size->active)
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                        Ativo
-                                    </span>
-                                @else
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
-                                        Inativo
-                                    </span>
-                                @endif
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                {{ $size->sort_order }}
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                {{ $size->products()->count() }} produtos
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                <div class="flex space-x-2">
-                                    <a href="{{ route('admin.sizes.show', $size) }}" 
-                                       class="text-blue-600 hover:text-blue-900">Ver</a>
-                                    
-                                    <a href="{{ route('admin.sizes.edit', $size) }}" 
-                                       class="text-indigo-600 hover:text-indigo-900">Editar</a>
-                                    
-                                    <button onclick="toggleStatus({{ $size->id }})" 
-                                            class="text-yellow-600 hover:text-yellow-900">
-                                        {{ $size->active ? 'Desativar' : 'Ativar' }}
+                            </div>
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="text-sm text-gray-900 max-w-xs truncate">
+                                {{ $size->description ?: 'Sem descrição' }}
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            @if($size->active)
+                            <span
+                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                Ativo
+                            </span>
+                            @else
+                            <span
+                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                Inativo
+                            </span>
+                            @endif
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {{ $size->sort_order }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {{ $size->products()->count() }} produtos
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <div class="flex space-x-2">
+                                <a href="{{ route('admin.sizes.show', $size) }}"
+                                    class="text-blue-600 hover:text-blue-900">Ver</a>
+
+                                <a href="{{ route('admin.sizes.edit', $size) }}"
+                                    class="text-indigo-600 hover:text-indigo-900">Editar</a>
+
+                                <button onclick="toggleStatus({{ $size->id }})"
+                                    class="text-yellow-600 hover:text-yellow-900">
+                                    {{ $size->active ? 'Desativar' : 'Ativar' }}
+                                </button>
+
+                                <form action="{{ route('admin.sizes.destroy', $size) }}" method="POST" class="inline"
+                                    onsubmit="return confirm('Tem certeza que deseja excluir este tamanho?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="text-red-600 hover:text-red-900">
+                                        Excluir
                                     </button>
-                                    
-                                    <form action="{{ route('admin.sizes.destroy', $size) }}" 
-                                          method="POST" 
-                                          class="inline"
-                                          onsubmit="return confirm('Tem certeza que deseja excluir este tamanho?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="text-red-600 hover:text-red-900">
-                                            Excluir
-                                        </button>
-                                    </form>
-                                </div>
-                            </td>
-                        </tr>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
                     @empty
-                        <tr>
-                            <td colspan="6" class="px-6 py-4 text-center text-gray-500">
-                                Nenhum tamanho encontrado.
-                                <a href="{{ route('admin.sizes.create') }}" 
-                                   class="text-blue-600 hover:text-blue-800 ml-2">
-                                    Criar primeiro tamanho
-                                </a>
-                            </td>
-                        </tr>
+                    <tr>
+                        <td colspan="6" class="px-6 py-4 text-center text-gray-500">
+                            Nenhum tamanho encontrado.
+                            <a href="{{ route('admin.sizes.create') }}" class="text-blue-600 hover:text-blue-800 ml-2">
+                                Criar primeiro tamanho
+                            </a>
+                        </td>
+                    </tr>
                     @endforelse
                 </tbody>
             </table>
@@ -200,16 +199,16 @@
 
         <!-- Paginação -->
         @if($sizes->hasPages())
-            <div class="mt-6">
-                {{ $sizes->links() }}
-            </div>
+        <div class="mt-6">
+            {{ $sizes->links() }}
+        </div>
         @endif
     </div>
 </div>
 
 <script>
-    function toggleStatus(sizeId) {
-        fetch(`/admin/sizes/${sizeId}/toggle-status`, {
+function toggleStatus(sizeId) {
+    fetch(`/admin/sizes/${sizeId}/toggle-status`, {
             method: 'PATCH',
             headers: {
                 'X-CSRF-TOKEN': '{{ csrf_token() }}',
@@ -229,6 +228,6 @@
             console.error('Error:', error);
             alert('Erro na comunicação com o servidor');
         });
-    }
+}
 </script>
 @endsection
