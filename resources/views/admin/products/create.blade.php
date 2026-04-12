@@ -65,17 +65,7 @@
                             class="px-4 py-3 mt-1 block w-full rounded-lg border-2 border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-colors duration-200">
                     </div>
 
-                    <div>
-                        <label for="sku" class="block text-sm font-semibold text-gray-700 mb-2">
-                            SKU <span class="text-red-500">*</span>
-                        </label>
-                        <input type="text" id="sku" name="sku" value="{{ old('sku') }}" required
-                            placeholder="Ex: CAM-001"
-                            class="px-4 py-3 mt-1 block w-full rounded-lg border-2 border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-colors duration-200">
-                        <p class="mt-2 text-xs text-gray-500">Código único de identificação do produto</p>
-                    </div>
-
-                    <div>
+                    <div class="md:col-span-2">
                         <label for="category_id" class="block text-sm font-semibold text-gray-700 mb-2">
                             Categoria <span class="text-red-500">*</span>
                         </label>
@@ -281,7 +271,8 @@
                               file:bg-indigo-50 file:text-indigo-700
                               hover:file:bg-indigo-100 hover:file:border-indigo-300
                               file:transition-all file:duration-200 cursor-pointer">
-                <p class="mt-3 text-xs text-gray-500">Selecione múltiplas imagens para galeria do produto</p>
+                <p class="mt-3 text-xs text-gray-500">Selecione múltiplas imagens para galeria do produto. Você pode adicionar mais imagens clicando novamente.</p>
+                <div id="imagesPreview" class="mt-4 flex flex-wrap gap-3"></div>
             </div>
 
             <!-- Status -->
@@ -361,5 +352,45 @@ document.getElementById('manage_stock').addEventListener('change', function() {
         input.required = false;
     }
 });
+
+// Gerenciamento de pré-visualização das imagens adicionais
+let selectedFiles = new DataTransfer();
+
+document.getElementById('images').addEventListener('change', function(e) {
+    Array.from(e.target.files).forEach(file => selectedFiles.items.add(file));
+    e.target.files = selectedFiles.files;
+    renderPreviews();
+});
+
+function removeAdditionalImage(index) {
+    const newDT = new DataTransfer();
+    Array.from(selectedFiles.files)
+        .filter((_, i) => i !== index)
+        .forEach(f => newDT.items.add(f));
+    selectedFiles = newDT;
+    document.getElementById('images').files = selectedFiles.files;
+    renderPreviews();
+}
+
+function renderPreviews() {
+    const container = document.getElementById('imagesPreview');
+    container.innerHTML = '';
+    Array.from(selectedFiles.files).forEach((file, index) => {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const div = document.createElement('div');
+            div.className = 'relative inline-block';
+            div.innerHTML = `
+                <img src="${e.target.result}" class="h-24 w-24 object-cover rounded-lg border-2 border-gray-300 shadow-sm" title="${file.name}">
+                <button type="button" onclick="removeAdditionalImage(${index})"
+                    class="absolute -top-2 -right-2 bg-red-500 hover:bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold shadow-md transition-colors duration-200"
+                    title="Remover imagem">&times;</button>
+                <p class="mt-1 text-xs text-gray-500 truncate w-24">${file.name}</p>
+            `;
+            container.appendChild(div);
+        };
+        reader.readAsDataURL(file);
+    });
+}
 </script>
 @endsection

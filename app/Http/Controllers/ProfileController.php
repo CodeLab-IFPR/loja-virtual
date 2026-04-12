@@ -29,19 +29,21 @@ class ProfileController extends Controller
     $validated = $request->validated();
 
     $address = [
-        'cep' => $validated['cep'] ?? null,
-        'street' => $validated['street'] ?? null,
-        'number' => $validated['number'] ?? null,
+        'cep'        => $validated['cep'] ?? null,
+        'street'     => $validated['street'] ?? null,
+        'number'     => $validated['number'] ?? null,
         'complement' => $validated['complement'] ?? null,
-        'city' => $validated['city'] ?? null,
-        'state' => $validated['state'] ?? null,
+        'city'       => $validated['city'] ?? null,
+        'state'      => $validated['state'] ?? null,
     ];
 
     $user = $request->user();
     $user->fill([
-        'name' => $validated['name'],
-        'phone' => $validated['phone'],
-        'document' => $validated['document'],
+        'name'         => $validated['name'],
+        'trading_name' => $validated['trading_name'] ?? null,
+        'contact_name' => $validated['contact_name'],
+        'phone'        => $validated['phone'],
+        'document'     => $validated['document'],
     ]);
 
     $user->address = $address;

@@ -1,181 +1,247 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-
-    <title>{{ config('app.name', 'Laravel') }}</title>
-
+    <title>Cadastro — {{ config('app.name', 'Shalom') }}</title>
 
     <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Average+Sans&family=Alexandria:wght@400&display=swap"
-        rel="stylesheet">
-
-
+    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700&display=swap" rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-    tailwind.config = {
-        darkMode: 'class',
-    }
-    </script>
-
-
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" rel="stylesheet">
-
-
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 
-<body class="font-sans text-gray-900 bg-[#F6F6F6] flex items-center justify-center min-h-screen antialiased">
-    <div class="flex flex-col items-center w-full max-w-lg px-4 sm:px-6 md:px-8 space-y-6">
+<body class="font-sans antialiased bg-gray-50">
+@include('layouts.navigation')
+<div class="min-h-screen flex">
 
-        <div class="text-center">
-            <h1 class="text-4xl sm:text-5xl md:text-6xl font-normal text-gray-800 uppercase whitespace-nowrap"
-                style="font-family: 'Average Sans', sans-serif;">CRIAR UMA CONTA</h1>
-            <p class="mt-1 text-sm sm:text-base"
-                style="font-family: 'Alexandria', sans-serif; font-weight:400; font-style:normal; text-align:center; text-transform:uppercase;">
-                PREENCHA O FORMULÁRIO DE CADASTRO ABAIXO</p>
+    <!-- Painel esquerdo — marca -->
+    <div class="hidden lg:flex lg:w-2/5 bg-[#062035] flex-col items-center justify-center px-16 relative overflow-hidden">
+        <div class="absolute -top-24 -left-24 w-96 h-96 rounded-full bg-white/5"></div>
+        <div class="absolute -bottom-32 -right-20 w-[28rem] h-[28rem] rounded-full bg-white/5"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[32rem] h-[32rem] rounded-full border border-white/10"></div>
+
+        <div class="relative z-10 text-center">
+            <img src="{{ asset('images/icons/Logo_shalom.png') }}" alt="Shalom Vasos" class="mx-auto w-48 h-auto mb-10" style="filter: brightness(0) invert(1);">
+            <h2 class="text-3xl font-bold text-white mb-3 tracking-tight">Bem-vindo!</h2>
+            <p class="text-white/60 text-base max-w-xs mx-auto leading-relaxed">
+                Crie sua conta e tenha acesso ao nosso catálogo exclusivo com preços e condições especiais.
+            </p>
+            <div class="mt-10 grid grid-cols-3 gap-6 text-center">
+                <div>
+                    <div class="text-white/90 text-2xl font-bold">500+</div>
+                    <div class="text-white/50 text-xs mt-1 uppercase tracking-wider">Produtos</div>
+                </div>
+                <div class="border-x border-white/10 px-4">
+                    <div class="text-white/90 text-2xl font-bold">50+</div>
+                    <div class="text-white/50 text-xs mt-1 uppercase tracking-wider">Categorias</div>
+                </div>
+                <div>
+                    <div class="text-white/90 text-2xl font-bold">24h</div>
+                    <div class="text-white/50 text-xs mt-1 uppercase tracking-wider">Suporte</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Painel direito — formulário -->
+    <div class="w-full lg:w-3/5 flex flex-col items-center justify-center px-6 sm:px-12 py-12 overflow-y-auto">
+
+        <!-- Logo mobile -->
+        <div class="lg:hidden mb-8">
+            <img src="{{ asset('images/icons/Logo_shalom.png') }}" alt="Shalom Vasos" class="h-20 w-auto mx-auto">
         </div>
 
-        <div class="w-full p-4 sm:p-6 md:p-8 border border-black bg-[#F6F6F6] shadow-none rounded-2xl overflow-hidden">
-            <img src="{{ asset('images/icons/Logo_shalom.png') }}" alt="Logo Shalom"
-                class="mx-auto mb-4 w-32 sm:w-40 h-auto" />
+        <div class="w-full max-w-lg">
+            <div class="mb-8">
+                <h1 class="text-2xl font-bold text-gray-900 mb-1">Criar nova conta</h1>
+                <p class="text-sm text-gray-500">Preencha os dados abaixo para solicitar acesso</p>
+            </div>
 
-            <form method="POST" action="{{ route('register') }}" class="mt-4 sm:mt-6 space-y-4">
+            @if($errors->any())
+            <div class="mb-5 p-3 rounded-lg bg-red-50 border border-red-200 text-sm text-red-700 flex items-start gap-2">
+                <i class="fas fa-circle-exclamation mt-0.5 shrink-0"></i>
+                <ul class="space-y-0.5">
+                    @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+            @endif
+
+            <form method="POST" action="{{ route('register') }}" class="space-y-5" x-data="{ showPassword: false, showConfirm: false }">
                 @csrf
-                <div class="space-y-4">
 
+                <!-- Seção: Dados da Empresa -->
+                <div class="space-y-1 pb-1">
+                    <p class="text-xs font-semibold text-[#062035] uppercase tracking-wider">Dados da Empresa</p>
+                    <div class="h-px bg-gray-200"></div>
+                </div>
+
+                <!-- Nome / Razão Social -->
+                <div>
+                    <label for="name" class="block text-sm font-medium text-gray-700 mb-1.5">Nome / Razão Social <span class="text-red-500">*</span></label>
                     <div class="relative">
-                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <i class="fas fa-user h-5 w-5 text-black"></i>
+                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                            <i class="fas fa-building text-gray-400 text-sm"></i>
                         </div>
-                        <x-text-input id="name" name="name" :value="old('name')"
-                            class="block w-full pl-10 py-2 sm:py-3  border border-black rounded-md placeholder-black focus:border-black dark:focus:border-black focus:ring-black dark:focus:ring-black"
-                            required autofocus autocomplete="name" placeholder="Usuário" />
+                        <input id="name" type="text" name="name" value="{{ old('name') }}"
+                               required autofocus autocomplete="organization"
+                               placeholder="Ex: Shalom Vasos Ltda."
+                               class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#062035]/40 focus:border-[#062035] transition {{ $errors->has('name') ? 'border-red-400 bg-red-50' : '' }}">
                     </div>
-                    <x-input-error :messages="$errors->get('name')" class="mt-2 text-sm text-red-600" />
+                </div>
 
+                <!-- Nome Fantasia -->
+                <div>
+                    <label for="trading_name" class="block text-sm font-medium text-gray-700 mb-1.5">Nome Fantasia</label>
                     <div class="relative">
-                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <i class="fas fa-phone h-5 w-5 text-black"></i>
+                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                            <i class="fas fa-store text-gray-400 text-sm"></i>
                         </div>
-                        <x-text-input id="phone" name="phone" :value="old('phone')"
-                            class="block w-full pl-10 py-2 sm:py-3  border border-black rounded-md placeholder-black focus:border-black dark:focus:border-black focus:ring-black dark:focus:ring-black"
-                            type="tel" required autocomplete="tel" placeholder="Telefone"
-                            oninput="formatPhone(event)" />
+                        <input id="trading_name" type="text" name="trading_name" value="{{ old('trading_name') }}"
+                               autocomplete="off"
+                               placeholder="Ex: Shalom Vasos"
+                               class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#062035]/40 focus:border-[#062035] transition">
                     </div>
-                    <x-input-error :messages="$errors->get('phone')" class="mt-2 text-sm text-red-600" />
+                </div>
 
+                <!-- Linha: Contato + Cidade -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label for="contact_name" class="block text-sm font-medium text-gray-700 mb-1.5">Responsável / Contato <span class="text-red-500">*</span></label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                                <i class="fas fa-user text-gray-400 text-sm"></i>
+                            </div>
+                            <input id="contact_name" type="text" name="contact_name" value="{{ old('contact_name') }}"
+                                   required autocomplete="name"
+                                   placeholder="Nome do responsável"
+                                   class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#062035]/40 focus:border-[#062035] transition {{ $errors->has('contact_name') ? 'border-red-400 bg-red-50' : '' }}">
+                        </div>
+                    </div>
+                    <div>
+                        <label for="city" class="block text-sm font-medium text-gray-700 mb-1.5">Cidade <span class="text-red-500">*</span></label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                                <i class="fas fa-map-marker-alt text-gray-400 text-sm"></i>
+                            </div>
+                            <input id="city" type="text" name="city" value="{{ old('city') }}"
+                                   required autocomplete="address-level2"
+                                   placeholder="Ex: São Paulo"
+                                   class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#062035]/40 focus:border-[#062035] transition {{ $errors->has('city') ? 'border-red-400 bg-red-50' : '' }}">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Seção: Contato -->
+                <div class="space-y-1 pb-1 pt-2">
+                    <p class="text-xs font-semibold text-[#062035] uppercase tracking-wider">Informações de Contato</p>
+                    <div class="h-px bg-gray-200"></div>
+                </div>
+
+                <!-- Telefone -->
+                <div>
+                    <label for="phone" class="block text-sm font-medium text-gray-700 mb-1.5">Telefone <span class="text-red-500">*</span></label>
                     <div class="relative">
-                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <i class="fas fa-envelope h-5 w-5 text-black"></i>
+                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                            <i class="fas fa-phone text-gray-400 text-sm"></i>
                         </div>
-                        <x-text-input id="email" name="email" :value="old('email')"
-                            class="block w-full pl-10 py-2 sm:py-3  border border-black rounded-md placeholder-black focus:border-black dark:focus:border-black focus:ring-black dark:focus:ring-black"
-                            type="email" required autocomplete="username" placeholder="Email" />
+                        <input id="phone" type="tel" name="phone" value="{{ old('phone') }}"
+                               required autocomplete="tel"
+                               placeholder="(00) 0 0000-0000"
+                               oninput="formatPhone(event)"
+                               class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#062035]/40 focus:border-[#062035] transition {{ $errors->has('phone') ? 'border-red-400 bg-red-50' : '' }}">
                     </div>
-                    <x-input-error :messages="$errors->get('email')" class="mt-2 text-sm text-red-600" />
+                </div>
 
-                    <div class="relative" x-data="{ show: false }">
-                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <i class="fas fa-key h-5 w-5 text-black"></i>
+                <!-- Email -->
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-700 mb-1.5">E-mail <span class="text-red-500">*</span></label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                            <i class="fas fa-envelope text-gray-400 text-sm"></i>
                         </div>
-                        <x-text-input id="password" name="password"
-                            class="block w-full pl-10 py-2 sm:py-3  border border-black rounded-md placeholder-black focus:border-black dark:focus:border-black focus:ring-black dark:focus:ring-black"
-                            x-bind:type="show ? 'text' : 'password'" required autocomplete="new-password"
-                            placeholder="Senha" />
-                        <div class="absolute inset-y-0 right-0 pr-3 flex items-center">
-                            <button type="button" @click="show = !show"
-                                class="text-gray-400 hover:text-gray-500 focus:outline-none">
-                                <template x-if="!show">
-                                    <i class="fas fa-eye h-5 w-5 text-black"></i>
-                                </template>
-                                <template x-if="show">
-                                    <i class="fas fa-eye-slash h-5 w-5 text-black"></i>
-                                </template>
-                            </button>
-                        </div>
+                        <input id="email" type="email" name="email" value="{{ old('email') }}"
+                               required autocomplete="username"
+                               placeholder="seu@email.com"
+                               class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#062035]/40 focus:border-[#062035] transition {{ $errors->has('email') ? 'border-red-400 bg-red-50' : '' }}">
                     </div>
-                    <x-input-error :messages="$errors->get('password')" class=" text-sm text-red-600" />
-                    <div class="text-sm text-gray-600">
-                        <p><strong>Regras para a senha:</strong></p>
-                        <ul class="list-disc pl-5">
-                            <li>Ao menos 8 e no máximo 20 caracteres.</li>
-                            <li>Ao menos 1 número.</li>
-                            <li>Ao menos 1 caractere especial (ex: !@#$%).</li>
-                            <li>Ao menos 1 letra maiúscula.</li>
-                        </ul>
-                    </div>
+                </div>
 
-                    <div class="relative" x-data="{ showConfirm: false }">
-                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <i class="fas fa-key h-5 w-5 text-black"></i>
-                        </div>
-                        <x-text-input id="password_confirmation" name="password_confirmation"
-                            class="block w-full pl-10 py-2 sm:py-3  border border-black rounded-md placeholder-black focus:border-black dark:focus:border-black focus:ring-black dark:focus:ring-black"
-                            x-bind:type="showConfirm ? 'text' : 'password'" required autocomplete="new-password"
-                            placeholder="Confirmar Senha" />
-                        <div class="absolute inset-y-0 right-0 pr-3 flex items-center">
-                            <button type="button" @click="showConfirm = !showConfirm"
-                                class="text-gray-400 hover:text-gray-500 focus:outline-none">
-                                <template x-if="!showConfirm">
-                                    <i class="fas fa-eye h-5 w-5 text-black"></i>
-                                </template>
-                                <template x-if="showConfirm">
-                                    <i class="fas fa-eye-slash h-5 w-5 text-black"></i>
-                                </template>
-                            </button>
-                        </div>
-                        <x-input-error :messages="$errors->get('password_confirmation')"
-                            class="mt-2 text-sm text-red-600" />
-                    </div>
+                <!-- Seção: Acesso -->
+                <div class="space-y-1 pb-1 pt-2">
+                    <p class="text-xs font-semibold text-[#062035] uppercase tracking-wider">Dados de Acesso</p>
+                    <div class="h-px bg-gray-200"></div>
+                </div>
 
-                    <div class="flex flex-col sm:flex-row w-full mt-3 gap-2">
-                        <a href="{{ route('login') }}"
-                            class="w-full sm:w-1/2 text-center py-2 px-4 text-base bg-[#e9e9e9] text-gray-900 font-bold rounded-md hover:bg-[#c9c9c9]focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 shadow-md shadow-black/20">
-                            Voltar
-                        </a>
-                        <button type="submit"
-                            class="w-full sm:w-1/2 text-center py-2 px-4 text-base bg-[rgba(6,32,53,1)] text-white font-bold rounded-md hover:bg-[rgba(6,32,53,0.8)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 shadow-md shadow-black/20">
-                            Cadastrar
+                <!-- Senha -->
+                <div>
+                    <label for="password" class="block text-sm font-medium text-gray-700 mb-1.5">Senha <span class="text-red-500">*</span></label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                            <i class="fas fa-lock text-gray-400 text-sm"></i>
+                        </div>
+                        <input id="password" :type="showPassword ? 'text' : 'password'" name="password"
+                               required autocomplete="new-password" placeholder="••••••••"
+                               class="w-full pl-10 pr-10 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#062035]/40 focus:border-[#062035] transition {{ $errors->has('password') ? 'border-red-400 bg-red-50' : '' }}">
+                        <button type="button" @click="showPassword = !showPassword"
+                                class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-gray-400 hover:text-gray-600 transition">
+                            <i :class="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'" class="text-sm"></i>
                         </button>
                     </div>
+                    <p class="mt-1.5 text-xs text-gray-400">Mín. 8 caracteres, incluindo número, maiúscula e símbolo.</p>
+                </div>
+
+                <!-- Confirmar Senha -->
+                <div>
+                    <label for="password_confirmation" class="block text-sm font-medium text-gray-700 mb-1.5">Confirmar Senha <span class="text-red-500">*</span></label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                            <i class="fas fa-lock text-gray-400 text-sm"></i>
+                        </div>
+                        <input id="password_confirmation" :type="showConfirm ? 'text' : 'password'" name="password_confirmation"
+                               required autocomplete="new-password" placeholder="••••••••"
+                               class="w-full pl-10 pr-10 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#062035]/40 focus:border-[#062035] transition">
+                        <button type="button" @click="showConfirm = !showConfirm"
+                                class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-gray-400 hover:text-gray-600 transition">
+                            <i :class="showConfirm ? 'fas fa-eye-slash' : 'fas fa-eye'" class="text-sm"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Botões -->
+                <div class="flex gap-3 pt-2">
+                    <a href="{{ route('login') }}"
+                       class="w-1/3 py-2.5 px-4 bg-white text-gray-700 text-sm font-semibold rounded-lg border border-gray-300 hover:bg-gray-50 hover:border-gray-400 focus:outline-none transition flex items-center justify-center gap-2">
+                        <i class="fas fa-arrow-left text-xs"></i> Voltar
+                    </a>
+                    <button type="submit"
+                            class="flex-1 py-2.5 px-4 bg-[#062035] text-white text-sm font-semibold rounded-lg hover:bg-[#0a3360] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#062035] transition">
+                        Solicitar Cadastro
+                    </button>
                 </div>
             </form>
         </div>
 
-        <div class="text-center text-sm text-gray-600 mt-4">
-            SHALOM VASOS LTDA.
-        </div>
+        <p class="mt-10 text-xs text-gray-400">© {{ date('Y') }} Shalom Vasos Ltda. Todos os direitos reservados.</p>
     </div>
-    <script>
-    function formatPhone(event) {
-        let input = event.target;
-        let value = input.value.replace(/\D/g, '');
-        let formatted = '';
-        if (value.length > 0) {
-            formatted = '(' + value.substring(0, 2);
-        }
-        if (value.length > 2) {
-            formatted += ') ' + value.substring(2, 3);
-        }
-        if (value.length > 3) {
-            formatted += ' ' + value.substring(3, 7);
-        }
-        if (value.length > 7) {
-            formatted += '-' + value.substring(7, 11);
-        }
-        if (value.length > 11) {
-            value = value.substring(0, 11);
-        }
-        input.value = formatted;
-    }
-    </script>
-</body>
+</div>
 
+<script>
+function formatPhone(event) {
+    let input = event.target;
+    let value = input.value.replace(/\D/g, '');
+    let formatted = '';
+    if (value.length > 0) formatted = '(' + value.substring(0, 2);
+    if (value.length > 2) formatted += ') ' + value.substring(2, 3);
+    if (value.length > 3) formatted += ' ' + value.substring(3, 7);
+    if (value.length > 7) formatted += '-' + value.substring(7, 11);
+    if (value.length > 11) value = value.substring(0, 11);
+    input.value = formatted;
+}
+</script>
+</body>
 </html>

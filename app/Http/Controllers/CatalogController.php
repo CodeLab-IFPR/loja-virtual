@@ -106,7 +106,18 @@ class CatalogController extends Controller
         }
 
         if ($request->search) {
-            $query->where('name', 'like', '%' . $request->search . '%');
+            $term = '%' . $request->search . '%';
+            $query->where(function ($q) use ($term) {
+                $q->where('name', 'like', $term)
+                  ->orWhere('description', 'like', $term)
+                  ->orWhere('sku', 'like', $term)
+                  ->orWhere('specifications', 'like', $term)
+                  ->orWhere('dimensions', 'like', $term)
+                  ->orWhereHas('category', fn($r) => $r->where('name', 'like', $term))
+                  ->orWhereHas('size',     fn($r) => $r->where('name', 'like', $term))
+                  ->orWhereHas('material', fn($r) => $r->where('name', 'like', $term))
+                  ->orWhereHas('color',    fn($r) => $r->where('name', 'like', $term));
+            });
         }
 
         if ($request->has('price_ranges') && !empty($request->price_ranges)) {

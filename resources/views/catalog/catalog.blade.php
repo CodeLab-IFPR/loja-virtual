@@ -1,5 +1,10 @@
 @extends('layouts.app')
 
+@section('seo_title', 'Catálogo de Vasos de Concreto e Cimento | Shalom Vasos Decor — Nova Esperança PR')
+@section('seo_description', 'Explore o catálogo completo de vasos de concreto e cimento da Shalom Vasos Decor. Vasos artesanais para decoração, jardim e paisagismo. Fábrica em Nova Esperança, Paraná.')
+@section('seo_keywords', 'catálogo vasos concreto, vasos cimento decoração, vasos jardim Paraná, comprar vasos concreto, fábrica vasos PR, vasos artesanais Nova Esperança')
+@section('seo_canonical', route('catalog'))
+
 @section('content')
 <div class="min-h-screen bg-gray-50">
     <!-- Header -->
@@ -10,10 +15,49 @@
         </div>
     </div>
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8" x-data="{ filtersOpen: false }">
+
+        @php
+            $activeFilterCount = (request('search') ? 1 : 0)
+                + count(request('categories', []))
+                + count(request('price_ranges', []))
+                + count(request('materials', []))
+                + count(request('colors', []))
+                + count(request('dimensions', []));
+        @endphp
+
+        <!-- Barra de filtro mobile -->
+        <div class="lg:hidden flex items-center gap-3 mb-4">
+            <button @click="filtersOpen = !filtersOpen"
+                class="flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-200 rounded-lg shadow-sm text-sm font-semibold text-gray-700 hover:border-green-400 hover:text-green-700 transition w-full justify-between">
+                <span class="flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-.293.707L13 13.414V19a1 1 0 01-.553.894l-4 2A1 1 0 017 21v-7.586L3.293 6.707A1 1 0 013 6V4z"/>
+                    </svg>
+                    <span x-text="filtersOpen ? 'Ocultar filtros' : 'Filtrar produtos'"></span>
+                    @if($activeFilterCount > 0)
+                    <span class="inline-flex items-center justify-center w-5 h-5 text-xs font-bold bg-green-600 text-white rounded-full">{{ $activeFilterCount }}</span>
+                    @endif
+                </span>
+                <svg class="w-4 h-4 transition-transform" :class="filtersOpen ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+            </button>
+        </div>
+
         <div class="flex flex-col lg:flex-row gap-8">
-            <!-- Sidebar -->
-            <div class="lg:w-1/4">
+            <!-- Sidebar: sempre visível no desktop, toggle no mobile -->
+            <div class="lg:w-1/4"
+                x-show="filtersOpen"
+                x-transition:enter="transition ease-out duration-200"
+                x-transition:enter-start="opacity-0 -translate-y-2"
+                x-transition:enter-end="opacity-100 translate-y-0"
+                x-transition:leave="transition ease-in duration-150"
+                x-transition:leave-start="opacity-100 translate-y-0"
+                x-transition:leave-end="opacity-0 -translate-y-2"
+                :class="{ 'block': filtersOpen }"
+                class="hidden lg:block">
                 <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
                     <div class="flex justify-between items-center mb-4">
                         <h3 class="font-semibold text-gray-900">Filtrar por</h3>
@@ -23,7 +67,7 @@
                     </div>
 
                     <form id="filterForm" method="GET" action="{{ route('catalog') }}"
-                        class=" overflow-y-auto pr-3  -mr-4">
+                        class="overflow-y-auto pr-3 -mr-4">
                         <!-- Search -->
                         <div class="mb-6">
                             <input type="text" name="search" value="{{ request('search') }}"
@@ -134,10 +178,16 @@
                         </div>
 
                         <!-- Apply Filters Button -->
-                        <button type="submit"
-                            class="w-full bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition">
-                            Aplicar Filtros
-                        </button>
+                        <div class="flex gap-2">
+                            <button type="submit"
+                                class="flex-1 bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition text-sm font-semibold">
+                                Aplicar Filtros
+                            </button>
+                            <button type="button" @click="filtersOpen = false"
+                                class="lg:hidden px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition text-sm font-semibold">
+                                Ver produtos
+                            </button>
+                        </div>
                     </form>
                 </div>
             </div>
@@ -235,13 +285,13 @@
                 @if($products->count() > 0)
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     @foreach($products as $product)
-                    <div class="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition relative">
+                    <div class="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition relative flex flex-col">
                         <!-- Botão de favorito no canto superior direito -->
                         <div class="absolute top-2 right-2 z-10">
                             <x-favorite-button :product="$product" />
                         </div>
 
-                        <div class="h-48 bg-gray-200 flex items-center justify-center">
+                        <div class="h-48 bg-gray-200 flex items-center justify-center shrink-0">
                             @if($product->first_image)
                             <img src="{{ $product->first_image }}" alt="{{ $product->name }}"
                                 class="w-full h-full object-cover">
@@ -249,7 +299,7 @@
                             <div class="text-gray-400 text-6xl">🏺</div>
                             @endif
                         </div>
-                        <div class="p-6">
+                        <div class="p-6 flex flex-col flex-1">
                             <h3 class="text-lg font-semibold text-gray-900 mb-2">{{ $product->name }}</h3>
                             <p class="text-gray-600 text-sm mb-4">{{ Str::limit($product->description, 100) }}</p>
 
@@ -264,9 +314,7 @@
                             <p class="text-sm text-blue-600 mb-4">🔒 Faça login para ver preços</p>
                             @endauth
 
-                            <div class="flex justify-between items-center">
-                                <!-- <span
-                                    class="text-sm text-gray-500 bg-gray-100 px-2 py-1 rounded w-36">{{ $product->category->name }}</span> -->
+                            <div class="mt-auto flex justify-end">
                                 <a href="{{ route('catalog.product', $product->slug) }}"
                                     class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition text-sm w-36 text-center">
                                     Ver Detalhes
@@ -321,15 +369,13 @@ function clearAllFilters() {
     checkboxes.forEach(checkbox => checkbox.checked = false);
 
     // Limpar campo de busca
-    document.querySelector('input[name="search"]').value = '';
-
-    // Submeter form limpo
+    document.querySelector('#filterForm input[name="search"]').value = '';
     document.getElementById('filterForm').submit();
 }
 
 function clearFilter(filterName) {
     if (filterName === 'search') {
-        document.querySelector('input[name="search"]').value = '';
+        document.querySelector('#filterForm input[name="search"]').value = '';
     }
     document.getElementById('filterForm').submit();
 }
@@ -375,7 +421,7 @@ function clearDimensionFilter(dimension) {
 }
 
 // Aplicar filtros automaticamente quando busca é alterada
-document.querySelector('input[name="search"]').addEventListener('input', function() {
+document.querySelector('#filterForm input[name="search"]').addEventListener('input', function() {
     clearTimeout(this.searchTimeout);
     this.searchTimeout = setTimeout(() => {
         applyFilters();

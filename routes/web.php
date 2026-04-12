@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\FavoriteController;
+use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\SizeController as AdminSizeController;
@@ -20,6 +21,7 @@ use Illuminate\Support\Facades\Auth;
 // Rotas públicas
 // =============================
 Route::get('/', [CatalogController::class, 'index'])->name('home');
+Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 Route::get('/catalogo', [CatalogController::class, 'catalog'])->name('catalog');
 Route::get('/categoria/{category}', [CatalogController::class, 'category'])->name('catalog.category');
 Route::get('/cor/{color}', [CatalogController::class, 'color'])->name('catalog.color');

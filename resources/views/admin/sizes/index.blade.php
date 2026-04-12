@@ -160,15 +160,15 @@
                             {{ $size->products()->count() }} produtos
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            <div class="flex space-x-2">
+                            <div class="flex flex-wrap gap-1">
                                 <a href="{{ route('admin.sizes.show', $size) }}"
-                                    class="text-blue-600 hover:text-blue-900">Ver</a>
+                                    class="inline-flex items-center px-2.5 py-1 rounded text-xs font-medium bg-blue-100 text-blue-700 hover:bg-blue-200 transition-colors duration-150">Ver</a>
 
                                 <a href="{{ route('admin.sizes.edit', $size) }}"
-                                    class="text-indigo-600 hover:text-indigo-900">Editar</a>
+                                    class="inline-flex items-center px-2.5 py-1 rounded text-xs font-medium bg-indigo-100 text-indigo-700 hover:bg-indigo-200 transition-colors duration-150">Editar</a>
 
                                 <button onclick="toggleStatus({{ $size->id }})"
-                                    class="text-yellow-600 hover:text-yellow-900">
+                                    class="inline-flex items-center px-2.5 py-1 rounded text-xs font-medium bg-yellow-100 text-yellow-700 hover:bg-yellow-200 transition-colors duration-150">
                                     {{ $size->active ? 'Desativar' : 'Ativar' }}
                                 </button>
 
@@ -176,7 +176,7 @@
                                     onsubmit="return confirm('Tem certeza que deseja excluir este tamanho?')">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="text-red-600 hover:text-red-900">
+                                    <button type="submit" class="inline-flex items-center px-2.5 py-1 rounded text-xs font-medium bg-red-100 text-red-700 hover:bg-red-200 transition-colors duration-150">
                                         Excluir
                                     </button>
                                 </form>

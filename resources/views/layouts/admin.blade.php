@@ -32,7 +32,7 @@
                                 <div class="h-8 w-8 bg-blue-600 rounded-lg flex items-center justify-center mr-2">
                                     <span class="text-white font-bold text-lg">V</span>
                                 </div>
-                                <span class="text-xl font-bold text-gray-800">Fábrica de Vasos - Admin</span>
+                                <span class="text-xl font-bold text-gray-800">Shalom Vasos</span>
                             </a>
                         </div>
 

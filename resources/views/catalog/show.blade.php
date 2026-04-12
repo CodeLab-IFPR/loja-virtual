@@ -1,5 +1,64 @@
 @extends('layouts.app')
 
+@section('seo_title', $product->name . ' — Vaso de Concreto | Shalom Vasos Decor')
+@section('seo_description', Str::limit(strip_tags($product->description ?? 'Vaso de concreto artesanal ' . $product->name . ' da Shalom Vasos Decor, fábrica em Nova Esperança – PR. Ideal para decoração, jardim e paisagismo.'), 155))
+@section('seo_keywords', $product->name . ', vaso concreto, ' . ($product->category->name ?? '') . ', Shalom Vasos Decor, Nova Esperança Paraná')
+@section('seo_canonical', route('catalog.product', $product->slug))
+@section('og_type', 'product')
+@section('og_image', $product->first_image ?? asset('images/icons/Logo_shalom.png'))
+
+@push('structured_data')
+<script type="application/ld+json">
+{
+    "@@context": "https://schema.org",
+    "@@type": "Product",
+    "name": "{{ $product->name }}",
+    "description": "{{ Str::limit(strip_tags($product->description ?? ''), 200) }}",
+    "image": "{{ $product->first_image ?? asset('images/icons/Logo_shalom.png') }}",
+    "url": "{{ route('catalog.product', $product->slug) }}",
+    "brand": {
+        "@@type": "Brand",
+        "name": "Shalom Vasos Decor"
+    },
+    "category": "{{ $product->category->name ?? 'Vasos de Concreto' }}",
+    "manufacturer": {
+        "@@type": "Organization",
+        "name": "Shalom Vasos Decor",
+        "address": {
+            "@@type": "PostalAddress",
+            "streetAddress": "Rua Projetada Y, 5",
+            "addressLocality": "Nova Esperança",
+            "addressRegion": "PR",
+            "addressCountry": "BR"
+        }
+    },
+    "offers": {
+        "@@type": "Offer",
+        "availability": "{{ $product->status === 'active' ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock' }}",
+        "priceCurrency": "BRL",
+        "url": "{{ route('catalog.product', $product->slug) }}",
+        "seller": {
+            "@@type": "Organization",
+            "name": "Shalom Vasos Decor"
+        }
+    }
+}
+</script>
+
+<script type="application/ld+json">
+{
+    "@@context": "https://schema.org",
+    "@@type": "BreadcrumbList",
+    "itemListElement": [
+        { "@@type": "ListItem", "position": 1, "name": "Início", "item": "{{ route('home') }}" },
+        { "@@type": "ListItem", "position": 2, "name": "Catálogo", "item": "{{ route('catalog') }}" },
+        { "@@type": "ListItem", "position": 3, "name": "{{ $product->category->name ?? '' }}", "item": "{{ route('catalog.category', $product->category->slug) }}" },
+        { "@@type": "ListItem", "position": 4, "name": "{{ $product->name }}", "item": "{{ route('catalog.product', $product->slug) }}" }
+    ]
+}
+</script>
+@endpush
+
 @section('content')
 <div class="min-h-screen bg-gray-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -255,43 +314,74 @@
 </div>
 
 <!-- Modal de Zoom da Imagem -->
-<div id="imageModal" class="fixed inset-0 bg-black bg-opacity-75 z-50 hidden items-center justify-center p-4">
-    <div class="relative max-w-4xl max-h-full">
-        <img id="modalImage" src="" alt="" class="max-w-full max-h-full object-contain rounded-lg">
-        <button onclick="closeImageModal()" class="absolute top-4 right-4 text-white bg-black bg-opacity-50 rounded-full p-2 hover:bg-opacity-75 transition-all">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-            </svg>
-        </button>
+<div id="imageModal" class="fixed inset-0 bg-black bg-opacity-90 z-50 hidden items-center justify-center" role="dialog" aria-modal="true">
+
+    <!-- Fechar ao clicar no fundo -->
+    <div class="absolute inset-0" onclick="closeImageModal()"></div>
+
+    <!-- Seta Anterior -->
+    <button id="modalPrev" onclick="changeModalImage(-1)"
+        class="absolute left-3 sm:left-6 z-10 text-white bg-black bg-opacity-50 hover:bg-opacity-80 rounded-full p-3 transition-all disabled:opacity-20 disabled:cursor-default">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+        </svg>
+    </button>
+
+    <!-- Imagem + Contador -->
+    <div class="relative flex flex-col items-center max-w-[90vw] max-h-[90vh]" onclick="event.stopPropagation()">
+        <img id="modalImage" src="" alt=""
+            class="max-w-[90vw] max-h-[80vh] object-contain rounded-lg shadow-2xl select-none">
+        <span id="modalCounter" class="mt-3 text-white text-sm opacity-70"></span>
     </div>
+
+    <!-- Seta Próxima -->
+    <button id="modalNext" onclick="changeModalImage(1)"
+        class="absolute right-3 sm:right-6 z-10 text-white bg-black bg-opacity-50 hover:bg-opacity-80 rounded-full p-3 transition-all disabled:opacity-20 disabled:cursor-default">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+        </svg>
+    </button>
+
+    <!-- Fechar -->
+    <button onclick="closeImageModal()"
+        class="absolute top-4 right-4 z-10 text-white bg-black bg-opacity-50 hover:bg-opacity-80 rounded-full p-2 transition-all">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+    </button>
 </div>
 
+@php
+    $modalImageUrls = $allImages->map(fn($img) => asset('storage/' . $img['path']))->values();
+@endphp
+
 <script>
-    function changeMainProductImage(src, element) {
-        // Mudar a imagem principal
-        document.getElementById('mainProductImage').src = src;
-        
-        // Atualizar onclick do modal
-        document.getElementById('mainProductImage').onclick = function() {
-            openImageModal(src);
-        };
-        
-        // Atualizar bordas das miniaturas
-        document.querySelectorAll('.thumbnail-image').forEach(thumb => {
-            thumb.classList.remove('border-green-500');
-            thumb.classList.add('border-gray-200');
-        });
-        
-        // Adicionar borda verde na miniatura clicada
-        element.classList.remove('border-gray-200');
-        element.classList.add('border-green-500');
-    }
+    const modalImages = @json($modalImageUrls);
+    let modalIndex = 0;
 
     function openImageModal(src) {
-        document.getElementById('modalImage').src = src;
+        modalIndex = modalImages.indexOf(src);
+        if (modalIndex === -1) modalIndex = 0;
+        renderModal();
         document.getElementById('imageModal').classList.remove('hidden');
         document.getElementById('imageModal').classList.add('flex');
         document.body.style.overflow = 'hidden';
+    }
+
+    function renderModal() {
+        document.getElementById('modalImage').src = modalImages[modalIndex];
+        document.getElementById('modalCounter').textContent = modalImages.length > 1
+            ? (modalIndex + 1) + ' / ' + modalImages.length : '';
+        document.getElementById('modalPrev').disabled = modalIndex === 0;
+        document.getElementById('modalNext').disabled = modalIndex === modalImages.length - 1;
+    }
+
+    function changeModalImage(dir) {
+        const next = modalIndex + dir;
+        if (next >= 0 && next < modalImages.length) {
+            modalIndex = next;
+            renderModal();
+        }
     }
 
     function closeImageModal() {
@@ -300,18 +390,22 @@
         document.body.style.overflow = 'auto';
     }
 
-    // Fechar modal ao clicar fora da imagem
-    document.getElementById('imageModal').addEventListener('click', function(e) {
-        if (e.target === this) {
-            closeImageModal();
-        }
-    });
+    function changeMainProductImage(src, element) {
+        document.getElementById('mainProductImage').src = src;
+        document.getElementById('mainProductImage').onclick = function() { openImageModal(src); };
+        document.querySelectorAll('.thumbnail-image').forEach(t => {
+            t.classList.remove('border-green-500');
+            t.classList.add('border-gray-200');
+        });
+        element.classList.remove('border-gray-200');
+        element.classList.add('border-green-500');
+    }
 
-    // Fechar modal com tecla Escape
     document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-            closeImageModal();
-        }
+        if (!document.getElementById('imageModal').classList.contains('flex')) return;
+        if (e.key === 'Escape')      closeImageModal();
+        if (e.key === 'ArrowLeft')   changeModalImage(-1);
+        if (e.key === 'ArrowRight')  changeModalImage(1);
     });
 </script>
 @endsection
