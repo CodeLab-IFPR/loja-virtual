@@ -31,17 +31,17 @@
             </p>
             <div class="mt-10 grid grid-cols-3 gap-6 text-center">
                 <div>
-                    <div class="text-white/90 text-2xl font-bold">500+</div>
+                    <div class="text-white/90 text-2xl font-bold">50+</div>
                     <div class="text-white/50 text-xs mt-1 uppercase tracking-wider">Produtos</div>
                 </div>
                 <div class="border-x border-white/10 px-4">
-                    <div class="text-white/90 text-2xl font-bold">50+</div>
+                    <div class="text-white/90 text-2xl font-bold">10+</div>
                     <div class="text-white/50 text-xs mt-1 uppercase tracking-wider">Categorias</div>
                 </div>
-                <div>
+               <!--  <div>
                     <div class="text-white/90 text-2xl font-bold">24h</div>
                     <div class="text-white/50 text-xs mt-1 uppercase tracking-wider">Suporte</div>
-                </div>
+                </div> -->
             </div>
         </div>
     </div>

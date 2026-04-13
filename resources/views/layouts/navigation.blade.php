@@ -42,6 +42,10 @@
                     class="text-lg font-semibold hover:text-gray-300 transition {{ request()->routeIs('favorites.*') ? 'underline' : '' }}">
                     {{ __('Favoritos') }}
                 </a>
+                <a href="{{ route('orders.index') }}"
+                    class="text-lg font-semibold hover:text-gray-300 transition {{ request()->routeIs('orders.*') ? 'underline' : '' }}">
+                    {{ __('Meus Pedidos') }}
+                </a>
                 @endif
                 @endauth
             </div>
@@ -84,13 +88,27 @@
                 </div>-->
 
                 <!-- Endereço -->
-                <div class="hidden xl:flex items-center text-sm text-center">
-                    <span>Rua Projetada Y, 5<br>Nova Esperança</span>
-                </div>
+              <!--   <div class="hidden xl:flex items-center text-sm text-center">
+                    <span>Rua Projetada Y, 5<br>Nova Esperança/PR</span>
+                </div> -->
 
                 <!-- Minha Conta -->
-                <div class="flex items-center">
+                <div class="flex items-center gap-3">
                     @auth
+                    @if(!Auth::user()->isAdmin())
+                    {{-- Cart icon with badge --}}
+                    @php $cartCount = \App\Models\CartItem::where('user_id', Auth::id())->sum('quantity'); @endphp
+                    <a href="{{ route('cart.index') }}" class="relative flex items-center text-white hover:text-gray-300 transition" title="Meu Carrinho">
+                        <svg class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+                        </svg>
+                        @if($cartCount > 0)
+                        <span class="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center leading-none">
+                            {{ $cartCount > 99 ? '99+' : $cartCount }}
+                        </span>
+                        @endif
+                    </a>
+                    @endif
                     <a href="{{ route('dashboard') }}" class="flex items-center space-x-3 hover:text-gray-300"
                         title="Acessar minha conta">
                         <div class="p-2 bg-gray-600 rounded-full">
@@ -180,6 +198,10 @@
                 <x-responsive-nav-link :href="route('profile.edit')">{{ __('Perfil') }}</x-responsive-nav-link>
                 <x-responsive-nav-link :href="route('favorites.index')">{{ __('Meus Favoritos') }}
                 </x-responsive-nav-link>
+                @if(!Auth::user()->isAdmin())
+                <x-responsive-nav-link :href="route('cart.index')">{{ __('Meu Carrinho') }}</x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('orders.index')">{{ __('Meus Pedidos') }}</x-responsive-nav-link>
+                @endif
                 @endauth
 
                 <a href="{{ route('home') }}"

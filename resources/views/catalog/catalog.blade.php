@@ -49,7 +49,7 @@
         <div class="flex flex-col lg:flex-row gap-8">
             <!-- Sidebar: sempre visível no desktop, toggle no mobile -->
             <div class="lg:w-1/4"
-                x-show="filtersOpen"
+                x-show="filtersOpen || window.innerWidth >= 1024"
                 x-transition:enter="transition ease-out duration-200"
                 x-transition:enter-start="opacity-0 -translate-y-2"
                 x-transition:enter-end="opacity-100 translate-y-0"

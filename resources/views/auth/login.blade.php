@@ -33,17 +33,17 @@
 
             <div class="mt-12 grid grid-cols-3 gap-6 text-center">
                 <div>
-                    <div class="text-white/90 text-2xl font-bold">500+</div>
+                    <div class="text-white/90 text-2xl font-bold">50+</div>
                     <div class="text-white/50 text-xs mt-1 uppercase tracking-wider">Produtos</div>
                 </div>
                 <div class="border-x border-white/10 px-4">
-                    <div class="text-white/90 text-2xl font-bold">50+</div>
+                    <div class="text-white/90 text-2xl font-bold">10+</div>
                     <div class="text-white/50 text-xs mt-1 uppercase tracking-wider">Categorias</div>
                 </div>
-                <div>
+              <!--   <div>
                     <div class="text-white/90 text-2xl font-bold">24h</div>
                     <div class="text-white/50 text-xs mt-1 uppercase tracking-wider">Suporte</div>
-                </div>
+                </div> -->
             </div>
         </div>
     </div>
@@ -63,7 +63,12 @@
             </div>
 
             <!-- Status -->
-            <x-auth-session-status class="mb-4" :status="session('status')" />
+            @if(session('status'))
+            <div class="mb-4 p-4 rounded-lg bg-green-50 border border-green-200 text-sm text-green-700 flex items-start gap-3">
+                <i class="fas fa-circle-check mt-0.5 shrink-0 text-green-500"></i>
+                <span>Sua senha foi redefinida com sucesso. Faça login com sua nova senha.</span>
+            </div>
+            @endif
 
             <!-- Erros gerais -->
             @if($errors->any())

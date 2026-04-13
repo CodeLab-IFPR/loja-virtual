@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\Admin\DashboardController;
@@ -14,6 +15,7 @@ use App\Http\Controllers\Admin\ColorController as AdminColorController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Admin\SlideController as AdminSlideController;
+use App\Http\Controllers\Admin\ReportController as AdminReportController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -36,6 +38,16 @@ Route::middleware('auth')->group(function () {
     Route::post('/carrinho/adicionar', [CartController::class, 'add'])->name('cart.add');
     Route::patch('/carrinho/{item}', [CartController::class, 'update'])->name('cart.update');
     Route::delete('/carrinho/{item}', [CartController::class, 'remove'])->name('cart.remove');
+    Route::get('/carrinho/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
+    Route::post('/carrinho/finalizar', [CartController::class, 'placeOrder'])->name('cart.place-order');
+});
+
+// =============================
+// Pedidos do cliente (somente autenticado)
+// =============================
+Route::middleware('auth')->group(function () {
+    Route::get('/meus-pedidos', [OrderController::class, 'index'])->name('orders.index');
+    Route::get('/meus-pedidos/{order}', [OrderController::class, 'show'])->name('orders.show');
 });
 
 // =============================
@@ -92,8 +104,14 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('users/bulk-action', [AdminUserController::class, 'bulkAction'])->name('users.bulk-action');
 
     // Pedidos
-    Route::resource('orders', AdminOrderController::class);
+    Route::resource('orders', AdminOrderController::class)->except(['create', 'store', 'edit', 'destroy']);
     Route::patch('orders/{order}/status', [AdminOrderController::class, 'updateStatus'])->name('orders.status');
+    Route::post('orders/{order}/items', [AdminOrderController::class, 'addItem'])->name('orders.items.add');
+    Route::patch('orders/{order}/items/{item}', [AdminOrderController::class, 'updateItem'])->name('orders.items.update');
+    Route::delete('orders/{order}/items/{item}', [AdminOrderController::class, 'removeItem'])->name('orders.items.destroy');
+
+    // Relatórios
+    Route::get('reports', [AdminReportController::class, 'index'])->name('reports.index');
 
     // Slides
     Route::get('slides', [AdminSlideController::class, 'index'])->name('slides.index');

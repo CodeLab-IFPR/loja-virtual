@@ -68,6 +68,10 @@
                                 :active="request()->routeIs('admin.orders.*')">
                                 {{ __('Pedidos') }}
                             </x-nav-link>
+                            <x-nav-link :href="route('admin.reports.index')"
+                                :active="request()->routeIs('admin.reports.*')">
+                                {{ __('Relatórios') }}
+                            </x-nav-link>
                             <!-- <x-nav-link :href="route('admin.slides.index')"
                                 :active="request()->routeIs('admin.slides.*')">
                                 {{ __('Slides') }}
