@@ -102,7 +102,7 @@
                         @else
                             <span class="inline-flex items-center gap-1 text-xs font-medium text-[#062035]/70 bg-slate-100 px-2 py-1 rounded-full">
                                 <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
-                                Faça login para ver
+                                Faça login para ver o preço
                             </span>
                         @endauth
                     </div>

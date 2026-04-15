@@ -316,7 +316,7 @@
 
                             <div class="mt-auto flex justify-end">
                                 <a href="{{ route('catalog.product', $product->slug) }}"
-                                    class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition text-sm w-36 text-center">
+                                    class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition text-sm w-36 text-center after:absolute after:inset-0">
                                     Ver Detalhes
                                 </a>
                             </div>
