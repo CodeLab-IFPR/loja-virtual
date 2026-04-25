@@ -48,7 +48,6 @@
                             <tr x-data="{ editing: false, qty: {{ $item->quantity }}, price: {{ $item->unit_price }} }">
                                 <td class="px-6 py-3">
                                     <p class="font-medium text-gray-900">{{ $item->product_name }}</p>
-                                    <p class="text-xs text-gray-400">SKU: {{ $item->product_sku }}</p>
                                 </td>
                                 <td class="px-4 py-3 text-center">
                                     <span x-show="!editing">{{ $item->quantity }}</span>

@@ -80,7 +80,9 @@
                         <tr>
                             <td class="px-6 py-3">
                                 <p class="font-medium text-gray-900">{{ $item->product_name }}</p>
-                                <p class="text-xs text-gray-400">SKU: {{ $item->product_sku }}</p>
+                                @if($item->size_name)
+                                    <p class="text-xs text-gray-500">Tamanho: {{ $item->size_name }}</p>
+                                @endif
                             </td>
                             <td class="px-4 py-3 text-center text-gray-700">{{ $item->quantity }}</td>
                             <td class="px-4 py-3 text-right text-gray-700">R$ {{ number_format($item->unit_price, 2, ',', '.') }}</td>

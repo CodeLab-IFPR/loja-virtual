@@ -170,8 +170,6 @@
                     <h1 class="text-3xl font-bold text-gray-900 mb-4">{{ $product->name }}</h1>
                     
                     <div class="text-gray-600 mb-6">
-                        <p class="text-sm text-gray-500 mb-2">SKU: {{ $product->sku }}</p>
-                        
                         @auth
                             @if(auth()->user()->canSeePrices())
                                 <div class="text-4xl font-bold text-green-600 mb-4">R$ {{ number_format($product->price, 2, ',', '.') }}</div>
@@ -200,7 +198,7 @@
                     @if($product->specifications)
                         <div class="mb-6">
                             <h3 class="font-semibold text-gray-900 mb-2">Especificações</h3>
-                            <p class="text-gray-600">{{ $product->specifications }}</p>
+                            <p class="text-gray-600 leading-relaxed">{!! nl2br(e($product->specifications)) !!}</p>
                         </div>
                     @endif
 
@@ -219,21 +217,20 @@
                             </div>
                         @endif
 
-                        @if($product->dimensions)
-                            <div>
-                                <h3 class="font-semibold text-gray-900 mb-0.5 ">Dimensões</h3>
-                                <p class="text-gray-600">{{ $product->dimensions }}</p>
-                            </div>
-                        @endif
-
-                        @if($product->size)
-                            <div>
-                                <h3 class="font-semibold text-gray-900 mb-1">Tamanho</h3>
-                                <p class="text-gray-600">{{ $product->size->name }}</p>
-                            </div>
-                        @endif
-
                     </div>
+
+                    @if($product->sizes->count() > 0)
+                        <div class="mb-6">
+                            <h3 class="font-semibold text-gray-900 mb-2">Tamanhos disponíveis</h3>
+                            <div class="flex flex-wrap gap-2">
+                                @foreach($product->sizes as $size)
+                                    <span class="inline-block bg-gray-100 text-gray-800 text-sm font-medium px-3 py-1 rounded-full border border-gray-300">
+                                        {{ $size->name }}
+                                    </span>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
 
                     <div class="mb-6">
                         <div class="flex items-center gap-4 text-sm">
@@ -258,17 +255,43 @@
 
                     @auth
                         @if(auth()->user()->canSeePrices() && $product->isInStock())
-                            <div class="space-y-3">
+                            <div class="space-y-3" x-data="{ selectedSize: null }">
                                 <form action="{{ route('cart.add') }}" method="POST">
                                     @csrf
                                     <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                    <input type="hidden" name="size_id" :value="selectedSize">
+
+                                    @if($product->sizes->count() > 0)
+                                        <div class="mb-4">
+                                            <label class="block font-medium text-gray-700 mb-2">Selecione o tamanho: <span class="text-red-500">*</span></label>
+                                            <div class="flex flex-wrap gap-2">
+                                                @foreach($product->sizes as $size)
+                                                    <button type="button"
+                                                        @click="selectedSize = {{ $size->id }}"
+                                                        :class="selectedSize === {{ $size->id }}
+                                                            ? 'bg-green-600 text-white border-green-600'
+                                                            : 'bg-white text-gray-800 border-gray-300 hover:border-green-500'"
+                                                        class="px-4 py-2 rounded-lg border-2 font-medium text-sm transition-all duration-150">
+                                                        {{ $size->name }}
+                                                    </button>
+                                                @endforeach
+                                            </div>
+                                            <p x-show="selectedSize === null" class="text-xs text-red-500 mt-1">Por favor, selecione um tamanho antes de adicionar ao carrinho.</p>
+                                        </div>
+                                    @endif
+
                                     <div class="flex items-center space-x-4 mb-4">
                                         <label for="quantity" class="font-medium text-gray-700">Quantidade:</label>
                                         <input type="number" name="quantity" id="quantity" value="1" min="1" 
                                                @if($product->manage_stock) max="{{ $product->stock }}" @endif
                                                class="border border-gray-300 rounded px-3 py-2 w-20">
                                     </div>
-                                    <button type="submit" class="w-full bg-green-600 text-white py-3 px-6 rounded-lg hover:bg-green-700 transition font-medium">
+                                    <button type="submit"
+                                        @if($product->sizes->count() > 0)
+                                            :disabled="selectedSize === null"
+                                            :class="selectedSize === null ? 'opacity-50 cursor-not-allowed' : 'hover:bg-green-700'"
+                                        @endif
+                                        class="w-full bg-green-600 text-white py-3 px-6 rounded-lg transition font-medium">
                                         Adicionar ao Carrinho
                                     </button>
                                 </form>

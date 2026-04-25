@@ -22,7 +22,7 @@ class ProfileUpdateRequest extends FormRequest
             'phone'        => ['required', 'string', 'max:20'],
             'document'     => ['required', 'string', 'max:20'],
             'city'         => ['required', 'string', 'max:100'],
-            'cep'          => ['required', 'string', 'size:8'],
+            'cep'          => ['required', 'string', 'max:9'],
             'street'       => ['required', 'string', 'max:255'],
             'number'       => ['required', 'string', 'max:20'],
             'complement'   => ['nullable', 'string', 'max:255'],
@@ -35,7 +35,7 @@ class ProfileUpdateRequest extends FormRequest
         return [
             'contact_name.required' => 'O nome do responsável é obrigatório.',
             'city.required'         => 'A cidade é obrigatória.',
-            'cep.size'              => 'O CEP deve ter 8 dígitos.',
+            'cep.max'               => 'CEP inválido.',
             'state.size'            => 'O estado deve ter 2 letras (ex: SP).',
         ];
     }

@@ -34,16 +34,25 @@ class CartController extends Controller
         $request->validate([
             'product_id' => 'required|exists:products,id',
             'quantity'   => 'required|integer|min:1',
+            'size_id'    => 'nullable|exists:sizes,id',
         ]);
 
-        $product = Product::findOrFail($request->product_id);
+        $product = Product::with('sizes')->findOrFail($request->product_id);
+
+        // Require size selection when product has sizes
+        if ($product->sizes->count() > 0 && empty($request->size_id)) {
+            return back()->with('error', 'Por favor, selecione um tamanho para este produto.');
+        }
 
         if ($product->manage_stock && $product->stock < $request->quantity) {
             return back()->with('error', 'Estoque insuficiente para a quantidade solicitada.');
         }
 
+        $sizeId = $request->size_id ?: null;
+
         $existing = CartItem::where('user_id', Auth::id())
             ->where('product_id', $product->id)
+            ->where('size_id', $sizeId)
             ->first();
 
         $newQty = ($existing?->quantity ?? 0) + $request->quantity;
@@ -53,7 +62,7 @@ class CartController extends Controller
         }
 
         CartItem::updateOrCreate(
-            ['user_id' => Auth::id(), 'product_id' => $product->id],
+            ['user_id' => Auth::id(), 'product_id' => $product->id, 'size_id' => $sizeId],
             ['quantity' => $newQty]
         );
 
@@ -87,7 +96,7 @@ class CartController extends Controller
 
     public function checkout()
     {
-        $items = CartItem::with('product')
+        $items = CartItem::with('product', 'size')
             ->where('user_id', Auth::id())
             ->get();
 
@@ -108,7 +117,7 @@ class CartController extends Controller
             return redirect()->route('cart.index')->with('error', 'Apenas clientes aprovados podem fazer pedidos.');
         }
 
-        $cartItems = CartItem::with('product')
+        $cartItems = CartItem::with('product', 'size')
             ->where('user_id', $user->id)
             ->get();
 
@@ -173,6 +182,7 @@ class CartController extends Controller
                     'total_price'  => $product->price * $cartItem->quantity,
                     'product_name' => $product->name,
                     'product_sku'  => $product->sku,
+                    'size_name'    => $cartItem->size?->name,
                 ]);
 
                 if ($product->manage_stock) {

@@ -120,6 +120,9 @@
                                     @endif
                                     <div class="flex-1 min-w-0">
                                         <p class="text-sm font-medium text-gray-800 truncate">{{ $item->product->name }}</p>
+                                        @if($item->size)
+                                            <p class="text-xs text-gray-500">Tamanho: {{ $item->size->name }}</p>
+                                        @endif
                                         <p class="text-xs text-gray-500">Qtd: {{ $item->quantity }}</p>
                                     </div>
                                     <p class="text-sm font-semibold text-gray-900 whitespace-nowrap">

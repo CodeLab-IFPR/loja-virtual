@@ -27,7 +27,6 @@ class Product extends Model
         'active',
         'featured',
         'category_id',
-        'size_id',
         'material_id',
         'color_id',
     ];
@@ -45,9 +44,9 @@ class Product extends Model
         return $this->belongsTo(Category::class);
     }
 
-    public function size()
+    public function sizes()
     {
-        return $this->belongsTo(Size::class);
+        return $this->belongsToMany(Size::class)->orderBy('sort_order');
     }
     
     public function material()

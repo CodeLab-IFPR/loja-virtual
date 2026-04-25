@@ -5,7 +5,8 @@
         <p class="text-sm text-gray-500 mt-0.5">Mantenha seus dados atualizados</p>
     </div>
 
-    <form method="post" action="{{ route('profile.update') }}" class="space-y-5">
+    <form method="post" action="{{ route('profile.update') }}" class="space-y-5" @input="validate()"
+          @change="validate()">
         @csrf
         @method('patch')
 
@@ -142,7 +143,7 @@
                 <x-text-input id="cep" name="cep" type="text"
                     class="block w-full pl-10 py-2.5 border border-gray-300 rounded-lg text-sm focus:border-[#062035] focus:ring-[#062035]/40"
                     :value="old('cep', $user->address['cep'] ?? '')" required
-                    placeholder="00000-000" @input.debounce="fetchAddress" x-model="form.cep" />
+                    placeholder="00000-000" @input="formatCep" @input.debounce.600ms="fetchAddress" x-model="form.cep" />
                 <x-input-error :messages="$errors->get('cep')" class="mt-1 text-sm text-red-600" />
             </div>
         </div>
@@ -222,7 +223,7 @@ function profileForm() {
         init() {
             this.formatPhone();
             this.formatDocument();
-            this.$watch('form', () => this.validate(), { deep: true });
+            this.formatCep();
             this.validate();
         },
 
@@ -234,6 +235,7 @@ function profileForm() {
             if (phone.length > 3) f += ' ' + phone.substring(3, 7);
             if (phone.length > 7) f += '-' + phone.substring(7, 11);
             this.form.phone = f;
+            this.validate();
         },
 
         formatDocument() {
@@ -252,6 +254,17 @@ function profileForm() {
                 if (d.length > 12) f += '-' + d.substring(12, Math.min(14, d.length));
             }
             this.form.document = f;
+            this.validate();
+        },
+
+        formatCep() {
+            let cep = this.form.cep.replace(/\D/g, '').substring(0, 8);
+            if (cep.length > 5) {
+                this.form.cep = cep.substring(0, 5) + '-' + cep.substring(5);
+            } else {
+                this.form.cep = cep;
+            }
+            this.validate();
         },
 
         validate() {
@@ -269,6 +282,7 @@ function profileForm() {
                     this.form.street = data.logradouro || '';
                     this.form.city   = data.localidade || '';
                     this.form.state  = data.uf || '';
+                    this.validate();
                 }
             } catch (e) { console.error(e); }
         }

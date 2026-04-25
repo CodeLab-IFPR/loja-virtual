@@ -113,7 +113,6 @@
                                     @endif
                                     
                                     <h4 class="font-medium text-gray-900 truncate">{{ $product->name }}</h4>
-                                    <p class="text-sm text-gray-500 mb-2">{{ $product->sku }}</p>
                                     
                                     <div class="flex justify-between items-center">
                                         <span class="text-sm font-medium text-green-600">

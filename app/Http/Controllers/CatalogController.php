@@ -114,7 +114,7 @@ class CatalogController extends Controller
                   ->orWhere('specifications', 'like', $term)
                   ->orWhere('dimensions', 'like', $term)
                   ->orWhereHas('category', fn($r) => $r->where('name', 'like', $term))
-                  ->orWhereHas('size',     fn($r) => $r->where('name', 'like', $term))
+                  ->orWhereHas('sizes',    fn($r) => $r->where('name', 'like', $term))
                   ->orWhereHas('material', fn($r) => $r->where('name', 'like', $term))
                   ->orWhereHas('color',    fn($r) => $r->where('name', 'like', $term));
             });
@@ -173,6 +173,8 @@ class CatalogController extends Controller
         if (!$product->active) {
             abort(404);
         }
+
+        $product->load('sizes');
 
         $relatedProducts = Product::where('category_id', $product->category_id)
             ->where('id', '!=', $product->id)

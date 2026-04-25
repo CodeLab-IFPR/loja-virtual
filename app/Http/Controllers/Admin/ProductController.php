@@ -19,8 +19,7 @@ class ProductController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Product::with('category', 'size'); // dar uma olhada
-        // $query = Product::with('category', 'size', 'material', 'color'); // dar uma olhada
+        $query = Product::with('category', 'sizes');
 
         // Busca por nome, descrição ou SKU
         if ($request->has('search') && $request->search !== '') {
@@ -99,12 +98,13 @@ class ProductController extends Controller
             'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'active' => 'boolean',
             'featured' => 'boolean',
-            'size_id' => 'nullable|exists:sizes,id',
+            'sizes'       => 'nullable|array',
+            'sizes.*'     => 'exists:sizes,id',
             'color_id' => 'nullable|exists:colors,id',
             'material_id' => 'nullable|exists:materials,id',
         ]);
 
-        $data = $request->all();
+        $data = $request->except(['sizes']);
         $data['slug'] = Str::slug($request->name);
         $data['active'] = $request->has('active');
         $data['featured'] = $request->has('featured');
@@ -128,7 +128,8 @@ class ProductController extends Controller
             $data['images'] = [];
         }
 
-        Product::create($data);
+        $product = Product::create($data);
+        $product->sizes()->sync($request->input('sizes', []));
 
         return redirect()->route('admin.products.index')
             ->with('success', 'Produto criado com sucesso!');
@@ -139,9 +140,7 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
-        $product->load('size');
-        $product->load('color');
-        $product->load('material');
+        $product->load('sizes', 'color', 'material');
         return view('admin.products.show', compact('product'));
     }
 
@@ -155,7 +154,8 @@ class ProductController extends Controller
         $materials = Material::where('active', true)->orderBy('name')->get();
         $colors = Color::where('active', true)->orderBy('name')->get();
 
-        return view('admin.products.edit', compact('product', 'categories', 'sizes', 'materials', 'colors'));
+        $selectedSizes = $product->sizes->pluck('id')->toArray();
+        return view('admin.products.edit', compact('product', 'categories', 'sizes', 'materials', 'colors', 'selectedSizes'));
     }
 
     /**
@@ -177,14 +177,13 @@ class ProductController extends Controller
             'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'active' => 'boolean',
             'featured' => 'boolean',
-            'size_id' => 'nullable|exists:sizes,id',
+            'sizes'       => 'nullable|array',
+            'sizes.*'     => 'exists:sizes,id',
             'color_id' => 'nullable|exists:colors,id',
             'material_id' => 'nullable|exists:materials,id',
         ]);
 
-        $data = $request->all();
-        // dd("allalalalaallala");
-        // dd($data);
+        $data = $request->except(['sizes']);
         $data['slug'] = Str::slug($request->name);
         $data['active'] = $request->has('active');
         $data['featured'] = $request->has('featured');
@@ -219,10 +218,8 @@ class ProductController extends Controller
 
         $data['images'] = array_values($existingImages);
 
-        // dd("datafinalfinalfinal");
-        
         $product->update($data);
-        // dd($product->toArray());
+        $product->sizes()->sync($request->input('sizes', []));
 
         return redirect()->route('admin.products.index')
             ->with('success', 'Produto atualizado com sucesso!');

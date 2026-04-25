@@ -98,7 +98,7 @@
                 <div class="flex-1 min-w-64">
                     <label for="search" class="block text-sm font-medium text-gray-700 mb-1">Buscar</label>
                     <input type="text" id="search" name="search" value="{{ request('search') }}"
-                        placeholder="Nome, descrição ou SKU..."
+                        placeholder="Nome ou descrição..."
                         class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2">
                 </div>
                 <div class="min-w-48">

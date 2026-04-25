@@ -29,12 +29,12 @@ class ProfileController extends Controller
     $validated = $request->validated();
 
     $address = [
-        'cep'        => $validated['cep'] ?? null,
+        'cep'        => preg_replace('/\D/', '', $validated['cep'] ?? ''),
         'street'     => $validated['street'] ?? null,
         'number'     => $validated['number'] ?? null,
         'complement' => $validated['complement'] ?? null,
         'city'       => $validated['city'] ?? null,
-        'state'      => $validated['state'] ?? null,
+        'state'      => strtoupper($validated['state'] ?? ''),
     ];
 
     $user = $request->user();

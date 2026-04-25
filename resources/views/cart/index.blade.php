@@ -51,18 +51,23 @@
                                         @endif
                                         <div>
                                             <p class="font-semibold text-gray-900">{{ $item->product->name }}</p>
-                                            <p class="text-xs text-gray-400">SKU: {{ $item->product->sku }}</p>
+                                            @if($item->size)
+                                                <p class="text-xs text-gray-500">Tamanho: {{ $item->size->name }}</p>
+                                            @endif
                                         </div>
                                     </div>
                                 </td>
                                 <td class="px-4 py-4">
-                                    <form action="{{ route('cart.update', $item) }}" method="POST" class="flex items-center justify-center gap-2">
+                                    <form x-ref="form" action="{{ route('cart.update', $item) }}" method="POST" class="flex items-center justify-center gap-2">
                                         @csrf @method('PATCH')
-                                        <button type="button" @click="qty = Math.max(1, qty - 1)"
+                                        <button type="button"
+                                            @click="qty = Math.max(1, qty - 1); $nextTick(() => $refs.form.submit())"
                                             class="w-7 h-7 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center font-bold text-gray-700">−</button>
                                         <input type="number" name="quantity" x-model="qty"
+                                            @blur="if (qty >= 1) $refs.form.submit()"
                                             class="w-14 text-center border rounded-lg py-1 focus:ring-2 focus:ring-blue-400 focus:outline-none" min="1">
-                                        <button type="button" @click="qty++"
+                                        <button type="button"
+                                            @click="qty++; $nextTick(() => $refs.form.submit())"
                                             class="w-7 h-7 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center font-bold text-gray-700">+</button>
                                         <button type="submit" class="ml-1 text-xs text-blue-600 underline hover:text-blue-800">OK</button>
                                     </form>

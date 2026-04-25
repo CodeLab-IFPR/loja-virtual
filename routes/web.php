@@ -16,6 +16,7 @@ use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Admin\SlideController as AdminSlideController;
 use App\Http\Controllers\Admin\ReportController as AdminReportController;
+use App\Http\Controllers\Admin\AdminAdminController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -102,6 +103,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::patch('users/{user}/approve', [AdminUserController::class, 'approve'])->name('users.approve');
     Route::patch('users/{user}/reject', [AdminUserController::class, 'reject'])->name('users.reject');
     Route::post('users/bulk-action', [AdminUserController::class, 'bulkAction'])->name('users.bulk-action');
+
+    // Administradores
+    Route::resource('admins', AdminAdminController::class)->except(['show']);
 
     // Pedidos
     Route::resource('orders', AdminOrderController::class)->except(['create', 'store', 'edit', 'destroy']);

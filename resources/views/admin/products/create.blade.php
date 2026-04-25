@@ -92,25 +92,37 @@
                         placeholder="Descreva os detalhes, características e benefícios do produto...">{{ old('description') }}</textarea>
                     <p class="mt-2 text-xs text-gray-500">Descrição detalhada que será exibida na página do produto</p>
                 </div>
+
+                <!-- Especificações -->
+                <div class="mt-6">
+                    <label for="specifications" class="block text-sm font-semibold text-gray-700 mb-2">
+                        Especificações Técnicas
+                    </label>
+                    <textarea id="specifications" name="specifications" rows="4"
+                        class="px-4 py-3 mt-1 block w-full rounded-lg border-2 border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-colors duration-200 resize-none"
+                        placeholder="Ex: Diâmetro: 15 cm | Altura: 14 cm | Peso: ~1,8 kg">{{ old('specifications') }}</textarea>
+                    <p class="mt-2 text-xs text-gray-500">Informações técnicas do produto</p>
+                </div>
             </div>
 
             <!-- Tamanho -->
             <div class="bg-gray-50 rounded-lg p-6">
-                <h3 class="text-lg font-semibold text-gray-900 mb-6 flex items-center">
+                <h3 class="text-lg font-semibold text-gray-900 mb-2 flex items-center">
                     <svg class="w-5 h-5 mr-2 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
                     </svg>
-                    Tamanho
+                    Tamanhos disponíveis
                 </h3>
+                <p class="text-xs text-gray-500 mb-4">Selecione um ou mais tamanhos disponíveis para este produto.</p>
                 <div class="space-y-3">
                     @forelse($sizes as $size)
                     <div
                         class="bg-white p-3 rounded-lg border-2 border-gray-200 hover:border-indigo-300 transition-colors duration-200">
                         <label for="size_{{ $size->id }}" class="flex items-center cursor-pointer">
-                            <input type="radio" id="size_{{ $size->id }}" name="size_id" value="{{ $size->id }}"
-                                {{ old('size_id') == $size->id ? 'checked' : '' }}
-                                class="w-5 h-5 text-indigo-600 border-gray-300 focus:ring-2 focus:ring-indigo-200 transition-colors duration-200">
+                            <input type="checkbox" id="size_{{ $size->id }}" name="sizes[]" value="{{ $size->id }}"
+                                {{ in_array($size->id, old('sizes', [])) ? 'checked' : '' }}
+                                class="w-5 h-5 text-indigo-600 rounded border-gray-300 focus:ring-2 focus:ring-indigo-200 transition-colors duration-200">
                             <span class="ml-3 text-sm font-medium text-gray-900">
                                 {{ $size->name }}
                                 @if($size->description)
@@ -196,13 +208,6 @@
                             placeholder="0.00"
                             class="px-4 py-3 mt-1 block w-full rounded-lg border-2 border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-colors duration-200">
                         <p class="mt-2 text-xs text-gray-500">Peso para cálculo de frete</p>
-                    </div>
-                    <div>
-                        <label for="dimensions" class="block text-sm font-semibold text-gray-700 mb-2">Dimensões</label>
-                        <input type="text" id="dimensions" name="dimensions" value="{{ old('dimensions') }}"
-                            placeholder="Ex: 40x30x10 cm"
-                            class="px-4 py-3 mt-1 block w-full rounded-lg border-2 border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-colors duration-200">
-                        <p class="mt-2 text-xs text-gray-500">Formato: Largura x Altura x Profundidade</p>
                     </div>
                     <div>
                         <label for="material_id" class="block text-sm font-semibold text-gray-700 mb-2">

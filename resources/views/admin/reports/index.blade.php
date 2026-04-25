@@ -92,7 +92,6 @@
                             <span class="text-xs font-bold text-gray-400 w-5 text-center">{{ $i + 1 }}</span>
                             <div class="flex-1 min-w-0">
                                 <p class="text-sm font-medium text-gray-800 truncate">{{ $product->product_name }}</p>
-                                <p class="text-xs text-gray-400">SKU: {{ $product->product_sku }}</p>
                             </div>
                             <div class="text-right">
                                 <p class="text-sm font-semibold text-gray-900">{{ $product->total_qty }} un.</p>
