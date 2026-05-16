@@ -11,6 +11,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" rel="stylesheet">
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
 
 <body class="font-sans antialiased bg-gray-50">
@@ -125,6 +126,13 @@
                            class="w-4 h-4 rounded border-gray-300 text-[#062035] focus:ring-[#062035]/30">
                     <label for="remember_me" class="ml-2 text-sm text-gray-600">Manter conectado</label>
                 </div>
+
+                <!-- Recaptcha -->
+                <div class="g-recaptcha" data-sitekey="{{ config('services.recaptcha.site_key') }}"></div>
+
+                @error('g-recaptcha-response')
+                    <span style="color: red;">{{ $message }}</span>
+                @enderror
 
                 <!-- Botão entrar -->
                 <button type="submit"

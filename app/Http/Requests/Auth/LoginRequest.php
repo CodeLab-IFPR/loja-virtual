@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Http;
 
 class LoginRequest extends FormRequest
 {
@@ -29,6 +30,14 @@ class LoginRequest extends FormRequest
         return [
             'email' => ['required', 'string', 'email'],
             'password' => ['required', 'string'],
+            'g-recaptcha-response' => ['required'],
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'g-recaptcha-response.required' => 'Por favor, confirme que você não é um robô.',
         ];
     }
 
@@ -39,6 +48,18 @@ class LoginRequest extends FormRequest
      */
   public function authenticate(): void
     {
+        $captcha = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
+            'secret'   => config('services.recaptcha.secret_key'),
+            'response' => $this->input('g-recaptcha-response'),
+            'remoteip' => $this->ip(),
+        ]);
+
+        if (! $captcha->json('success')) {
+            throw ValidationException::withMessages([
+                'g-recaptcha-response' => 'Verificação de reCAPTCHA falhou. Tente novamente.',
+            ]);
+        }
+
         $this->ensureIsNotRateLimited();
 
         $credentials = $this->only('email', 'password');
