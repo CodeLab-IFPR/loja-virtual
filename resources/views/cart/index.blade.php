@@ -73,10 +73,10 @@
                                     </form>
                                 </td>
                                 <td class="px-4 py-4 text-right text-gray-700">
-                                    R$ {{ number_format($item->product->price, 2, ',', '.') }}
+                                    R$ {{ number_format($item->product->priceForSize($item->size_id), 2, ',', '.') }}
                                 </td>
                                 <td class="px-4 py-4 text-right font-semibold text-gray-900">
-                                    R$ {{ number_format($item->product->price * $item->quantity, 2, ',', '.') }}
+                                    R$ {{ number_format($item->product->priceForSize($item->size_id) * $item->quantity, 2, ',', '.') }}
                                 </td>
                                 <td class="px-4 py-4 text-right">
                                     <form action="{{ route('cart.remove', $item) }}" method="POST">

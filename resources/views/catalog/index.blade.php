@@ -92,7 +92,18 @@
                     <div class="mt-3 pt-2 border-t border-gray-100">
                         @auth
                             @if(auth()->user()->canSeePrices())
-                            <span class="text-sm sm:text-lg font-bold text-gray-900">R$ {{ number_format($product->price, 2, ',', '.') }}</span>
+                            @php
+                                $sizePrices = $product->sizes->pluck('pivot.price')->filter(fn($p) => $p !== null)->sort()->values();
+                            @endphp
+                            @if($sizePrices->count() > 0)
+                                @if($sizePrices->count() === 1 || $sizePrices->min() === $sizePrices->max())
+                                    <span class="text-sm sm:text-lg font-bold text-gray-900">R$ {{ number_format($sizePrices->min(), 2, ',', '.') }}</span>
+                                @else
+                                    <span class="text-sm sm:text-lg font-bold text-gray-900">R$ {{ number_format($sizePrices->min(), 2, ',', '.') }} – R$ {{ number_format($sizePrices->max(), 2, ',', '.') }}</span>
+                                @endif
+                            @else
+                                <span class="text-xs text-gray-400 italic">Preço a consultar</span>
+                            @endif
                             @else
                             <span class="inline-flex items-center gap-1 text-xs font-medium text-amber-700 bg-amber-50 px-2 py-1 rounded-full">
                                 <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>

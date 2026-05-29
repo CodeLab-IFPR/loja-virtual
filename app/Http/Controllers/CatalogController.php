@@ -15,7 +15,7 @@ class CatalogController extends Controller
     {
         $featuredProducts = Product::where('active', true)
             ->where('featured', true)
-            ->with('category')
+            ->with(['category', 'sizes'])
             ->limit(6)
             ->get();
 
@@ -99,7 +99,7 @@ class CatalogController extends Controller
 
     public function catalog(Request $request)
     {
-        $query = Product::where('active', true)->with('category');
+        $query = Product::where('active', true)->with(['category', 'sizes']);
 
         if ($request->has('categories') && !empty($request->categories)) {
             $query->whereIn('category_id', $request->categories);
@@ -179,6 +179,7 @@ class CatalogController extends Controller
         $relatedProducts = Product::where('category_id', $product->category_id)
             ->where('id', '!=', $product->id)
             ->where('active', true)
+            ->with('sizes')
             ->limit(4)
             ->get();
 
