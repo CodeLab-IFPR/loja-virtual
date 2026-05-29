@@ -46,7 +46,16 @@ class Product extends Model
 
     public function sizes()
     {
-        return $this->belongsToMany(Size::class)->orderBy('sort_order');
+        return $this->belongsToMany(Size::class)->withPivot('price')->orderBy('sort_order');
+    }
+
+    public function priceForSize($sizeId)
+    {
+        $size = $this->sizes->firstWhere('id', $sizeId);
+        if ($size && $size->pivot->price !== null) {
+            return (float) $size->pivot->price;
+        }
+        return (float) $this->price;
     }
     
     public function material()
