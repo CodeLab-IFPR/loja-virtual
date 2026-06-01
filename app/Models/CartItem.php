@@ -13,6 +13,7 @@ class CartItem extends Model
         'user_id',
         'session_id',
         'product_id',
+        'size_id',
         'quantity',
     ];
 
@@ -24,5 +25,10 @@ class CartItem extends Model
     public function product()
     {
         return $this->belongsTo(Product::class);
+    }
+
+    public function size()
+    {
+        return $this->belongsTo(Size::class);
     }
 }

@@ -98,7 +98,7 @@
                 <div class="flex-1 min-w-64">
                     <label for="search" class="block text-sm font-medium text-gray-700 mb-1">Buscar</label>
                     <input type="text" id="search" name="search" value="{{ request('search') }}"
-                        placeholder="Nome, descrição ou SKU..."
+                        placeholder="Nome ou descrição..."
                         class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2">
                 </div>
                 <div class="min-w-48">
@@ -212,7 +212,6 @@
                                 </div>
                                 <div class="ml-4">
                                     <div class="text-sm font-medium text-gray-900">{{ $product->name }}</div>
-                                    <div class="text-sm text-gray-500">SKU: {{ $product->sku }}</div>
                                 </div>
                             </div>
                         </td>
@@ -254,20 +253,20 @@
                             @endif
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            <div class="flex space-x-2">
+                            <div class="flex flex-wrap gap-1">
                                 <a href="{{ route('admin.products.show', $product) }}"
-                                    class="text-blue-600 hover:text-blue-900">Ver</a>
+                                    class="inline-flex items-center px-2.5 py-1 rounded text-xs font-medium bg-blue-100 text-blue-700 hover:bg-blue-200 transition-colors duration-150">Ver</a>
 
                                 <a href="{{ route('admin.products.edit', $product) }}"
-                                    class="text-indigo-600 hover:text-indigo-900">Editar</a>
+                                    class="inline-flex items-center px-2.5 py-1 rounded text-xs font-medium bg-indigo-100 text-indigo-700 hover:bg-indigo-200 transition-colors duration-150">Editar</a>
 
-                                <button onclick="toggleStatus({{ $product->id }})"
-                                    class="text-yellow-600 hover:text-yellow-900">
+                                <button onclick="toggleStatus('{{ $product->slug }}')"
+                                    class="inline-flex items-center px-2.5 py-1 rounded text-xs font-medium bg-yellow-100 text-yellow-700 hover:bg-yellow-200 transition-colors duration-150">
                                     {{ $product->active ? 'Desativar' : 'Ativar' }}
                                 </button>
 
                                 <button onclick="showStockModal({{ $product->id }}, {{ $product->stock }})"
-                                    class="text-green-600 hover:text-green-900">
+                                    class="inline-flex items-center px-2.5 py-1 rounded text-xs font-medium bg-green-100 text-green-700 hover:bg-green-200 transition-colors duration-150">
                                     Estoque
                                 </button>
 
@@ -276,7 +275,7 @@
                                     onsubmit="return confirm('Tem certeza que deseja excluir este produto?')">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="text-red-600 hover:text-red-900">
+                                    <button type="submit" class="inline-flex items-center px-2.5 py-1 rounded text-xs font-medium bg-red-100 text-red-700 hover:bg-red-200 transition-colors duration-150">
                                         Excluir
                                     </button>
                                 </form>
@@ -359,11 +358,20 @@ function toggleStatus(productId) {
             headers: {
                 'X-CSRF-TOKEN': '{{ csrf_token() }}',
                 'Content-Type': 'application/json',
-                'Accept': 'application/json'
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
             }
         })
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok && response.status === 404) {
+                alert('Erro: produto não encontrado. Recarregue a página.');
+                location.reload();
+                return null;
+            }
+            return response.json();
+        })
         .then(data => {
+            if (!data) return;
             if (data.success) {
                 location.reload();
             } else {

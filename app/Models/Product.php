@@ -27,7 +27,6 @@ class Product extends Model
         'active',
         'featured',
         'category_id',
-        'size_id',
         'material_id',
         'color_id',
     ];
@@ -45,9 +44,18 @@ class Product extends Model
         return $this->belongsTo(Category::class);
     }
 
-    public function size()
+    public function sizes()
     {
-        return $this->belongsTo(Size::class);
+        return $this->belongsToMany(Size::class)->withPivot('price')->orderBy('sort_order');
+    }
+
+    public function priceForSize($sizeId)
+    {
+        $size = $this->sizes->firstWhere('id', $sizeId);
+        if ($size && $size->pivot->price !== null) {
+            return (float) $size->pivot->price;
+        }
+        return (float) $this->price;
     }
     
     public function material()

@@ -15,7 +15,7 @@ class CatalogController extends Controller
     {
         $featuredProducts = Product::where('active', true)
             ->where('featured', true)
-            ->with('category')
+            ->with(['category', 'sizes'])
             ->limit(6)
             ->get();
 
@@ -99,14 +99,25 @@ class CatalogController extends Controller
 
     public function catalog(Request $request)
     {
-        $query = Product::where('active', true)->with('category');
+        $query = Product::where('active', true)->with(['category', 'sizes']);
 
         if ($request->has('categories') && !empty($request->categories)) {
             $query->whereIn('category_id', $request->categories);
         }
 
         if ($request->search) {
-            $query->where('name', 'like', '%' . $request->search . '%');
+            $term = '%' . $request->search . '%';
+            $query->where(function ($q) use ($term) {
+                $q->where('name', 'like', $term)
+                  ->orWhere('description', 'like', $term)
+                  ->orWhere('sku', 'like', $term)
+                  ->orWhere('specifications', 'like', $term)
+                  ->orWhere('dimensions', 'like', $term)
+                  ->orWhereHas('category', fn($r) => $r->where('name', 'like', $term))
+                  ->orWhereHas('sizes',    fn($r) => $r->where('name', 'like', $term))
+                  ->orWhereHas('material', fn($r) => $r->where('name', 'like', $term))
+                  ->orWhereHas('color',    fn($r) => $r->where('name', 'like', $term));
+            });
         }
 
         if ($request->has('price_ranges') && !empty($request->price_ranges)) {
@@ -163,9 +174,12 @@ class CatalogController extends Controller
             abort(404);
         }
 
+        $product->load('sizes');
+
         $relatedProducts = Product::where('category_id', $product->category_id)
             ->where('id', '!=', $product->id)
             ->where('active', true)
+            ->with('sizes')
             ->limit(4)
             ->get();
 

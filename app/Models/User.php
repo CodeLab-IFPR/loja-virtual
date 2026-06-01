@@ -18,6 +18,8 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'trading_name',
+        'contact_name',
         'email',
         'password',
         'phone',
@@ -69,7 +71,7 @@ class User extends Authenticatable
     /** Check if user can see prices */
     public function canSeePrices()
     {
-        return $this->can_see_prices || $this->isAdmin();
+        return $this->isApprovedCustomer() || $this->isAdmin();
     }
 
     /** Relationship with user who approved this user */

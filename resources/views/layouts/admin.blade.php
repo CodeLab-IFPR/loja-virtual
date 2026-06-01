@@ -22,7 +22,7 @@
 <body class="font-sans antialiased bg-gray-100">
     <div class="min-h-screen flex flex-col">
         <!-- Navigation -->
-        <nav class="bg-white border-b border-gray-100 shadow">
+        <nav x-data="{ open: false }" class="bg-white border-b border-gray-100 shadow">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between h-16">
                     <div class="flex">
@@ -32,17 +32,21 @@
                                 <div class="h-8 w-8 bg-blue-600 rounded-lg flex items-center justify-center mr-2">
                                     <span class="text-white font-bold text-lg">V</span>
                                 </div>
-                                <span class="text-xl font-bold text-gray-800">Fábrica de Vasos - Admin</span>
+                                <span class="text-xl font-bold text-gray-800">Shalom Vasos</span>
                             </a>
                         </div>
 
 
 
                         <!-- FALAR SOBRE EXP DO PROJETO, FALAR MAIS SOBRE A VIVENCIA NA DISCIPLINA -->
-                        <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                        <div class="hidden space-x-4 sm:-my-px sm:ml-10 sm:flex">
                             <x-nav-link :href="route('admin.users.index')"
                                 :active="request()->routeIs('admin.users.*')">
                                 {{ __('Clientes') }}
+                            </x-nav-link>
+                            <x-nav-link :href="route('admin.admins.index')"
+                                :active="request()->routeIs('admin.admins.*')">
+                                {{ __('Administradores') }}
                             </x-nav-link>
                             <x-nav-link :href="route('admin.categories.index')"
                                 :active="request()->routeIs('admin.categories.*')">
@@ -67,6 +71,10 @@
                             <x-nav-link :href="route('admin.orders.index')"
                                 :active="request()->routeIs('admin.orders.*')">
                                 {{ __('Pedidos') }}
+                            </x-nav-link>
+                            <x-nav-link :href="route('admin.reports.index')"
+                                :active="request()->routeIs('admin.reports.*')">
+                                {{ __('Relatórios') }}
                             </x-nav-link>
                             <!-- <x-nav-link :href="route('admin.slides.index')"
                                 :active="request()->routeIs('admin.slides.*')">
@@ -144,6 +152,10 @@
                     <x-responsive-nav-link :href="route('admin.users.index')"
                         :active="request()->routeIs('admin.users.*')">
                         {{ __('Clientes') }}
+                    </x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('admin.admins.index')"
+                        :active="request()->routeIs('admin.admins.*')">
+                        {{ __('Administradores') }}
                     </x-responsive-nav-link>
                     <x-responsive-nav-link :href="route('admin.categories.index')"
                         :active="request()->routeIs('admin.categories.*')">

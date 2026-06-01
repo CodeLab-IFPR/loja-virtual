@@ -201,21 +201,21 @@
                                     {{ $user->created_at->format('d/m/Y H:i') }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                    <div class="flex space-x-2">
+                                    <div class="flex flex-wrap gap-1">
                                         <a href="{{ route('admin.users.show', $user) }}" 
-                                           class="text-blue-600 hover:text-blue-900">Ver</a>
+                                           class="inline-flex items-center px-2.5 py-1 rounded text-xs font-medium bg-blue-100 text-blue-700 hover:bg-blue-200 transition-colors duration-150">Ver</a>
                                         
                                         @if($user->status === 'pending')
                                             <button onclick="approveUser({{ $user->id }})" 
-                                                    class="text-green-600 hover:text-green-900">Aprovar</button>
+                                                    class="inline-flex items-center px-2.5 py-1 rounded text-xs font-medium bg-green-100 text-green-700 hover:bg-green-200 transition-colors duration-150">Aprovar</button>
                                             <button onclick="rejectUser({{ $user->id }})" 
-                                                    class="text-red-600 hover:text-red-900">Rejeitar</button>
+                                                    class="inline-flex items-center px-2.5 py-1 rounded text-xs font-medium bg-red-100 text-red-700 hover:bg-red-200 transition-colors duration-150">Rejeitar</button>
                                         @elseif($user->status === 'approved')
                                             <button onclick="rejectUser({{ $user->id }})" 
-                                                    class="text-red-600 hover:text-red-900">Rejeitar</button>
+                                                    class="inline-flex items-center px-2.5 py-1 rounded text-xs font-medium bg-red-100 text-red-700 hover:bg-red-200 transition-colors duration-150">Rejeitar</button>
                                         @else
                                             <button onclick="approveUser({{ $user->id }})" 
-                                                    class="text-green-600 hover:text-green-900">Aprovar</button>
+                                                    class="inline-flex items-center px-2.5 py-1 rounded text-xs font-medium bg-green-100 text-green-700 hover:bg-green-200 transition-colors duration-150">Aprovar</button>
                                         @endif
                                     </div>
                                 </td>
@@ -303,7 +303,8 @@
                             headers: {
                                 'X-CSRF-TOKEN': '{{ csrf_token() }}',
                                 'Content-Type': 'application/json',
-                                'Accept': 'application/json'
+                                'Accept': 'application/json',
+                                'X-Requested-With': 'XMLHttpRequest'
                             }
                         })
                         .then(response => response.json())
@@ -328,7 +329,8 @@
                             headers: {
                                 'X-CSRF-TOKEN': '{{ csrf_token() }}',
                                 'Content-Type': 'application/json',
-                                'Accept': 'application/json'
+                                'Accept': 'application/json',
+                                'X-Requested-With': 'XMLHttpRequest'
                             }
                         })
                         .then(response => response.json())

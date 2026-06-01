@@ -17,6 +17,7 @@ class OrderItem extends Model
         'total_price',
         'product_name',
         'product_sku',
+        'size_name',
     ];
 
     protected $casts = [

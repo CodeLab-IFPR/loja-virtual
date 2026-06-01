@@ -1,2 +1,11 @@
 User-agent: *
-Disallow:
+Allow: /
+Disallow: /admin/
+Disallow: /login
+Disallow: /register
+Disallow: /profile
+Disallow: /carrinho
+Disallow: /favoritos
+Disallow: /dashboard
+
+Sitemap: http://localhost:8000/sitemap.xml
