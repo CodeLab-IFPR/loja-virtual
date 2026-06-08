@@ -43,7 +43,7 @@
 
         <div class="border-t border-gray-200 mt-8 pt-8 text-center">
             <p class="text-sm text-gray-500">
-                Shalon Vasos© - CNPJ: 09.296.714/0001-63. Todos os Direitos Reservados.
+                © A Definir - CNPJ. Todos os Direitos Reservados.
             </p>
         </div>
     </div>
