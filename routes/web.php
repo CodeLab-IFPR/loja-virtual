@@ -30,7 +30,6 @@ Route::get('/categoria/{category}', [CatalogController::class, 'category'])->nam
 Route::get('/cor/{color}', [CatalogController::class, 'color'])->name('catalog.color');
 Route::get('/material/{material}', [CatalogController::class, 'material'])->name('catalog.material');
 Route::get('/produto/{product}', [CatalogController::class, 'show'])->name('catalog.product');
-Route::get('/quem-somos' ,function (){return view('quem-somos');})->name('about');
 
 // =============================
 // Rotas do carrinho (somente autenticado)

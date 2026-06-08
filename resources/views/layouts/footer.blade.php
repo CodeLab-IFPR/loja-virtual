@@ -28,7 +28,7 @@
                 <h3 class="text-lg font-bold mb-4 uppercase">Institucional</h3>
                 <ul class="space-y-2 text-sm">
                     <li>
-                        <a href="{{ route('about') }}" class="text-gray-800 hover:text-gray-600 transition">Quem Somos</a>
+                        <a href="#" class="text-gray-800 hover:text-gray-600 transition">Quem Somos</a>
                     </li>
                     <li>
                         <a href="{{ route('login') }}" class="text-gray-800 hover:text-gray-600 transition">Minha Conta</a>
