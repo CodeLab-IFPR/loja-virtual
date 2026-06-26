@@ -54,9 +54,15 @@ class LoginRequest extends FormRequest
             'remoteip' => $this->ip(),
         ]);
 
-        if (! $captcha->json('success')) {
+        $response = $captcha->json();
+
+        if (
+            !($response['success'] ?? false)
+            || ($response['score'] ?? 0) < 0.5
+            || ($response['action'] ?? '') !== 'login'
+        ) {
             throw ValidationException::withMessages([
-                'g-recaptcha-response' => 'Verificação de reCAPTCHA falhou. Tente novamente.',
+                'email' => 'Falha na verificação de segurança.',
             ]);
         }
 
