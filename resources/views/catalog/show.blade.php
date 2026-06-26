@@ -172,7 +172,26 @@
                     <div class="text-gray-600 mb-6">
                         @auth
                             @if(auth()->user()->canSeePrices())
-                                <div class="text-4xl font-bold text-green-600 mb-4">R$ {{ number_format($product->price, 2, ',', '.') }}</div>
+                                @php
+                                    $sizePricesMap = $product->sizes->pluck('pivot.price', 'id')
+                                        ->filter(fn($p) => $p !== null)->toArray();
+                                    $minPrice = !empty($sizePricesMap) ? min($sizePricesMap) : null;
+                                    $maxPrice = !empty($sizePricesMap) ? max($sizePricesMap) : null;
+                                @endphp
+                                @if(!empty($sizePricesMap))
+                                    <div class="text-4xl font-bold text-green-600 mb-4"
+                                         x-text="selectedSize && sizePrices[selectedSize]
+                                            ? 'R$ ' + Number(sizePrices[selectedSize]).toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2})
+                                            : '{{ $minPrice == $maxPrice
+                                                    ? 'R$ ' . number_format($minPrice, 2, ',', '.')
+                                                    : 'R$ ' . number_format($minPrice, 2, ',', '.') . ' – R$ ' . number_format($maxPrice, 2, ',', '.') }}'">
+                                        {{ $minPrice == $maxPrice
+                                            ? 'R$ ' . number_format($minPrice, 2, ',', '.')
+                                            : 'R$ ' . number_format($minPrice, 2, ',', '.') . ' – R$ ' . number_format($maxPrice, 2, ',', '.') }}
+                                    </div>
+                                @else
+                                    <div class="text-lg text-gray-400 italic mb-4">Preço a consultar</div>
+                                @endif
                             @else
                                 <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-4">
                                     <p class="text-amber-800">⚠️ Sua conta está aguardando aprovação do administrador para visualizar preços.</p>
@@ -221,12 +240,20 @@
 
                     @if($product->sizes->count() > 0)
                         <div class="mb-6">
-                            <h3 class="font-semibold text-gray-900 mb-2">Tamanhos disponíveis</h3>
-                            <div class="flex flex-wrap gap-2">
+                            <h3 class="font-semibold text-gray-900 mb-3">Tamanhos e Preços</h3>
+                            <div class="flex flex-wrap gap-3">
                                 @foreach($product->sizes as $size)
-                                    <span class="inline-block bg-gray-100 text-gray-800 text-sm font-medium px-3 py-1 rounded-full border border-gray-300">
-                                        {{ $size->name }}
-                                    </span>
+                                    @php $sizePrice = $size->pivot->price; @endphp
+                                    <div class="flex flex-col items-center bg-gray-50 border border-gray-200 rounded-lg px-4 py-2 min-w-[72px]">
+                                        <span class="text-sm font-semibold text-gray-800">{{ $size->name }}</span>
+                                        @auth
+                                            @if(auth()->user()->canSeePrices())
+                                                <span class="text-xs font-bold text-green-700 mt-0.5">
+                                                    {{ $sizePrice !== null ? 'R$ ' . number_format($sizePrice, 2, ',', '.') : '—' }}
+                                                </span>
+                                            @endif
+                                        @endauth
+                                    </div>
                                 @endforeach
                             </div>
                         </div>
@@ -255,7 +282,13 @@
 
                     @auth
                         @if(auth()->user()->canSeePrices() && $product->isInStock())
-                            <div class="space-y-3" x-data="{ selectedSize: null }">
+                            @php
+                                $sizePricesJson = json_encode(
+                                    $product->sizes->pluck('pivot.price', 'id')
+                                        ->filter(fn($p) => $p !== null)->toArray()
+                                );
+                            @endphp
+                            <div class="space-y-3" x-data="{ selectedSize: null, sizePrices: {{ $sizePricesJson }} }">
                                 <form action="{{ route('cart.add') }}" method="POST">
                                     @csrf
                                     <input type="hidden" name="product_id" value="{{ $product->id }}">
@@ -266,13 +299,17 @@
                                             <label class="block font-medium text-gray-700 mb-2">Selecione o tamanho: <span class="text-red-500">*</span></label>
                                             <div class="flex flex-wrap gap-2">
                                                 @foreach($product->sizes as $size)
+                                                    @php $sizePrice = $size->pivot->price; @endphp
                                                     <button type="button"
                                                         @click="selectedSize = {{ $size->id }}"
                                                         :class="selectedSize === {{ $size->id }}
                                                             ? 'bg-green-600 text-white border-green-600'
                                                             : 'bg-white text-gray-800 border-gray-300 hover:border-green-500'"
-                                                        class="px-4 py-2 rounded-lg border-2 font-medium text-sm transition-all duration-150">
-                                                        {{ $size->name }}
+                                                        class="flex flex-col items-center px-4 py-2 rounded-lg border-2 font-medium text-sm transition-all duration-150 min-w-[64px]">
+                                                        <span>{{ $size->name }}</span>
+                                                        @if($sizePrice !== null)
+                                                            <span class="text-xs font-normal mt-0.5 opacity-80">R$ {{ number_format($sizePrice, 2, ',', '.') }}</span>
+                                                        @endif
                                                     </button>
                                                 @endforeach
                                             </div>
@@ -320,7 +357,18 @@
                                 <h3 class="font-semibold text-gray-900 mb-2">{{ $relatedProduct->name }}</h3>
                                 @auth
                                     @if(auth()->user()->canSeePrices())
-                                        <p class="text-lg font-bold text-green-600 mb-3">R$ {{ number_format($relatedProduct->price, 2, ',', '.') }}</p>
+                                    @php
+                                        $rPrices = $relatedProduct->sizes->pluck('pivot.price')->filter(fn($p) => $p !== null)->sort()->values();
+                                    @endphp
+                                    @if($rPrices->count() > 0)
+                                        @if($rPrices->count() === 1 || $rPrices->min() === $rPrices->max())
+                                            <p class="text-lg font-bold text-green-600 mb-3">R$ {{ number_format($rPrices->min(), 2, ',', '.') }}</p>
+                                        @else
+                                            <p class="text-lg font-bold text-green-600 mb-3">R$ {{ number_format($rPrices->min(), 2, ',', '.') }} – R$ {{ number_format($rPrices->max(), 2, ',', '.') }}</p>
+                                        @endif
+                                    @else
+                                        <p class="text-sm text-gray-400 italic mb-3">Preço a consultar</p>
+                                    @endif
                                     @endif
                                 @endauth
                                 <a href="{{ route('catalog.product', $relatedProduct->slug) }}" 

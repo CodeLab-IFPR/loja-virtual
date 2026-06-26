@@ -28,7 +28,7 @@
                 <h3 class="text-lg font-bold mb-4 uppercase">Institucional</h3>
                 <ul class="space-y-2 text-sm">
                     <li>
-                        <a href="#" class="text-gray-800 hover:text-gray-600 transition">Quem Somos</a>
+                        <a href="{{ route('about') }}" class="text-gray-800 hover:text-gray-600 transition">Quem Somos</a>
                     </li>
                     <li>
                         <a href="{{ route('login') }}" class="text-gray-800 hover:text-gray-600 transition">Minha Conta</a>
@@ -43,7 +43,7 @@
 
         <div class="border-t border-gray-200 mt-8 pt-8 text-center">
             <p class="text-sm text-gray-500">
-                © A Definir - CNPJ. Todos os Direitos Reservados.
+                Shalon Vasos© - CNPJ: 09.296.714/0001-63. Todos os Direitos Reservados.
             </p>
         </div>
     </div>

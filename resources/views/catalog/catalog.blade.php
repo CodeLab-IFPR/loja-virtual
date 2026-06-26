@@ -305,8 +305,18 @@
 
                             @auth
                             @if(auth()->user()->canSeePrices())
-                            <p class="text-xl font-bold text-green-600 mb-4">R$
-                                {{ number_format($product->price, 2, ',', '.') }}</p>
+                            @php
+                                $sizePrices = $product->sizes->pluck('pivot.price')->filter(fn($p) => $p !== null)->sort()->values();
+                            @endphp
+                            @if($sizePrices->count() > 0)
+                                @if($sizePrices->count() === 1 || $sizePrices->min() === $sizePrices->max())
+                                    <p class="text-xl font-bold text-green-600 mb-4">R$ {{ number_format($sizePrices->min(), 2, ',', '.') }}</p>
+                                @else
+                                    <p class="text-xl font-bold text-green-600 mb-4">R$ {{ number_format($sizePrices->min(), 2, ',', '.') }} – R$ {{ number_format($sizePrices->max(), 2, ',', '.') }}</p>
+                                @endif
+                            @else
+                                <p class="text-sm text-gray-400 italic mb-4">Preço a consultar</p>
+                            @endif
                             @else
                             <p class="text-sm text-amber-600 mb-4">⚠️ Aguardando aprovação para ver preços</p>
                             @endif

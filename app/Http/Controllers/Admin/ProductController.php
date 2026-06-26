@@ -88,7 +88,6 @@ class ProductController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'price' => 'required|numeric|min:0',
             'category_id' => 'required|exists:categories,id',
             'stock' => 'nullable|integer|min:0',
             'manage_stock' => 'boolean',
@@ -98,17 +97,24 @@ class ProductController extends Controller
             'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'active' => 'boolean',
             'featured' => 'boolean',
-            'sizes'       => 'nullable|array',
-            'sizes.*'     => 'exists:sizes,id',
+            'sizes'         => 'nullable|array',
+            'sizes.*'       => 'exists:sizes,id',
+            'size_prices'   => 'nullable|array',
+            'size_prices.*' => 'nullable|numeric|min:0',
             'color_id' => 'nullable|exists:colors,id',
             'material_id' => 'nullable|exists:materials,id',
         ]);
 
-        $data = $request->except(['sizes']);
+        $data = $request->except(['sizes', 'size_prices']);
         $data['slug'] = Str::slug($request->name);
         $data['active'] = $request->has('active');
         $data['featured'] = $request->has('featured');
         $data['manage_stock'] = $request->has('manage_stock');
+
+        // Compute product price as minimum of size prices
+        $sizePrices = $request->input('size_prices', []);
+        $validPrices = array_filter(array_values($sizePrices), fn($p) => is_numeric($p) && $p >= 0);
+        $data['price'] = !empty($validPrices) ? min($validPrices) : 0;
 
         // Upload da imagem principal
         if ($request->hasFile('image')) {
@@ -129,7 +135,14 @@ class ProductController extends Controller
         }
 
         $product = Product::create($data);
-        $product->sizes()->sync($request->input('sizes', []));
+
+        // Sync sizes with per-size prices
+        $sizePrices = $request->input('size_prices', []);
+        $syncData = [];
+        foreach ($request->input('sizes', []) as $sizeId) {
+            $syncData[$sizeId] = ['price' => $sizePrices[$sizeId] ?? 0];
+        }
+        $product->sizes()->sync($syncData);
 
         return redirect()->route('admin.products.index')
             ->with('success', 'Produto criado com sucesso!');
@@ -154,8 +167,11 @@ class ProductController extends Controller
         $materials = Material::where('active', true)->orderBy('name')->get();
         $colors = Color::where('active', true)->orderBy('name')->get();
 
+        $product->load('sizes');
         $selectedSizes = $product->sizes->pluck('id')->toArray();
-        return view('admin.products.edit', compact('product', 'categories', 'sizes', 'materials', 'colors', 'selectedSizes'));
+        $selectedSizePrices = $product->sizes->pluck('pivot.price', 'id')->toArray();
+
+        return view('admin.products.edit', compact('product', 'categories', 'sizes', 'materials', 'colors', 'selectedSizes', 'selectedSizePrices'));
     }
 
     /**
@@ -167,7 +183,6 @@ class ProductController extends Controller
         $request->validate([
             'name' => 'required|string|max:255|unique:products,name,' . $product->id,
             'description' => 'nullable|string',
-            'price' => 'required|numeric|min:0',
             'category_id' => 'required|exists:categories,id',
             'stock' => 'nullable|integer|min:0',
             'manage_stock' => 'boolean',
@@ -177,17 +192,24 @@ class ProductController extends Controller
             'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'active' => 'boolean',
             'featured' => 'boolean',
-            'sizes'       => 'nullable|array',
-            'sizes.*'     => 'exists:sizes,id',
+            'sizes'         => 'nullable|array',
+            'sizes.*'       => 'exists:sizes,id',
+            'size_prices'   => 'nullable|array',
+            'size_prices.*' => 'nullable|numeric|min:0',
             'color_id' => 'nullable|exists:colors,id',
             'material_id' => 'nullable|exists:materials,id',
         ]);
 
-        $data = $request->except(['sizes']);
+        $data = $request->except(['sizes', 'size_prices']);
         $data['slug'] = Str::slug($request->name);
         $data['active'] = $request->has('active');
         $data['featured'] = $request->has('featured');
         $data['manage_stock'] = $request->has('manage_stock');
+
+        // Compute product price as minimum of size prices
+        $sizePrices = $request->input('size_prices', []);
+        $validPrices = array_filter(array_values($sizePrices), fn($p) => is_numeric($p) && $p >= 0);
+        $data['price'] = !empty($validPrices) ? min($validPrices) : 0;
 
         // Upload da imagem principal
         if ($request->hasFile('image')) {
@@ -219,7 +241,14 @@ class ProductController extends Controller
         $data['images'] = array_values($existingImages);
 
         $product->update($data);
-        $product->sizes()->sync($request->input('sizes', []));
+
+        // Sync sizes with per-size prices
+        $sizePrices = $request->input('size_prices', []);
+        $syncData = [];
+        foreach ($request->input('sizes', []) as $sizeId) {
+            $syncData[$sizeId] = ['price' => $sizePrices[$sizeId] ?? 0];
+        }
+        $product->sizes()->sync($syncData);
 
         return redirect()->route('admin.products.index')
             ->with('success', 'Produto atualizado com sucesso!');
