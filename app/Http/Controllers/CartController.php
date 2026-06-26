@@ -14,11 +14,11 @@ class CartController extends Controller
 {
     public function index()
     {
-        $items = CartItem::with('product')
+        $items = CartItem::with('product.sizes', 'size')
             ->where('user_id', Auth::id())
             ->get();
 
-        $total = $items->sum(fn($i) => $i->product->price * $i->quantity);
+        $total = $items->sum(fn($i) => $i->product->priceForSize($i->size_id) * $i->quantity);
 
         return view('cart.index', compact('items', 'total'));
     }
@@ -96,7 +96,7 @@ class CartController extends Controller
 
     public function checkout()
     {
-        $items = CartItem::with('product', 'size')
+        $items = CartItem::with('product.sizes', 'size')
             ->where('user_id', Auth::id())
             ->get();
 
@@ -104,7 +104,7 @@ class CartController extends Controller
             return redirect()->route('cart.index')->with('error', 'Seu carrinho está vazio.');
         }
 
-        $total = $items->sum(fn($i) => $i->product->price * $i->quantity);
+        $total = $items->sum(fn($i) => $i->product->priceForSize($i->size_id) * $i->quantity);
 
         return view('cart.checkout', compact('items', 'total'));
     }
@@ -117,7 +117,7 @@ class CartController extends Controller
             return redirect()->route('cart.index')->with('error', 'Apenas clientes aprovados podem fazer pedidos.');
         }
 
-        $cartItems = CartItem::with('product', 'size')
+        $cartItems = CartItem::with('product.sizes', 'size')
             ->where('user_id', $user->id)
             ->get();
 
@@ -146,7 +146,7 @@ class CartController extends Controller
         }
 
         DB::transaction(function () use ($request, $user, $cartItems) {
-            $subtotal = $cartItems->sum(fn($i) => $i->product->price * $i->quantity);
+            $subtotal = $cartItems->sum(fn($i) => $i->product->priceForSize($i->size_id) * $i->quantity);
 
             $address = [
                 'street'       => $request->street,
@@ -178,8 +178,8 @@ class CartController extends Controller
                     'order_id'     => $order->id,
                     'product_id'   => $product->id,
                     'quantity'     => $cartItem->quantity,
-                    'unit_price'   => $product->price,
-                    'total_price'  => $product->price * $cartItem->quantity,
+                    'unit_price'   => $product->priceForSize($cartItem->size_id),
+                    'total_price'  => $product->priceForSize($cartItem->size_id) * $cartItem->quantity,
                     'product_name' => $product->name,
                     'product_sku'  => $product->sku,
                     'size_name'    => $cartItem->size?->name,

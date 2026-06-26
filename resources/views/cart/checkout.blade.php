@@ -126,7 +126,7 @@
                                         <p class="text-xs text-gray-500">Qtd: {{ $item->quantity }}</p>
                                     </div>
                                     <p class="text-sm font-semibold text-gray-900 whitespace-nowrap">
-                                        R$ {{ number_format($item->product->price * $item->quantity, 2, ',', '.') }}
+                                        R$ {{ number_format($item->product->priceForSize($item->size_id) * $item->quantity, 2, ',', '.') }}
                                     </p>
                                 </div>
                                 @endforeach
