@@ -78,6 +78,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
     // Produtos
     Route::resource('products', AdminProductController::class);
+    Route::get('products/export/pdf', [AdminProductController::class, 'exportCatalogPdf'])->name('products.export-pdf');
     Route::patch('products/{product}/toggle-status', [AdminProductController::class, 'toggleStatus'])->name('products.toggle-status');
     Route::patch('products/{product}/update-stock', [AdminProductController::class, 'updateStock'])->name('products.update-stock');
     Route::patch('products/{product}/destroy-image', [AdminProductController::class, 'destroyImage'])->name('products.destroy-image');

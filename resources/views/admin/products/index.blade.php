@@ -93,18 +93,19 @@
         </div>
 
         <!-- Filtros e Busca -->
-        <div class="bg-gray-50 rounded-lg p-4 mb-6">
-            <form method="GET" action="{{ route('admin.products.index') }}" class="flex flex-wrap gap-4">
+        <div class="bg-gray-50 border border-gray-200 rounded-lg p-5 mb-6">
+            <form method="GET" action="{{ route('admin.products.index') }}" class="flex flex-wrap items-end gap-4">
                 <div class="flex-1 min-w-64">
                     <label for="search" class="block text-sm font-medium text-gray-700 mb-1">Buscar</label>
                     <input type="text" id="search" name="search" value="{{ request('search') }}"
-                        placeholder="Nome ou descrição..."
-                        class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2">
+                        placeholder="Nome, descrição ou SKU..."
+                        class="w-full h-10 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-3">
                 </div>
-                <div class="min-w-48">
+
+                <div class="w-48">
                     <label for="category" class="block text-sm font-medium text-gray-700 mb-1">Categoria</label>
                     <select id="category" name="category"
-                        class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2">
+                        class="w-full h-10 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-3">
                         <option value="">Todas</option>
                         @foreach($categories as $category)
                         <option value="{{ $category->id }}"
@@ -114,32 +115,60 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="min-w-32">
+
+                <div class="w-36">
                     <label for="active" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
                     <select id="active" name="active"
-                        class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        class="w-full h-10 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-3">
                         <option value="">Todos</option>
                         <option value="1" {{ request('active') === '1' ? 'selected' : '' }}>Ativos</option>
                         <option value="0" {{ request('active') === '0' ? 'selected' : '' }}>Inativos</option>
                     </select>
                 </div>
-                <div class="min-w-32">
+
+                <div class="w-40">
                     <label for="stock_status" class="block text-sm font-medium text-gray-700 mb-1">Estoque</label>
                     <select id="stock_status" name="stock_status"
-                        class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        class="w-full h-10 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-3">
                         <option value="">Todos</option>
-                        <option value="in_stock" {{ request('stock_status') === 'in_stock' ? 'selected' : '' }}>Em
-                            Estoque</option>
+                        <option value="in_stock" {{ request('stock_status') === 'in_stock' ? 'selected' : '' }}>
+                            Em Estoque</option>
                         <option value="low_stock" {{ request('stock_status') === 'low_stock' ? 'selected' : '' }}>
                             Estoque Baixo</option>
                         <option value="out_of_stock" {{ request('stock_status') === 'out_of_stock' ? 'selected' : '' }}>
                             Sem Estoque</option>
                     </select>
                 </div>
-                <div class="flex items-end">
-                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md">
+
+                <div class="flex items-center gap-2">
+                    <button type="submit"
+                        class="h-10 inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 rounded-md">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z" />
+                        </svg>
                         Filtrar
                     </button>
+
+                    <a href="{{ route('admin.products.export-pdf', request()->query()) }}"
+                        class="h-10 inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 rounded-md">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H8a2 2 0 01-2-2V5a2 2 0 012-2h6l6 6v11a2 2 0 01-2 2z" />
+                        </svg>
+                        Exportar Catálogo (PDF)
+                    </a>
+
+                   @if(request()->anyFilled(['search', 'category', 'active', 'stock_status']))
+                    <a href="{{ route('admin.products.index') }}"
+                        class="h-10 inline-flex items-center gap-2 bg-white hover:bg-gray-100 text-gray-700 px-4 rounded-md border border-gray-300 shadow-sm">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                        Limpar filtros
+                    </a>
+                    @endif
                 </div>
             </form>
         </div>

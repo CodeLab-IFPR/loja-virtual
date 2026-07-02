@@ -11,6 +11,7 @@ use App\Models\Color;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class ProductController extends Controller
 {
@@ -349,5 +350,82 @@ class ProductController extends Controller
         }
 
         return redirect()->back()->with('success', 'Estoque atualizado com sucesso!');
+    }
+
+    public function exportCatalogPdf(Request $request)
+    {
+        $query = Product::with('category');
+ 
+        if ($request->has('search') && $request->search !== '') {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%")
+                  ->orWhere('sku', 'like', "%{$search}%");
+            });
+        }
+ 
+        if ($request->has('category') && $request->category !== '') {
+            $query->where('category_id', $request->category);
+        }
+ 
+        if ($request->has('active') && $request->active !== '') {
+            $query->where('active', $request->active === '1');
+        }
+ 
+        if ($request->has('stock_status') && $request->stock_status !== '') {
+            if ($request->stock_status === 'in_stock') {
+                $query->where('stock', '>', 0);
+            } elseif ($request->stock_status === 'out_of_stock') {
+                $query->where('stock', '=', 0);
+            } elseif ($request->stock_status === 'low_stock') {
+                $query->where('stock', '>', 0)->where('stock', '<=', 10);
+            }
+        }
+ 
+        $products = $query->orderBy('name')->get();
+ 
+        // Converte a foto principal de cada produto para base64,
+        // já que o DomPDF não renderiza bem imagens via URL/HTTP.
+        $products->each(function (Product $product) {
+            $product->pdf_image = $this->getMainImageAsBase64($product);
+        });
+ 
+        $pdf = Pdf::loadView('admin.products.pdf.catalog', [
+            'products' => $products,
+            'generatedAt' => now(),
+            'filters' => $request->only(['search', 'category', 'active', 'stock_status']),
+        ])->setPaper('a4', 'portrait');
+ 
+        return $pdf->download('catalogo-produtos-' . now()->format('Y-m-d_H-i') . '.pdf');
+    }
+ 
+    /**
+     * Retorna a imagem principal do produto como data URI base64,
+     * ou null caso não exista/seja inválida (o PDF usa um placeholder nesse caso).
+     */
+    private function getMainImageAsBase64(Product $product): ?string
+    {
+        if (!$product->image || !Storage::disk('public')->exists($product->image)) {
+            return null;
+        }
+ 
+        $absolutePath = Storage::disk('public')->path($product->image);
+ 
+        if (!is_file($absolutePath)) {
+            return null;
+        }
+ 
+        $mimeType = mime_content_type($absolutePath);
+        if (!$mimeType || !str_starts_with($mimeType, 'image/')) {
+            return null;
+        }
+ 
+        $contents = @file_get_contents($absolutePath);
+        if ($contents === false) {
+            return null;
+        }
+ 
+        return 'data:' . $mimeType . ';base64,' . base64_encode($contents);
     }
 }
