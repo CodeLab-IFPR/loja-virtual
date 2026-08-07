@@ -1,4 +1,5 @@
-<nav x-data="{ open: false }" class="bg-[#062035] text-white font-sans">
+<nav x-data="{ open: false }" @click.outside="open = false" @keydown.escape.window="open = false"
+    class="bg-[#062035] text-white font-sans">
     <!-- Container Principal -->
     <div class="mx-auto px-4 py-2 lg:p-[0.5rem_2rem_0.5rem_1rem]">
         <!-- Seção Superior do Cabeçalho -->
@@ -174,7 +175,7 @@
         </div> -->
 
         <!-- Menu Responsivo -->
-        <div :class="{'block': open, 'hidden': ! open}" class="sm:hidden">
+        <div x-cloak :class="{'block': open, 'hidden': ! open}" class="lg:hidden">
             <div class="px-2 pt-2 pb-3 space-y-2">
                 <form action="{{ route('catalog') }}" method="GET" class="relative w-full" role="search">
                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -195,23 +196,23 @@
                 </form>
 
                 @auth
-                <x-responsive-nav-link :href="route('profile.edit')">{{ __('Perfil') }}</x-responsive-nav-link>
-                <x-responsive-nav-link :href="route('favorites.index')">{{ __('Meus Favoritos') }}
+                <x-responsive-nav-link :href="route('profile.edit')" @click="open = false">{{ __('Perfil') }}</x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('favorites.index')" @click="open = false">{{ __('Meus Favoritos') }}
                 </x-responsive-nav-link>
                 @if(!Auth::user()->isAdmin())
-                <x-responsive-nav-link :href="route('cart.index')">{{ __('Meu Carrinho') }}</x-responsive-nav-link>
-                <x-responsive-nav-link :href="route('orders.index')">{{ __('Meus Pedidos') }}</x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('cart.index')" @click="open = false">{{ __('Meu Carrinho') }}</x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('orders.index')" @click="open = false">{{ __('Meus Pedidos') }}</x-responsive-nav-link>
                 @endif
                 @endauth
 
-                <a href="{{ route('home') }}"
+                <a href="{{ route('home') }}" @click="open = false"
                     class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">INÍCIO</a>
-                <a href="{{ route('catalog') }}"
+                <a href="{{ route('catalog') }}" @click="open = false"
                     class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">CATÁLOGO</a>
 
                 @auth
                 @if(Auth::user()->isAdmin())
-                <a href="{{ route('admin.dashboard') }}"
+                <a href="{{ route('admin.dashboard') }}" @click="open = false"
                     class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">ADMINISTRAÇÃO</a>
                 @endif
                 @endauth
@@ -229,7 +230,7 @@
                 <div class="border-t border-gray-700 pt-4 mt-2">
                     @auth
                     <div class="flex justify-center">
-                        <a href="{{ route('dashboard') }}" class="flex items-center space-x-3 hover:text-gray-300"
+                        <a href="{{ route('dashboard') }}" @click="open = false" class="flex items-center space-x-3 hover:text-gray-300"
                             title="Acessar minha conta">
                             <div class="p-2 bg-gray-600 rounded-full">
                                 <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -246,7 +247,7 @@
                     </div>
                     @else
                     <div class="grid grid-cols-2 gap-4">
-                        <a href="{{ route('login') }}" class="flex flex-col items-center justify-center gap-2 p-3 rounded-md hover:bg-gray-700 transition"
+                        <a href="{{ route('login') }}" @click="open = false" class="flex flex-col items-center justify-center gap-2 p-3 rounded-md hover:bg-gray-700 transition"
                             title="Entrar na minha conta">
                             <div class="p-2 bg-gray-600 rounded-full">
                                 <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -260,7 +261,7 @@
                                 <span class="block text-xs text-gray-400 font-semibold">ENTRAR</span>
                             </div>
                         </a>
-                        <a href="{{ route('register') }}"
+                        <a href="{{ route('register') }}" @click="open = false"
                             class="flex items-center justify-center p-3 rounded-md text-base font-medium text-white border border-white/30 hover:bg-white/10 transition text-center">
                             Criar Conta
                         </a>
