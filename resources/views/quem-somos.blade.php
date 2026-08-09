@@ -4,31 +4,21 @@
 
 @section('content')
     <div class="min-h-screen bg-gray-50">
-
         <!-- Hero compacto -->
-        <div class="relative bg-[#062035] overflow-hidden">
-            @if(!empty($slides) && $slides[0]['image'])
-                <img src="{{ $slides[0]['image'] }}"
-                     alt=""
-                     class="absolute inset-0 w-full h-full object-cover object-left opacity-30">
-            @endif
 
-            <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 md:py-20 flex flex-col items-center text-center">
-                <h1 class="text-3xl md:text-4xl font-bold text-white mb-3">
+        <div class="relative bg-[#062035] overflow-hidden bg-cover bg-center sm:bg-left"
+             style="background-image: linear-gradient(rgba(6,32,53,0.7), rgba(6,32,53,0.7)), url('{{ asset('images/slides/VasosModelo.png') }}');">
+
+            <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 md:py-20 flex flex-col items-center text-center">
+                <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-3">
                     Vasos de Concreto Artesanais<br class="hidden sm:block"> Direto da Fábrica
                 </h1>
 
-                <p class="text-gray-300 text-lg max-w-xl mb-6">
-                    A Shalom Vazos Decor nasceu com o propósito de levar beleza, elegância e personalidade para ambientes residenciais e comerciais.
-                </p>
-
-                <p class="text-gray-300 text-lg max-w-xl mb-6">
-                    Acreditamos que a decoração vai além da estética: ela transmite sensações, acolhe pessoas e transforma espaços em experiências únicas.
-                </p>
-
-                <p class="text-gray-300 text-lg max-w-xl mb-6">
-                    Trabalhamos constantemente para trazer produtos que acompanhem as tendências do mercado.
-                </p>
+                <div class="text-gray-300 text-sm sm:text-base md:text-lg max-w-xl space-y-3 sm:space-y-4 mb-6">
+                    <p>A Shalom Vazos Decor nasceu com o propósito de levar beleza, elegância e personalidade para ambientes residenciais e comerciais.</p>
+                    <p>Acreditamos que a decoração vai além da estética: ela transmite sensações, acolhe pessoas e transforma espaços em experiências únicas.</p>
+                    <p>Trabalhamos constantemente para trazer produtos que acompanhem as tendências do mercado.</p>
+                </div>
             </div>
         </div>
 
@@ -39,20 +29,20 @@
             </h2>
         </div>
 
-        {{-- Texto da história, sem imagem --}}
+        {{-- Texto da hist�ria, sem imagem --}}
         <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10 text-gray-700 text-lg leading-relaxed space-y-4">
             <p>
-                Desde 2008, a Shalom Vazos Decor produz vasos de concreto e peças para decoração e jardinagem em Nova Esperança – PR. Começamos de forma simples e, ao longo dos anos, fomos aprimorando nossos processos e modelos — sempre com atenção especial ao acabamento e à durabilidade de cada peça.
+                Desde 2008, a Shalom Vazos Decor produz vasos de concreto e peças para decoração e jardinagem em Nova Esperança PR. Começamos de forma simples e, ao longo dos anos, fomos aprimorando nossos processos e modelos sempre com atenção especial ao acabamento e à durabilidade de cada peça.
             </p>
             <p>
                 Atendemos tanto ambientes residenciais quanto projetos de paisagismo, das demandas menores às de maior escala, sempre buscando unir resistência, funcionalidade e um bom acabamento visual, sem complicação.
             </p>
             <p>
-                Mais do que anos de experiência, carregamos o aprendizado de cada cliente e de cada peça produzida no dia a dia — e isso está presente em tudo o que sai da nossa fábrica.
+                Mais do que anos de experiência, carregamos o aprendizado de cada cliente e de cada peça produzida no dia a dia e isso está presente em tudo o que sai da nossa fábrica.
             </p>
         </div>
 
-        {{-- Título: Nosso Produto --}}
+        {{-- T�tulo: Nosso Produto --}}
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
             <h2 class="text-2xl md:text-3xl font-bold text-[#062035] text-center">
                 Nosso Produto
@@ -69,13 +59,13 @@
 
             <div class="text-gray-700 text-lg leading-relaxed space-y-4">
                 <p>
-                    Trabalhamos com matéria-prima selecionada e um processo de cura cuidadoso, que garante peças mais resistentes ao tempo, ao sol e à chuva — ideais tanto para uso interno quanto externo. Cada vaso passa por inspeção antes de sair da fábrica, assegurando o padrão de qualidade que nossos clientes já conhecem.
+                    Trabalhamos com matéria-prima selecionada e um processo de cura cuidadoso, que garante peças mais resistentes ao tempo, ao sol e à chuva ideais tanto para uso interno quanto externo. Cada vaso passa por inspeção antes de sair da fábrica, assegurando o padrão de qualidade que nossos clientes já conhecem.
                 </p>
                 <p>
                     Também trabalhamos com encomendas personalizadas, adaptando tamanhos, formatos e acabamentos conforme a necessidade de cada projeto, seja para um jardim residencial, uma área comercial ou um paisagismo de maior porte.
                 </p>
                 <p>
-                    Se você procura vasos de concreto com qualidade, durabilidade e um acabamento que valoriza qualquer ambiente, a Shalom Vazos Decor está pronta para atender você — direto da fábrica, com preço justo e atenção em cada detalhe.
+                    Se você procura vasos de concreto com qualidade, durabilidade e um acabamento que valoriza qualquer ambiente, a Shalom Vazos Decor está pronta para atender você direto da fábrica, com preço justo e atenção em cada detalhe.
                 </p>
             </div>
         </div>
@@ -151,6 +141,5 @@
                 @endguest
             </div>
         </div>
-
     </div>
 @endsection
