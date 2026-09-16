@@ -93,8 +93,8 @@ class ProductController extends Controller
             'manage_stock' => 'boolean',
             'weight' => 'nullable|numeric|min:0',
             'dimensions' => 'nullable|string|max:255',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'nullable|mimes:jpeg,png,jpg,gif|max:2048',
+            'images.*' => 'nullable|mimes:jpeg,png,jpg,gif|max:2048',
             'active' => 'boolean',
             'featured' => 'boolean',
             'sizes'         => 'nullable|array',
@@ -103,6 +103,13 @@ class ProductController extends Controller
             'size_prices.*' => 'nullable|numeric|min:0',
             'color_id' => 'nullable|exists:colors,id',
             'material_id' => 'nullable|exists:materials,id',
+        ] ,  [
+            'image.max' => 'A imagem excede o tamanho máximo de 2 MB.',
+            'image.uploaded' => 'A imagem excede o tamanho máximo de 2 MB.',
+            'image.mimes' => 'A imagem deve estar em um dos formatos: JPEG, PNG, JPG, GIF.',
+            'images.*.uploaded' => 'Uma das imagens excede o tamanho máximo de 2 MB.',
+            'images.*.max' => 'Uma das imagens excede o tamanho máximo de 2 MB.',
+            'images.*.mimes' => 'Uma das imagens está em um formato inválido.',
         ]);
 
         $data = $request->except(['sizes', 'size_prices']);
@@ -188,8 +195,8 @@ class ProductController extends Controller
             'manage_stock' => 'boolean',
             'weight' => 'nullable|numeric|min:0',
             'dimensions' => 'nullable|string|max:255',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'nullable|mimes:jpeg,png,jpg,gif|max:2048',
+            'images.*' => 'nullable|mimes:jpeg,png,jpg,gif|max:2048',
             'active' => 'boolean',
             'featured' => 'boolean',
             'sizes'         => 'nullable|array',
@@ -198,6 +205,13 @@ class ProductController extends Controller
             'size_prices.*' => 'nullable|numeric|min:0',
             'color_id' => 'nullable|exists:colors,id',
             'material_id' => 'nullable|exists:materials,id',
+        ],  [
+            'image.max' => 'A imagem excede o tamanho máximo de 2 MB.',
+            'image.uploaded' => 'A imagem excede o tamanho máximo de 2 MB.',
+            'image.mimes' => 'A imagem deve estar em um dos formatos: JPEG, PNG, JPG, GIF.',
+            'images.*.uploaded' => 'Uma das imagens excede o tamanho máximo de 2 MB.',
+            'images.*.max' => 'Uma das imagens excede o tamanho máximo de 2 MB.',
+            'images.*.mimes' => 'Uma das imagens está em um formato inválido.',
         ]);
 
         $data = $request->except(['sizes', 'size_prices']);
@@ -285,7 +299,7 @@ class ProductController extends Controller
         if ($product->image && Storage::disk('public')->exists($product->image)) {
             Storage::disk('public')->delete($product->image);
         }
-        
+
         $data['image'] = null;
 
         $product->update($data);
@@ -302,7 +316,7 @@ class ProductController extends Controller
         $product->update(['active' => !$product->active]);
 
         $status = $product->active ? 'ativado' : 'desativado';
-        
+
         if (request()->ajax()) {
             return response()->json([
                 'success' => true,
