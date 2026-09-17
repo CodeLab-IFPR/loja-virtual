@@ -226,11 +226,13 @@ class ProductController extends Controller
         $data['price'] = !empty($validPrices) ? min($validPrices) : 0;
 
         // Upload da imagem principal
+        $oldImage = $product->image;
+        $newImagePath = null;
         if ($request->hasFile('image')) {
-            if ($product->image && Storage::disk('public')->exists($product->image)) {
-                Storage::disk('public')->delete($product->image);
-            }
-            $data['image'] = $request->file('image')->store('products', 'public');
+            $newImagePath = $request->file('image')->store('products', 'public');
+            $data['image'] = $newImagePath;
+        } else {
+            unset($data['image']);
         }
 
         // Upload das novas imagens adicionais
@@ -245,16 +247,20 @@ class ProductController extends Controller
 
         // Remover imagens selecionadas
         $removeImages = $request->input('remove_additional_images', []);
-        foreach ($removeImages as $removeImage) {
-            if (Storage::disk('public')->exists($removeImage)) {
-                Storage::disk('public')->delete($removeImage);
-            }
-            $existingImages = array_filter($existingImages, fn($img) => $img !== $removeImage);
-        }
+        $existingImages = array_values(array_filter($existingImages, fn($img) => !in_array($img, $removeImages)));
 
         $data['images'] = array_values($existingImages);
 
         $product->update($data);
+
+        if($newImagePath && $oldImage && Storage::disk('public')->exists($oldImage)) {
+            Storage::disk('public')->delete($oldImage);
+        }
+        foreach ($removeImages as $removeImage) {
+            if (Storage::disk('public')->exists($removeImage)) {
+                Storage::disk('public')->delete($removeImage);
+            }
+        }
 
         // Sync sizes with per-size prices
         $sizePrices = $request->input('size_prices', []);
