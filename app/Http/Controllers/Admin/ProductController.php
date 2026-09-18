@@ -302,13 +302,12 @@ class ProductController extends Controller
      */
     public function destroyImage(Product $product)
     {
-        if ($product->image && Storage::disk('public')->exists($product->image)) {
-            Storage::disk('public')->delete($product->image);
+        $oldImage = $product->image;
+
+        $product->update(['image' => null]);
+        if ($oldImage && Storage::disk('public')->exists($oldImage)) {
+            Storage::disk('public')->delete($oldImage);
         }
-
-        $data['image'] = null;
-
-        $product->update($data);
 
         return redirect()->route('admin.products.index')
             ->with('success', 'Imagem principal excluída com sucesso!');
