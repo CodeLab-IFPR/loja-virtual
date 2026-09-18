@@ -51,7 +51,7 @@ class CatalogController extends Controller
                     'secondary_link' => route('catalog'),
                     'text_position' => $textPosition, // 'left', 'right' ou 'center'
                 ];
-                
+
                 $slideIndex++;
             }
         }
@@ -184,5 +184,22 @@ class CatalogController extends Controller
             ->get();
 
         return view('catalog.show', compact('product', 'relatedProducts'));
+    }
+    public function about()
+    {
+        $slides = [];
+        $folderName = 'images/slides';
+        $slidePath = public_path($folderName);
+
+        if (File::isDirectory($slidePath)) {
+            $files = File::files($slidePath);
+            foreach ($files as $file) {
+                $slides[] = [
+                    'image' => asset($folderName . '/' . $file->getFilename()),
+                ];
+            }
+        }
+
+        return view('quem-somos', compact('slides'));
     }
 }
