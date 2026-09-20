@@ -309,7 +309,7 @@ class ProductController extends Controller
             Storage::disk('public')->delete($oldImage);
         }
 
-        return redirect()->route('admin.products.index')
+        return redirect()->route('admin.products.edit' , $product)
             ->with('success', 'Imagem principal excluída com sucesso!');
     }
 
