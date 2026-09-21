@@ -320,18 +320,7 @@
                         <div class="flex items-center space-x-4">
                             <img src="{{ Storage::url($product->image) }}" alt="Atual" class="h-32 w-32 object-cover rounded-lg border-2 border-gray-300 shadow-sm">
                             <button type="button"
-                                    onclick="Swal.fire({
-                                        title: 'Remover imagem principal?',
-                                        icon: 'warning',
-                                        showCancelButton: true,
-                                        confirmButtonText: 'Sim, remover',
-                                        cancelButtonText: 'Cancelar',
-                                        confirmButtonColor: '#ef4444'
-                                    }).then((result) => {
-                                        if (result.isConfirmed){
-                                            document.getElementById('destroy-image-form').submit();
-                                        }
-                                    })"
+                                    onclick= "removeImage()"
                                     class="inline-flex items-center px-3 py-2 bg-red-500 hover:bg-red-600 text-white text-sm font-medium rounded-lg transition-colors duration-200">
                                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -368,11 +357,11 @@
                         <h4 class="text-sm font-semibold text-gray-700 mb-3">Imagens atuais:</h4>
                         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                             @foreach($product->images as $index => $imagePath)
-                                <div class="relative group">
+                                <div class="relative group" id="additional-image-{{$index}}">
                                     <img src="{{ Storage::url($imagePath) }}" alt="Imagem {{ $index + 1 }}" class="h-40 w-full object-cover rounded-lg border-2 border-gray-300 shadow-sm">
                                     <div class="absolute inset-0 bg-black bg-opacity-60 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center">
                                         <label class="flex items-center cursor-pointer px-3 py-2 bg-red-500 hover:bg-red-600 rounded-lg transition-colors duration-200">
-                                            <input type="checkbox" name="remove_additional_images[]" value="{{ $imagePath }}" class="w-4 h-4 text-red-600 border-white rounded focus:ring-2 focus:ring-red-300">
+                                            <input type="checkbox" name="remove_additional_images[]" value="{{ $imagePath }}" onchange="markImageForRemoval({{ $index }} , this)" class="w-4 h-4 text-red-600 border-white rounded focus:ring-2 focus:ring-red-300">
                                             <span class="ml-2 text-white text-sm font-medium">Remover</span>
                                         </label>
                                     </div>
@@ -520,6 +509,36 @@
             wrap.classList.add('hidden');
             input.required = false;
             input.value = '';
+        }
+    }
+
+    function removeImage(){
+        Swal.fire({
+            title: 'Remover imagem principal?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sim, remover',
+            cancelButtonText: 'Cancelar',
+            confirmButtonColor: '#ef4444'
+        }).then((result) => {
+            if (result.isConfirmed){
+                document.getElementById('destroy-image-form').submit();
+            }
+        })
+    }
+
+    function markImageForRemoval(index, checkbox) {
+        if (checkbox.checked) {
+            document.getElementById('additional-image-' + index).style.display = 'none';
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'success',
+                title: 'Imagem adicional removida.',
+                showConfirmButton: false,
+                timer: 2500,
+                timerProgressBar: true
+            });
         }
     }
 
