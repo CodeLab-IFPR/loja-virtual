@@ -93,8 +93,8 @@ class ProductController extends Controller
             'manage_stock' => 'boolean',
             'weight' => 'nullable|numeric|min:0',
             'dimensions' => 'nullable|string|max:255',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'nullable|mimes:jpeg,png,jpg,gif|max:2048',
+            'images.*' => 'nullable|mimes:jpeg,png,jpg,gif|max:2048',
             'active' => 'boolean',
             'featured' => 'boolean',
             'sizes'         => 'nullable|array',
@@ -103,6 +103,13 @@ class ProductController extends Controller
             'size_prices.*' => 'nullable|numeric|min:0',
             'color_id' => 'nullable|exists:colors,id',
             'material_id' => 'nullable|exists:materials,id',
+        ] ,  [
+            'image.max' => 'A imagem excede o tamanho máximo de 2 MB.',
+            'image.uploaded' => 'A imagem excede o tamanho máximo de 2 MB.',
+            'image.mimes' => 'A imagem deve estar em um dos formatos: JPEG, PNG, JPG, GIF.',
+            'images.*.uploaded' => 'Uma das imagens excede o tamanho máximo de 2 MB.',
+            'images.*.max' => 'Uma das imagens excede o tamanho máximo de 2 MB.',
+            'images.*.mimes' => 'Uma das imagens está em um formato inválido.',
         ]);
 
         $data = $request->except(['sizes', 'size_prices']);
@@ -188,8 +195,8 @@ class ProductController extends Controller
             'manage_stock' => 'boolean',
             'weight' => 'nullable|numeric|min:0',
             'dimensions' => 'nullable|string|max:255',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'nullable|mimes:jpeg,png,jpg,gif|max:2048',
+            'images.*' => 'nullable|mimes:jpeg,png,jpg,gif|max:2048',
             'active' => 'boolean',
             'featured' => 'boolean',
             'sizes'         => 'nullable|array',
@@ -198,6 +205,13 @@ class ProductController extends Controller
             'size_prices.*' => 'nullable|numeric|min:0',
             'color_id' => 'nullable|exists:colors,id',
             'material_id' => 'nullable|exists:materials,id',
+        ],  [
+            'image.max' => 'A imagem excede o tamanho máximo de 2 MB.',
+            'image.uploaded' => 'A imagem excede o tamanho máximo de 2 MB.',
+            'image.mimes' => 'A imagem deve estar em um dos formatos: JPEG, PNG, JPG, GIF.',
+            'images.*.uploaded' => 'Uma das imagens excede o tamanho máximo de 2 MB.',
+            'images.*.max' => 'Uma das imagens excede o tamanho máximo de 2 MB.',
+            'images.*.mimes' => 'Uma das imagens está em um formato inválido.',
         ]);
 
         $data = $request->except(['sizes', 'size_prices']);
@@ -212,11 +226,13 @@ class ProductController extends Controller
         $data['price'] = !empty($validPrices) ? min($validPrices) : 0;
 
         // Upload da imagem principal
+        $oldImage = $product->image;
+        $newImagePath = null;
         if ($request->hasFile('image')) {
-            if ($product->image && Storage::disk('public')->exists($product->image)) {
-                Storage::disk('public')->delete($product->image);
-            }
-            $data['image'] = $request->file('image')->store('products', 'public');
+            $newImagePath = $request->file('image')->store('products', 'public');
+            $data['image'] = $newImagePath;
+        } else {
+            unset($data['image']);
         }
 
         // Upload das novas imagens adicionais
@@ -231,16 +247,20 @@ class ProductController extends Controller
 
         // Remover imagens selecionadas
         $removeImages = $request->input('remove_additional_images', []);
-        foreach ($removeImages as $removeImage) {
-            if (Storage::disk('public')->exists($removeImage)) {
-                Storage::disk('public')->delete($removeImage);
-            }
-            $existingImages = array_filter($existingImages, fn($img) => $img !== $removeImage);
-        }
+        $existingImages = array_values(array_filter($existingImages, fn($img) => !in_array($img, $removeImages)));
 
         $data['images'] = array_values($existingImages);
 
         $product->update($data);
+
+        if($newImagePath && $oldImage && Storage::disk('public')->exists($oldImage)) {
+            Storage::disk('public')->delete($oldImage);
+        }
+        foreach ($removeImages as $removeImage) {
+            if (Storage::disk('public')->exists($removeImage)) {
+                Storage::disk('public')->delete($removeImage);
+            }
+        }
 
         // Sync sizes with per-size prices
         $sizePrices = $request->input('size_prices', []);
@@ -282,15 +302,14 @@ class ProductController extends Controller
      */
     public function destroyImage(Product $product)
     {
-        if ($product->image && Storage::disk('public')->exists($product->image)) {
-            Storage::disk('public')->delete($product->image);
+        $oldImage = $product->image;
+
+        $product->update(['image' => null]);
+        if ($oldImage && Storage::disk('public')->exists($oldImage)) {
+            Storage::disk('public')->delete($oldImage);
         }
-        
-        $data['image'] = null;
 
-        $product->update($data);
-
-        return redirect()->route('admin.products.index')
+        return redirect()->route('admin.products.edit' , $product)
             ->with('success', 'Imagem principal excluída com sucesso!');
     }
 
@@ -302,7 +321,7 @@ class ProductController extends Controller
         $product->update(['active' => !$product->active]);
 
         $status = $product->active ? 'ativado' : 'desativado';
-        
+
         if (request()->ajax()) {
             return response()->json([
                 'success' => true,
