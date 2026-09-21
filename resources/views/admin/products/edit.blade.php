@@ -54,6 +54,21 @@
         </div>
         @endif
 
+        @if(session('success'))
+            <div class="mx-8 mt-6 p-4 bg-green-50 border-l-4 border-green-400 rounded-r-lg">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <svg class="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-sm font-medium text-green-800">{{ session('success') }}</p>
+                    </div>
+                </div>
+            </div>
+        @endif
+
         <form action="{{ route('admin.products.update', $product) }}" method="POST" enctype="multipart/form-data"
             class="px-8 py-8 space-y-8">
             @csrf
@@ -73,10 +88,10 @@
                         <label for="name" class="block text-sm font-semibold text-gray-700 mb-2">
                             Nome do Produto <span class="text-red-500">*</span>
                         </label>
-                        <input type="text" 
-                               id="name" 
-                               name="name" 
-                               value="{{ old('name', $product->name) }}" 
+                        <input type="text"
+                               id="name"
+                               name="name"
+                               value="{{ old('name', $product->name) }}"
                                required
                                placeholder="Ex: Camiseta Básica, Calça Jeans..."
                                class="px-4 py-3 mt-1 block w-full rounded-lg border-2 border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-colors duration-200">
@@ -86,8 +101,8 @@
                         <label for="category_id" class="block text-sm font-semibold text-gray-700 mb-2">
                             Categoria <span class="text-red-500">*</span>
                         </label>
-                        <select id="category_id" 
-                                name="category_id" 
+                        <select id="category_id"
+                                name="category_id"
                                 required
                                 class="px-4 py-3 mt-1 block w-full rounded-lg border-2 border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-colors duration-200">
                             <option value="">Selecione uma categoria</option>
@@ -104,10 +119,10 @@
                     <label for="description" class="block text-sm font-semibold text-gray-700 mb-2">
                         Descrição
                     </label>
-                    <textarea 
-                        id="description" 
-                        name="description" 
-                        rows="5" 
+                    <textarea
+                        id="description"
+                        name="description"
+                        rows="5"
                         class="px-4 py-3 mt-1 block w-full rounded-lg border-2 border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-colors duration-200 resize-none"
                         placeholder="Descreva os detalhes, características e benefícios do produto...">{{ old('description', $product->description) }}</textarea>
                     <p class="mt-2 text-xs text-gray-500">Descrição detalhada que será exibida na página do produto</p>
@@ -196,10 +211,10 @@
                     <div class="bg-white p-4 rounded-lg border-2 border-gray-200">
                         <label class="flex items-start cursor-pointer group">
                             <input type="hidden" name="manage_stock" value="0">
-                            <input type="checkbox" 
-                                   id="manage_stock" 
-                                   name="manage_stock" 
-                                   value="1" 
+                            <input type="checkbox"
+                                   id="manage_stock"
+                                   name="manage_stock"
+                                   value="1"
                                    {{ old('manage_stock', $product->manage_stock) ? 'checked' : '' }}
                                    class="mt-1 w-5 h-5 rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-colors duration-200">
                             <div class="ml-3">
@@ -216,11 +231,11 @@
                         <label for="stock" class="block text-sm font-semibold text-gray-700 mb-2">
                             Estoque Atual <span class="text-red-500">*</span>
                         </label>
-                        <input type="number" 
-                               id="stock" 
-                               name="stock" 
-                               value="{{ old('stock', $product->stock) }}" 
-                               min="0" 
+                        <input type="number"
+                               id="stock"
+                               name="stock"
+                               value="{{ old('stock', $product->stock) }}"
+                               min="0"
                                required
                                placeholder="0"
                                class="px-4 py-3 mt-1 block w-full rounded-lg border-2 border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-colors duration-200">
@@ -250,8 +265,8 @@
                         <label for="material_id" class="block text-sm font-semibold text-gray-700 mb-2">
                             Material
                         </label>
-                        <select id="material_id" 
-                                name="material_id" 
+                        <select id="material_id"
+                                name="material_id"
                                 class="px-4 py-3 mt-1 block w-full rounded-lg border-2 border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-colors duration-200">
                             <option value="">Selecione um material</option>
                             @foreach($materials as $material)
@@ -266,8 +281,8 @@
                         <label for="color_id" class="block text-sm font-semibold text-gray-700 mb-2">
                             Cor
                         </label>
-                        <select id="color_id" 
-                                name="color_id" 
+                        <select id="color_id"
+                                name="color_id"
                                 class="px-4 py-3 mt-1 block w-full rounded-lg border-2 border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-colors duration-200">
                             <option value="">Selecione uma cor</option>
                             @foreach($colors as $color)
@@ -304,14 +319,14 @@
                     @if($product->image)
                         <div class="flex items-center space-x-4">
                             <img src="{{ Storage::url($product->image) }}" alt="Atual" class="h-32 w-32 object-cover rounded-lg border-2 border-gray-300 shadow-sm">
-                            <a href="{{ route('admin.products.destroy-image', $product) }}" 
-                               class="inline-flex items-center px-3 py-2 bg-red-500 hover:bg-red-600 text-white text-sm font-medium rounded-lg transition-colors duration-200"
-                               onclick="return confirm('Remover imagem principal?')">
+                            <button type="button"
+                                    onclick= "removeImage()"
+                                    class="inline-flex items-center px-3 py-2 bg-red-500 hover:bg-red-600 text-white text-sm font-medium rounded-lg transition-colors duration-200">
                                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                 </svg>
                                 Remover
-                            </a>
+                            </button>
                         </div>
                     @endif
                 </div>
@@ -342,14 +357,12 @@
                         <h4 class="text-sm font-semibold text-gray-700 mb-3">Imagens atuais:</h4>
                         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                             @foreach($product->images as $index => $imagePath)
-                                <div class="relative group">
+                                <div class="relative group" id="additional-image-{{$index}}">
                                     <img src="{{ Storage::url($imagePath) }}" alt="Imagem {{ $index + 1 }}" class="h-40 w-full object-cover rounded-lg border-2 border-gray-300 shadow-sm">
-                                    <div class="absolute inset-0 bg-black bg-opacity-60 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center">
-                                        <label class="flex items-center cursor-pointer px-3 py-2 bg-red-500 hover:bg-red-600 rounded-lg transition-colors duration-200">
-                                            <input type="checkbox" name="remove_additional_images[]" value="{{ $imagePath }}" class="w-4 h-4 text-red-600 border-white rounded focus:ring-2 focus:ring-red-300">
-                                            <span class="ml-2 text-white text-sm font-medium">Remover</span>
-                                        </label>
-                                    </div>
+                                    <button type="button" onclick="clickImageForRemoval({{ $index }});"
+                                            class="absolute -top-2 -right-2 bg-red-500 hover:bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold shadow-md transition-colors duration-200"
+                                            title="Remover imagem">&times;</button>
+                                    <input type="hidden" name="remove_additional_images[]" value="{{ $imagePath }}" id="remove-input-{{ $index }}" disabled>
                                 </div>
                             @endforeach
                         </div>
@@ -370,10 +383,10 @@
                     <div class="bg-white p-4 rounded-lg border-2 border-gray-200">
                         <label class="flex items-start cursor-pointer group">
                             <input type="hidden" name="active" value="0">
-                            <input type="checkbox" 
-                                   id="active" 
-                                   name="active" 
-                                   value="1" 
+                            <input type="checkbox"
+                                   id="active"
+                                   name="active"
+                                   value="1"
                                    {{ old('active', $product->active) ? 'checked' : '' }}
                                    class="mt-1 w-5 h-5 rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-colors duration-200">
                             <div class="ml-3">
@@ -387,10 +400,10 @@
                     <div class="bg-white p-4 rounded-lg border-2 border-gray-200">
                         <label class="flex items-start cursor-pointer group">
                             <input type="hidden" name="featured" value="0">
-                            <input type="checkbox" 
-                                   id="featured" 
-                                   name="featured" 
-                                   value="1" 
+                            <input type="checkbox"
+                                   id="featured"
+                                   name="featured"
+                                   value="1"
                                    {{ old('featured', $product->featured) ? 'checked' : '' }}
                                    class="mt-1 w-5 h-5 rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-colors duration-200">
                             <div class="ml-3">
@@ -423,6 +436,10 @@
                     Atualizar Produto
                 </button>
             </div>
+        </form>
+        <form id="destroy-image-form" action="{{ route('admin.products.destroy-image' , $product) }}" method="Post" class="hidden">
+            @csrf
+            @method('PATCH')
         </form>
     </div>
 </div>
@@ -492,5 +509,47 @@
             input.value = '';
         }
     }
+
+    function removeImage(){
+        Swal.fire({
+            title: 'Remover imagem principal?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sim, remover',
+            cancelButtonText: 'Cancelar',
+            confirmButtonColor: '#ef4444'
+        }).then((result) => {
+            if (result.isConfirmed){
+                document.getElementById('destroy-image-form').submit();
+            }
+        })
+    }
+
+    function clickImageForRemoval(index) {
+        Swal.fire({
+            title: 'Remover imagem adicional?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sim, remover',
+            cancelButtonText: 'Cancelar',
+            confirmButtonColor: '#ef4444'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById('additional-image-' + index).style.display = 'none';
+                document.getElementById('remove-input-' + index).disabled = false;
+
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'success',
+                    title: 'Imagem adicional removida.',
+                    showConfirmButton: false,
+                    timer: 2500,
+                    timerProgressBar: true
+                });
+            }
+        });
+    }
+
 </script>
 @endsection
