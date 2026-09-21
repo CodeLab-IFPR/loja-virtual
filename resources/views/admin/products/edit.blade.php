@@ -359,12 +359,10 @@
                             @foreach($product->images as $index => $imagePath)
                                 <div class="relative group" id="additional-image-{{$index}}">
                                     <img src="{{ Storage::url($imagePath) }}" alt="Imagem {{ $index + 1 }}" class="h-40 w-full object-cover rounded-lg border-2 border-gray-300 shadow-sm">
-                                    <div class="absolute inset-0 bg-black bg-opacity-60 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center">
-                                        <label class="flex items-center cursor-pointer px-3 py-2 bg-red-500 hover:bg-red-600 rounded-lg transition-colors duration-200">
-                                            <input type="checkbox" name="remove_additional_images[]" value="{{ $imagePath }}" onchange="markImageForRemoval({{ $index }} , this)" class="w-4 h-4 text-red-600 border-white rounded focus:ring-2 focus:ring-red-300">
-                                            <span class="ml-2 text-white text-sm font-medium">Remover</span>
-                                        </label>
-                                    </div>
+                                    <button type="button" onclick="clickImageForRemoval({{ $index }});"
+                                            class="absolute -top-2 -right-2 bg-red-500 hover:bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold shadow-md transition-colors duration-200"
+                                            title="Remover imagem">&times;</button>
+                                    <input type="hidden" name="remove_additional_images[]" value="{{ $imagePath }}" id="remove-input-{{ $index }}" disabled>
                                 </div>
                             @endforeach
                         </div>
@@ -527,19 +525,30 @@
         })
     }
 
-    function markImageForRemoval(index, checkbox) {
-        if (checkbox.checked) {
-            document.getElementById('additional-image-' + index).style.display = 'none';
-            Swal.fire({
-                toast: true,
-                position: 'top-end',
-                icon: 'success',
-                title: 'Imagem adicional removida.',
-                showConfirmButton: false,
-                timer: 2500,
-                timerProgressBar: true
-            });
-        }
+    function clickImageForRemoval(index) {
+        Swal.fire({
+            title: 'Remover imagem adicional?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sim, remover',
+            cancelButtonText: 'Cancelar',
+            confirmButtonColor: '#ef4444'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById('additional-image-' + index).style.display = 'none';
+                document.getElementById('remove-input-' + index).disabled = false;
+
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'success',
+                    title: 'Imagem adicional removida.',
+                    showConfirmButton: false,
+                    timer: 2500,
+                    timerProgressBar: true
+                });
+            }
+        });
     }
 
 </script>
