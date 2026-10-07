@@ -16,7 +16,7 @@
 
         header {
             position: fixed;
-            top: -70px;
+            top: -90px;
             left: 0;
             right: 0;
             height: 60px;
@@ -41,7 +41,7 @@
             left: 0;
             right: 0;
             height: 30px;
-            border-top: 1px solid #e5e7eb;
+            border-top: 1px solid #2563eb;
             padding-top: 6px;
             font-size: 9px;
             color: #9ca3af;
@@ -50,6 +50,7 @@
 
         .grid {
             width: 100%;
+            text-align: center;
         }
 
         .card {
@@ -60,6 +61,7 @@
             border: 1px solid #e5e7eb;
             border-radius: 6px;
             padding: 8px;
+            page-break-inside: avoid;
         }
 
         .card .image-wrap {
@@ -74,6 +76,7 @@
         .card .image-wrap img {
             max-width: 100%;
             max-height: 130px;
+            margin: 0 auto;
         }
 
         .card .image-wrap .no-image {
@@ -134,44 +137,66 @@
     </style>
 </head>
 <body>
-    <header>
-        <div class="title">Catálogo de Produtos</div>
-        <div class="subtitle">
-            Gerado em {{ $generatedAt->format('d/m/Y \à\s H:i') }} &middot; {{ $products->count() }} produto(s)
-        </div>
+    <header style="text-align: center">
+        <table style="width: 100%;">
+            <tr>
+                <td style="text-align: left; width: 50%;">
+                    <img src="{{ public_path('images/icons/Logo_shalom.png') }}"
+                         style="width: 200px; vertical-align: middle;">
+                </td>
+
+                <h1 class="title" style="text-align: center">Catálogo de Produtos</h1>
+
+            </tr>
+        </table>
     </header>
 
-    <footer>
-        Catálogo gerado automaticamente pelo sistema
+    <footer style="text-align: left; width: 100%;">
+        <div class="subtitle">
+            Gerado em {{ $generatedAt->format('d/m/Y \à\s H:i') }}
+            &middot;
+            {{ $products->count() }} produto(s)
+        </div>
     </footer>
 
     <div class="grid">
-        @forelse ($products as $product)
-            <div class="card">
-                <div class="image-wrap">
-                    @if ($product->pdf_image)
-                        <img src="{{ $product->pdf_image }}" alt="{{ $product->name }}">
-                    @else
-                        <span class="no-image">Sem imagem</span>
-                    @endif
-                </div>
 
-                @if ($product->category)
-                    <div class="category">{{ $product->category->name }}</div>
-                @endif
+        @foreach ($products->groupBy('category.name') as $category => $categoryProducts)
 
-                <div class="name">{{ $product->name }}</div>
-                <div class="sku">SKU: {{ $product->sku }}</div>
-                <div class="price">R$ {{ number_format($product->price, 2, ',', '.') }}</div>
-                <div class="status {{ $product->active ? 'active' : 'inactive' }}">
-                    {{ $product->active ? 'Ativo' : 'Inativo' }}
-                    &middot;
-                    {{ $product->stock > 0 ? 'Em estoque (' . $product->stock . ')' : 'Sem estoque' }}
-                </div>
+            <h2 class="category-title">{{ $category }} </h2>
+
+            <div class="grid">
+
+                @foreach ($categoryProducts as $product)
+
+                    <div class="card">
+                        <div class="image-wrap">
+                            @if ($product->pdf_image)
+                                <img src="{{ $product->pdf_image }}" alt="{{ $product->name }}">
+                            @else
+                                <span class="no-image">Sem imagem</span>
+                            @endif
+                        </div>
+
+                        <div class="name">{{ $product->name }}</div>
+                        <div class="sku">SKU: {{ $product->sku }}</div>
+                        <div class="price">
+                            R$ {{ number_format($product->price, 2, ',', '.') }}
+                        </div>
+
+                        <div class="status {{ $product->active ? 'active' : 'inactive' }}">
+                            {{ $product->active ? 'Ativo' : 'Inativo' }}
+                            &middot;
+                            {{ $product->stock > 0 ? 'Em estoque (' . $product->stock . ')' : 'Sem estoque' }}
+                        </div>
+                    </div>
+
+                @endforeach
+
             </div>
-        @empty
-            <div class="empty-state">Nenhum produto encontrado para os filtros selecionados.</div>
-        @endforelse
+
+        @endforeach
+
     </div>
 </body>
 </html>
