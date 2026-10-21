@@ -85,6 +85,9 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
+        $maxKB = config('uploads.max_image_kb');
+        $maxMB = round($maxKB / 1024, 2);
+
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
@@ -93,8 +96,8 @@ class ProductController extends Controller
             'manage_stock' => 'boolean',
             'weight' => 'nullable|numeric|min:0',
             'dimensions' => 'nullable|string|max:255',
-            'image' => 'nullable|mimes:jpeg,png,jpg,gif|max:2048',
-            'images.*' => 'nullable|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => "nullable|mimes:jpeg,png,jpg,gif|max:{$maxKB}",
+            'images.*' => "nullable|mimes:jpeg,png,jpg,gif|max:{$maxKB}",
             'active' => 'boolean',
             'featured' => 'boolean',
             'sizes'         => 'nullable|array',
@@ -104,11 +107,11 @@ class ProductController extends Controller
             'color_id' => 'nullable|exists:colors,id',
             'material_id' => 'nullable|exists:materials,id',
         ] ,  [
-            'image.max' => 'A imagem excede o tamanho máximo de 2 MB.',
-            'image.uploaded' => 'A imagem excede o tamanho máximo de 2 MB.',
+            'image.max' => "A imagem excede o tamanho máximo de {$maxMB} MB.",
+            'image.uploaded' => "A imagem excede o tamanho máximo de {$maxMB} MB.",
             'image.mimes' => 'A imagem deve estar em um dos formatos: JPEG, PNG, JPG, GIF.',
-            'images.*.uploaded' => 'Uma das imagens excede o tamanho máximo de 2 MB.',
-            'images.*.max' => 'Uma das imagens excede o tamanho máximo de 2 MB.',
+            'images.*.uploaded' => "Uma das imagens excede o tamanho máximo de {$maxMB} MB.",
+            'images.*.max' => "Uma das imagens excede o tamanho máximo de {$maxMB} MB.",
             'images.*.mimes' => 'Uma das imagens está em um formato inválido.',
         ]);
 
@@ -195,8 +198,8 @@ class ProductController extends Controller
             'manage_stock' => 'boolean',
             'weight' => 'nullable|numeric|min:0',
             'dimensions' => 'nullable|string|max:255',
-            'image' => 'nullable|mimes:jpeg,png,jpg,gif|max:2048',
-            'images.*' => 'nullable|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => "nullable|mimes:jpeg,png,jpg,gif|max:{$maxKB}",
+            'images.*' => "nullable|mimes:jpeg,png,jpg,gif|max:{$maxKB}",
             'active' => 'boolean',
             'featured' => 'boolean',
             'sizes'         => 'nullable|array',
@@ -206,11 +209,11 @@ class ProductController extends Controller
             'color_id' => 'nullable|exists:colors,id',
             'material_id' => 'nullable|exists:materials,id',
         ],  [
-            'image.max' => 'A imagem excede o tamanho máximo de 2 MB.',
-            'image.uploaded' => 'A imagem excede o tamanho máximo de 2 MB.',
+            'image.max' => "A imagem excede o tamanho máximo de {$maxMB} MB.",
+            'image.uploaded' => "A imagem excede o tamanho máximo de {$maxMB} MB.",
             'image.mimes' => 'A imagem deve estar em um dos formatos: JPEG, PNG, JPG, GIF.',
-            'images.*.uploaded' => 'Uma das imagens excede o tamanho máximo de 2 MB.',
-            'images.*.max' => 'Uma das imagens excede o tamanho máximo de 2 MB.',
+            'images.*.uploaded' => "Uma das imagens excede o tamanho máximo de {$maxMB} MB.",
+            'images.*.max' => "Uma das imagens excede o tamanho máximo de {$maxMB} MB.",
             'images.*.mimes' => 'Uma das imagens está em um formato inválido.',
         ]);
 
