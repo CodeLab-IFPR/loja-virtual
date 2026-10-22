@@ -189,6 +189,8 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
+        $maxKB = config('uploads.max_image_kb');
+        $maxMB = round($maxKB / 1024, 2);
         // dd($request->all());
         $request->validate([
             'name' => 'required|string|max:255|unique:products,name,' . $product->id,
